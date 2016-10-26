@@ -1,0 +1,76 @@
+<style type="text/css">
+  .klarna_credit_box {
+    border: 1px solid #0074C8;
+
+  }
+  .header {
+    background-color: #0074C8;
+    color: white;
+    padding: 10px 20px;
+  }
+
+  .header h3 {
+    float: left;
+    margin-right: 20px;
+  }
+</style>
+
+<div class="klarna_credit_box">
+  <div class="header" style="width: 100%, background-color: ">
+    <div class="logo">
+      <img src="https://www.klarna.com/application/files/3114/5674/1539/Klarna-white-RGB.svg" width="80px">
+    </div>
+  </div>
+
+  <fieldset id="klarna" data-order-id="<%= @order.number %>">
+    <input type="text" id="session_token">
+    <input type="text" id="authorization_token">
+  </fieldset>
+</div>
+
+<script type="text/javascript" id="klarna­credit­lib­x">
+/* <![CDATA[ */
+ (function(w, d) {
+   var url = 'https://credit.klarnacdn.net/lib/v1/api.js';
+    n = d.createElement('script');
+    c = d.getElementById('klarna­credit­lib­x');
+    n.async = !0;
+    n.src = url + '?' + (new Date ()).getTime();
+    c.parentNode.replaceChild(n, c);
+  })(this, document);
+ /* ]]> */
+</script>
+
+<script type="text/javascript">
+  $.fn.klarna = function(options) {
+    var settings = $.extend({
+      sessionUrl: "/checkout/:id/klarna_session",
+      orderId: null
+    }, options);
+
+    if (!settings.orderId && this.data('orderId') !== undefined) {
+      settings.orderId = this.data('orderId');
+    }
+
+    settings.sessionUrl = settings.sessionUrl.replace(":id",settings.orderId);
+
+    settings.sessionToken = $('#session_token', this);
+    settings.authorizationToken = $('#authorization_token', this);
+
+    var getSession = function () {
+      $.ajax({
+        method: 'POST',
+        url: settings.sessionUrl,
+        dataType: 'json'
+      }).done(function(response) {
+        console.log(response);
+        settings.sessionToken.val(response.token);
+      });
+    }
+
+    getSession();
+    return this;
+  };
+
+  $("fieldset#klarna").klarna();
+</script>

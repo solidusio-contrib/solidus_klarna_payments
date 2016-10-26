@@ -5,17 +5,17 @@ module ActiveMerchant
   module Billing
     class KlarnaGateway < Gateway
       def initialize(options={})
-        @config = config
+        @options = options
 
         Klarna.configure do |config|
-          config.environment = :test
-          config.country = ENV.fetch("KLARNA_REGION") { :us }.to_sym
-          config.api_key = ENV["KLARNA_API_KEY"]
-          config.api_secret = ENV["KLARNA_API_SECRET"]
+          config.environment = @options[:server]
+          config.country = @options[:country]
+          config.api_key =  @options[:api_key]
+          config.api_secret = @options[:api_secret]
         end
 
-        @config[:logger] = ::Logger.new(STDOUT)
-        @config[:logger].level = ::Logger::WARN
+        @options[:logger] = ::Logger.new(STDOUT)
+        @options[:logger].level = ::Logger::WARN
       end
 
       def purchase(amount, payment, options = {})
@@ -24,11 +24,13 @@ module ActiveMerchant
 
       def authorize(amount, payment, options={})
         binding.pry
-        Klarna.client.create_session(order)
+        # Klarna.client.create_session(options)
+        # <= token
       end
 
       def capture(amount, authorization, options={})
         binding.pry
+        # Klarna.client.authorize(options)
       end
 
       def refund(amount, authorization, options={})
@@ -48,11 +50,3 @@ module ActiveMerchant
     end
   end
 end
-
-
-# 1 Spree
-# 2  Gateway (Connect the cables)
-# 3    ActiveMerchant (Abstraction)
-# 4      KlarnaSDK (Doing/Done) <<Pure Ruby>>
-
-

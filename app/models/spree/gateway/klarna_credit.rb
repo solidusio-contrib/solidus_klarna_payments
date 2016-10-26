@@ -9,6 +9,15 @@ module Spree
       def provider_class
         ActiveMerchant::Billing::KlarnaGateway
       end
+
+      def method_type
+        'klarna_credit'
+      end
+
+      def payment_source_class
+        Spree::KlarnaPayment
+      end
+
     end
   end
 end
