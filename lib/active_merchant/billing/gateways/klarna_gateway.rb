@@ -1,4 +1,5 @@
 require_dependency 'activemerchant'
+
 require_dependency 'klarna'
 
 module ActiveMerchant
@@ -16,6 +17,10 @@ module ActiveMerchant
 
         @options[:logger] = ::Logger.new(STDOUT)
         @options[:logger].level = ::Logger::WARN
+      end
+
+      def create_session(order)
+        Klarna.client.create_session(order)
       end
 
       def purchase(amount, payment, options = {})

@@ -5,15 +5,15 @@ module KlarnaGateway
 
   module ControllerSession
     def klarna_session
-      binding.pry
-
       klarna = Spree::PaymentMethod.where(type: 'Spree::Gateway::KlarnaCredit').last
-      response = klarna.authorize(@order.amount, nil, Spree::OrderSerializer.new(order).to_hash)
-
+      response = klarna.provider.create_session(Spree::OrderSerializer.new(@order))
       session[:token] = response.client_token
-      json token: response.client_token
+      render json: {token: response.client_token}
     end
 
+    def self.included(base)
+      base.skip_action_callback(:ensure_valid_state)
+    end
   end
 
   class Engine < Rails::Engine
@@ -24,6 +24,7 @@ module KlarnaGateway
     end
 
     config.to_prepare do
+      require 'httplog' if Rails.env.development?
       Spree::CheckoutController.include KlarnaGateway::ControllerSession
     end
   end
