@@ -25,6 +25,7 @@ module KlarnaGateway
 
     config.to_prepare do
       require 'httplog' if Rails.env.development?
+      Spree::PermittedAttributes.source_attributes << "authorization_token"
       Spree::CheckoutController.include KlarnaGateway::ControllerSession
     end
   end

@@ -1,7 +1,8 @@
+<% param_prefix = "payment_source[#{payment_method.id}]" %>
+
 <style type="text/css">
   .klarna_credit_box {
-    border: 1px solid #0074C8;
-
+    border: 1px solid #0074C8;§
   }
   .header {
     background-color: #0074C8;
@@ -13,19 +14,21 @@
     float: left;
     margin-right: 20px;
   }
+  #klarna_container {
+    text-align: center;
+    padding: 20px;
+  }
 </style>
 
-<div class="klarna_credit_box">
+<div class="klarna_credit_box" data-order-id="<%= @order.number %>" data-payment-method-id="<%= payment_method.id %>">
   <div class="header" style="width: 100%, background-color: ">
     <div class="logo">
       <img src="https://www.klarna.com/application/files/3114/5674/1539/Klarna-white-RGB.svg" width="80px">
     </div>
   </div>
 
-  <fieldset id="klarna" data-order-id="<%= @order.number %>">
-    <input type="text" id="session_token">
-    <input type="text" id="authorization_token">
-  </fieldset>
+  <%= hidden_field_tag "#{param_prefix}[authorization_token]", "", {id: "klarna_authorization_token"} %>
+  <div id="klarna_container"></div>
 </div>
 
 <script type="text/javascript" id="klarna­credit­lib­x">
@@ -44,7 +47,10 @@
 <script type="text/javascript">
   $.fn.klarna = function(options) {
     var settings = $.extend({
+      paymentChangedElements: $('input[name="order[payments_attributes][][payment_method_id]"]'),
+      paymentId: null,
       sessionUrl: "/checkout/:id/klarna_session",
+      submitButton: $('form.edit_order :submit'),
       orderId: null
     }, options);
 
@@ -52,25 +58,72 @@
       settings.orderId = this.data('orderId');
     }
 
+    if (settings.paymentId === null) {
+      settings.paymentId = $(this).data('payment-method-id');
+    }
+
     settings.sessionUrl = settings.sessionUrl.replace(":id",settings.orderId);
 
-    settings.sessionToken = $('#session_token', this);
-    settings.authorizationToken = $('#authorization_token', this);
+    settings.authorizationToken = $('#klarna_authorization_token', this);
 
+    // Get a session from the backend and load the form
     var getSession = function () {
+      if (settings.clientToken) {
+        return;
+      }
       $.ajax({
         method: 'POST',
         url: settings.sessionUrl,
         dataType: 'json'
       }).done(function(response) {
-        console.log(response);
-        settings.sessionToken.val(response.token);
+        settings.clientToken = response.token
+        Klarna.Credit.init ({
+          client_token: response.token
+        });
+
+        Klarna.Credit.load ({
+          container: "#klarna_container"
+        }, function(res) {
+          if (res.show_form) {
+            settings.showForm = res.show_form;
+          }
+        });
       });
     }
 
-    getSession();
+    // Try to authorize
+    var authorize = function (clb) {
+      Klarna.Credit.authorize(function(res){
+        if (res.approved === true) {
+          settings.authorizationToken.val(res.authorization_token);
+          clb(res)
+        }
+      });
+    }
+
+    var klarnaSelected = function() {
+      return settings.paymentChangedElements.filter(":checked").val() == settings.paymentId;
+    }
+
+    settings.paymentChangedElements.on('change', function(e) {
+      // check if Klarna Credit is selected
+      if (klarnaSelected()) {
+        getSession();
+      }
+    })
+
+    $('form.edit_order').on('submit', function (e) {
+      var form = this;
+      if (klarnaSelected()) {
+        e.preventDefault();
+        authorize(function (result) {
+          form.submit();
+        });
+      }
+    });
+
     return this;
   };
 
-  $("fieldset#klarna").klarna();
+  $(".klarna_credit_box").klarna();
 </script>

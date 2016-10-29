@@ -15,9 +15,20 @@ module Spree
       end
 
       def payment_source_class
-        Spree::KlarnaPayment
+        Spree::KlarnaCreditPayment
       end
 
+      def source_required?
+        true
+      end
+
+      def credit_card?
+        false
+      end
+
+      def payment_profiles_supported?
+        false
+      end
     end
   end
 end

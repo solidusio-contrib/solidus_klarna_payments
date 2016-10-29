@@ -19,39 +19,42 @@ module ActiveMerchant
         @options[:logger].level = ::Logger::WARN
       end
 
+      # There is only :klarna_credit
+      def self.supports?(brand)
+        true
+      end
+
       def create_session(order)
         Klarna.client.create_session(order)
       end
 
       def purchase(amount, payment, options = {})
-        binding.pry
+        auth_response = authorize(amount, payment, options)
+        if auth_response.success?
+          capture(amount, auth_response.order_id, options)
+        else
+          auth_response
+        end
       end
 
       def authorize(amount, payment, options={})
-        binding.pry
-        # Klarna.client.create_session(options)
-        # <= token
+        # TODO: check if we get a better handle for the order
+        order = Spree::Order.find_by(number: options[:order_id].split("-").first)
+
+        response = Klarna.client.place_order(payment.authorization_token, Spree::OrderSerializer.new(order))
+        Response.new(response.success?, "Place order", {}, {authorization: response.order_id})
       end
 
-      def capture(amount, authorization, options={})
-        binding.pry
-        # Klarna.client.authorize(options)
+      def capture(amount, order_id, options={})
+        response = Klarna.client.capture_order(order_id, {captured_amount: amount})
+        Response.new(response.success?, "Capture")
       end
 
-      def refund(amount, authorization, options={})
+      def refund(amount, order_id, options={})
+        response = Klarna.client.refund_order(order_id, {refunded_amount: amount})
+        Response.new(response.success?, "Refund")
       end
-
-      def void(authorization, options={})
-      end
-
-      def credit(amount, payment, options={})
-      end
-
-      def verify(credit_card, options = {})
-      end
-
-      def store(credit_card, options = {})
-      end
+      alias_method :credit, :refund
     end
   end
 end

@@ -19,19 +19,27 @@ module Spree
         locale: "en-us",
         # amount with taxes and adjustments
         order_amount: order.display_total.cents,
-        # only taxes
-        order_tax_amount: order.display_tax_total.cents,
         billing_address: billing_address,
-        order_lines: line_items,
+        order_lines: order_lines,
         merchant_reference1: order.number,
       }.tap do |cfg|
         cfg[:shipping_address] = shipping_address if order.ship_address_id?
       end
     end
 
+    def order_lines
+      line_items + shipments
+    end
+
     def line_items
       order.line_items.map do |line_item|
         LineItemSerializer.new(line_item)
+      end
+    end
+
+    def shipments
+      order.shipments.map do |shipment|
+        ShipmentSerializer.new(shipment)
       end
     end
 
@@ -54,7 +62,8 @@ module Spree
         city: addr.city,
         region: addr.state_name,
         phone: addr.phone,
-        country: addr.country.iso
+        country: addr.country.iso,
+        email: order.email
       }
     end
   end
