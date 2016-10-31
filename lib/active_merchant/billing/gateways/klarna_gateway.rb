@@ -1,6 +1,5 @@
-require_dependency 'activemerchant'
-
-require_dependency 'klarna'
+require 'activemerchant'
+require 'klarna'
 
 module ActiveMerchant
   module Billing
