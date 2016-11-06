@@ -1,26 +1,29 @@
 module Spree
   class LineItemSerializer
-    attr_reader :line_item
+    attr_reader :line_item, :strategy
 
-    def initialize(line_item)
+    def initialize(line_item, strategy)
       @line_item = line_item
+      @strategy = strategy
     end
 
     # TODO: clarify what amounts exactly should be used
     def to_hash
-      {
-        reference: line_item.sku,
-        name: line_item.name,
-        quantity: line_item.quantity,
-        # Minor units. Includes tax, excludes discount.
-        unit_price: unit_price,
-        # tax rate, e.g. 500 for 5.00%
-        tax_rate: line_item_tax_rate,
-        # Includes tax and discount. Must match (quantity * unit_price) - total_discount_amount within ±quantity
-        total_amount: total_amount,
-        # Must be within ±1 of total_amount - total_amount * 10000 / (10000 + tax_rate). Negative when type is discount
-        total_tax_amount: total_tax_amount
-      }
+      strategy.adjust_with(line_item) do
+        {
+          reference: line_item.sku,
+          name: line_item.name,
+          quantity: line_item.quantity,
+          # Minor units. Includes tax, excludes discount.
+          unit_price: unit_price,
+          # tax rate, e.g. 500 for 5.00%
+          tax_rate: line_item_tax_rate,
+          # Includes tax and discount. Must match (quantity * unit_price) - total_discount_amount within ±quantity
+          total_amount: total_amount,
+          # Must be within ±1 of total_amount - total_amount * 10000 / (10000 + tax_rate). Negative when type is discount
+          total_tax_amount: total_tax_amount
+        }
+      end
     end
 
     private

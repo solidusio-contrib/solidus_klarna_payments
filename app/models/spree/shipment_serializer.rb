@@ -1,22 +1,25 @@
 module Spree
   class ShipmentSerializer
-    attr_reader :shipment
+    attr_reader :shipment, :strategy
 
-    def initialize(shipment)
+    def initialize(shipment, strategy)
       @shipment = shipment
+      @strategy = strategy
     end
 
     def to_hash
-      {
-        type: 'shipping_fee',
-        reference: shipment.number,
-        name: shipment.number,
-        quantity: 1,
-        total_amount: shipment.display_final_price.cents,
-        unit_price: shipment.display_final_price.cents,
-        tax_rate: tax_rate,
-        total_tax_amount: total_tax_amount
-      }
+      strategy.adjust_with(shipment) do
+        {
+          type: 'shipping_fee',
+          reference: shipment.number,
+          name: shipment.number,
+          quantity: 1,
+          total_amount: shipment.display_final_price.cents,
+          unit_price: shipment.display_final_price.cents,
+          tax_rate: tax_rate,
+          total_tax_amount: total_tax_amount
+        }
+      end
     end
 
     private

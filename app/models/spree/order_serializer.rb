@@ -2,12 +2,15 @@ module Spree
   class OrderSerializer
     attr_reader :order
 
-    def initialize(order)
+    def initialize(order, strategy = nil)
       @order = order
+      @strategy = strategy
     end
 
     def to_hash
-      config
+      strategy.adjust_with(order) do
+        config
+      end
     end
 
     private
@@ -32,13 +35,13 @@ module Spree
 
     def line_items
       order.line_items.map do |line_item|
-        LineItemSerializer.new(line_item).to_hash
+        LineItemSerializer.new(line_item, strategy.line_item_strategy).to_hash
       end
     end
 
     def shipments
       order.shipments.map do |shipment|
-        ShipmentSerializer.new(shipment).to_hash
+        ShipmentSerializer.new(shipment, strategy.shipment_strategy).to_hash
       end
     end
 
@@ -56,6 +59,10 @@ module Spree
       }.merge(
         AddressSerializer.new(order.shipping_address).to_hash
       )
+    end
+
+    def strategy
+      @strategy ||= Spree::AmountCalculators::US::OrderCalculator.new
     end
   end
 end
