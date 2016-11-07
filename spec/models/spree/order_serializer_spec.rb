@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe Spree::OrderSerializer do
   context "in the US" do
+    let!(:us) { create(:country, name: "USA") }
+    let(:us_zone) { create(:global_zone, default_tax: true) }
+    let!(:tax_rate) { create(:tax_rate, zone: us_zone) }
+
     let(:order) { create(:order_with_line_items, line_items_count: 3) }
     subject(:serializer) { Spree::OrderSerializer.new(order) }
     let(:serialized) { serializer.to_hash }
@@ -15,13 +19,15 @@ describe Spree::OrderSerializer do
     end
 
     it "has one line for shipping" do
-      shipping_lines = serialized[:order_lines].select { |l| l[:type] == "shipping_fee" }
-      expect(shipping_lines.count).to eq(1)
+      shipping_lines = serialized[:order_lines].count { |l| l[:type] == "shipping_fee" }
+      expect(shipping_lines).to eq(1)
     end
 
     it "has one line for sales tax" do
-      tax_lines = serialized[:order_lines].select { |l| l[:type] == "sales_tax" }
-      expect(tax_lines.count).to eq(1)
+      create(:tax_category)
+      create(:tax_rate, tax_category: Spree::TaxCategory.last)
+      tax_lines = serialized[:order_lines].count { |l| l[:type] == "sales_tax" }
+      expect(tax_lines).to eq(1)
     end
 
     it "sets the tax line's amount correctly" do
@@ -31,6 +37,37 @@ describe Spree::OrderSerializer do
       expect(tax_line[:total_amount]).to eq(order.display_tax_total.cents)
       expect(tax_line[:tax_rate]).to eq(0)
       expect(tax_line[:total_tax_amount]).to eq(0)
+    end
+
+    it "it doesn't have a discount line" do
+      discount_lines = serialized[:order_lines].count { |l| l[:type] == "discount" }
+      expect(discount_lines).to eq(0)
+    end
+
+    context "with discounts" do
+      context "on the whole order" do
+        let(:order) { create(:completed_order_with_promotion, promotion: promotion) }
+        let(:promotion) { create(:promotion_with_order_adjustment) }
+
+        before do
+          order.update_totals
+          order.persist_totals
+        end
+
+        it "has one discount line" do
+          discount_lines = serialized[:order_lines].count { |l| l[:type] == "discount" }
+          expect(discount_lines).to eq(1)
+        end
+
+        it "sets correct discount amounts" do
+          discount_line = serialized[:order_lines].detect { |l| l[:type] == "discount" }
+          expect(discount_line[:quantity]).to eq(1)
+          expect(discount_line[:reference]).to eq("Discount")
+          expect(discount_line[:total_amount]).to eq((order.promo_total * 100).to_i.abs)
+          expect(discount_line[:tax_rate]).to eq(0)
+          expect(discount_line[:tax_amount]).to eq(0)
+        end
+      end
     end
   end
 end

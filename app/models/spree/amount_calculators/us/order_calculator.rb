@@ -5,12 +5,18 @@ module Spree
     class OrderCalculator
 
       def adjust_with(order)
-        result= yield
-        result.merge({
+        result = yield
+        result.merge!({
           order_amount: order.display_total.cents,
-          order_tax_amount: order.display_tax_total.cents,
+          order_tax_amount: order.display_tax_total.cents
         })
-        order_lines: result[:order_lines] << tax_line(order)
+        if order.tax_total > 0
+          result[:order_lines] << tax_line(order)
+        end
+        if order.promo_total < 0
+          result[:order_lines] << discount_line(order)
+        end
+        result
       end
 
       def line_item_strategy
@@ -37,7 +43,15 @@ module Spree
       end
 
       def discount_line(order)
-
+        {
+          type: "discount",
+          quantity: 1,
+          name: "Discount",
+          reference: "Discount",
+          total_amount: (order.promo_total * 100).to_i.abs,
+          tax_rate: 0,
+          tax_amount: 0
+        }
       end
     end
   end

@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "sqlite3"
   spec.add_development_dependency "httplog"
   spec.add_development_dependency "database_cleaner"
+  spec.add_development_dependency "byebug"
 
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rake", "~> 10.0"
