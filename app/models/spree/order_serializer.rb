@@ -2,9 +2,9 @@ module Spree
   class OrderSerializer
     attr_reader :order
 
-    def initialize(order, strategy = nil)
+    def initialize(order, region = :us)
       @order = order
-      @strategy = strategy
+      @region = region
     end
 
     def to_hash
@@ -17,7 +17,7 @@ module Spree
 
     def config
       {
-        purchase_country: "US" ,
+        purchase_country: order.billing_address.country.iso,
         purchase_currency: order.currency,
         locale: "en-us",
         # amount with taxes and adjustments
@@ -62,7 +62,10 @@ module Spree
     end
 
     def strategy
-      @strategy ||= Spree::AmountCalculators::US::OrderCalculator.new
+      @strategy ||= case @region.downcase.to_sym
+        when :us then Spree::AmountCalculators::US::OrderCalculator.new
+        else Spree::AmountCalculators::UK::OrderCalculator.new
+        end
     end
   end
 end

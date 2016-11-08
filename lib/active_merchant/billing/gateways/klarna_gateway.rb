@@ -39,8 +39,10 @@ module ActiveMerchant
       def authorize(amount, payment, options={})
         # TODO: check if we get a better handle for the order
         order = Spree::Order.find_by(number: options[:order_id].split("-").first)
+        region = payment.payment_method.preferences[:country]
+        serializer = Spree::OrderSerializer.new(order, region)
 
-        response = Klarna.client.place_order(payment.authorization_token, Spree::OrderSerializer.new(order))
+        response = Klarna.client.place_order(payment.authorization_token, serializer.to_hash)
         Response.new(response.success?, "Place order", {}, {authorization: response.order_id})
       end
 

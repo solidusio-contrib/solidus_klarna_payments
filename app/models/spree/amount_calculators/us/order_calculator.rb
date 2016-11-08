@@ -48,9 +48,10 @@ module Spree
           quantity: 1,
           name: "Discount",
           reference: "Discount",
-          total_amount: (order.promo_total * 100).to_i.abs,
+          total_amount: (order.promo_total * 100).to_i,
+          unit_price: (order.promo_total * 100).to_i,
           tax_rate: 0,
-          tax_amount: 0
+          total_tax_amount: 0
         }
       end
     end
