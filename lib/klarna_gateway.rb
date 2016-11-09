@@ -8,7 +8,8 @@ module KlarnaGateway
   module ControllerSession
     def klarna_session
       klarna = Spree::PaymentMethod.where(type: 'Spree::Gateway::KlarnaCredit').last
-      response = klarna.provider.create_session(Spree::OrderSerializer.new(@order))
+      order = Spree::OrderSerializer.new(@order, klarna.preferences[:country])
+      response = klarna.provider.create_session(order)
       session[:token] = response.client_token
       render json: {token: response.client_token}
     end

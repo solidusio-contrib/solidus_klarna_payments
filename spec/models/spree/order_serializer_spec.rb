@@ -1,14 +1,17 @@
 require 'spec_helper'
+require 'byebug'
 
 describe Spree::OrderSerializer do
+  let(:order) { create(:order_with_line_items, line_items_count: 3) }
+  subject(:serializer) { Spree::OrderSerializer.new(order, region) }
+  let(:serialized) { serializer.to_hash }
+
   context "in the US" do
+    let(:region) { :us }
     let!(:us) { create(:country, name: "USA") }
     let(:us_zone) { create(:global_zone, default_tax: true) }
     let!(:tax_rate) { create(:tax_rate, zone: us_zone) }
 
-    let(:order) { create(:order_with_line_items, line_items_count: 3) }
-    subject(:serializer) { Spree::OrderSerializer.new(order) }
-    let(:serialized) { serializer.to_hash }
 
     it "sets the amount" do
       expect(serialized[:order_amount]).to eq(order.display_total.cents)
@@ -91,6 +94,54 @@ describe Spree::OrderSerializer do
           expect(discount_line[:total_amount]).to be < 0
           expect(discount_line[:tax_rate]).to eq(0)
         end
+      end
+    end
+  end
+
+  context "in the UK with included tax" do
+    let(:region) { :uk }
+    let!(:uk) { create(:country, name: "United Kingdom") }
+    let(:uk_zone) { create(:global_zone, default_tax: true) }
+    let!(:tax_rate) { create(:tax_rate, zone: uk_zone, included_in_price: true) }
+
+    it "sets the amount" do
+      expect(serialized[:order_amount]).to eq(order.display_total.cents)
+    end
+
+    describe "the tax details" do
+      it "sets the tax amount" do
+        expect(serialized[:order_tax_amount]).to eq(order.display_tax_total.cents)
+        expect(serialized[:order_tax_amount]).to be > 0
+      end
+
+      it "has no separate tax line" do
+        tax_lines = serialized[:order_lines].count { |l| l[:type] == "sales_tax" }
+        expect(tax_lines).to eq(0)
+      end
+    end
+
+    describe "the shipping" do
+      let(:shipping_line) do
+        serialized[:order_lines].detect { |l| l[:type] == "shipping_fee" }
+      end
+
+      it "has one line" do
+        shipping_lines = serialized[:order_lines].count { |l| l[:type] == "shipping_fee" }
+        expect(shipping_lines).to eq(1)
+      end
+
+      it "has the correct amounts" do
+        byebug
+        expect(shipping_line[:quantity]).to eq(1)
+        shipment = order.reload.shipments.first
+        expect(shipping_line[:tax_rate]).to eq(shipment.adjustments.tax.first.source.amount * 100)
+      end
+    end
+
+    describe "the discount" do
+      it "is not in the order_lines" do
+        discount_lines = serialized[:order_lines].count { |l| l[:type] == "discount" }
+        expect(discount_lines).to eq(0)
       end
     end
   end

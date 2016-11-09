@@ -1,4 +1,5 @@
 module Spree
+
   class OrderSerializer
     attr_reader :order
 
