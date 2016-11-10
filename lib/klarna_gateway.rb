@@ -10,6 +10,8 @@ module KlarnaGateway
 
     def klarna_session
       order = Spree::OrderSerializer.new(@order, klarna_payment_method.preferences[:country])
+      order.options = klarna_options
+      order.design = klarna_payment_method.preferences[:design]
 
       # If the session is fresh: update the session and return the token
       if klarna_current_session?
@@ -38,6 +40,12 @@ module KlarnaGateway
     # TODO: hand over the payment method id in case there's more than one Klarna Credit
     def klarna_payment_method
       @klarna_payment_method ||= Spree::PaymentMethod.where(type: 'Spree::Gateway::KlarnaCredit').last
+    end
+
+    def klarna_options
+      klarna_payment_method.preferences.select do |key, value|
+        key.to_s.start_with?("color_", "radius_") && value.present?
+      end
     end
 
     def klarna_current_session?

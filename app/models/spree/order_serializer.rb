@@ -2,10 +2,13 @@ module Spree
 
   class OrderSerializer
     attr_reader :order
+    attr_accessor :options
+    attr_accessor :design
 
     def initialize(order, region = :us)
       @order = order
       @region = region
+      @options = {}
     end
 
     def to_hash
@@ -27,7 +30,9 @@ module Spree
         shipping_address: shipping_address,
         order_lines: order_lines,
         merchant_reference1: order.number,
-      }
+        options: options,
+        design: design
+      }.delete_if { |k, v| v.nil? }
     end
 
     def order_lines
