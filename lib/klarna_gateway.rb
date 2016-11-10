@@ -22,12 +22,14 @@ module KlarnaGateway
           session[:klarna_credit_client_token] = response.client_token
           session[:klarna_credit_session_id] = response.session_id
           session[:klarna_credit_session_created] = Time.current
+          session[:klarna_credit_order_id] = @order.id
         end
         render json: {token: response.client_token}
       end
     end
 
     def self.included(base)
+      # TODO: only on klarna_session (maybe even not there)
       base.skip_action_callback(:ensure_valid_state)
     end
 
@@ -39,7 +41,9 @@ module KlarnaGateway
     end
 
     def klarna_current_session?
-      session.has_key?(:klarna_credit_session_created) && session[:klarna_credit_session_created] > KLARNA_SESSION_LIFETIME.ago
+      session.has_key?(:klarna_credit_session_created) &&
+        session[:klarna_credit_session_created] > KLARNA_SESSION_LIFETIME.ago &&
+        session[:klarna_credit_order_id] == @order.id
     end
   end
 end
