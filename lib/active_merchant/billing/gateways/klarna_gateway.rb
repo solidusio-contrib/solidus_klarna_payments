@@ -27,6 +27,10 @@ module ActiveMerchant
         Klarna.client.create_session(order)
       end
 
+      def update_session(session_id, order)
+        Klarna.client.update_session(session_id, order)
+      end
+
       def purchase(amount, payment, options = {})
         auth_response = authorize(amount, payment, options)
         if auth_response.success?
