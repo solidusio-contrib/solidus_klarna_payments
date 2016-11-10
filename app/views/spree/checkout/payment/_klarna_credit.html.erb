@@ -92,17 +92,24 @@
     }
 
     // Try to authorize
-    var authorize = function (clb) {
+    var authorize = function (approved, notApproved) {
       Klarna.Credit.authorize(function(res){
         if (res.approved === true) {
           settings.authorizationToken.val(res.authorization_token);
-          clb(res)
+          approved(res)
+        } else {
+          notApproved(res)
         }
       });
     }
 
     var klarnaSelected = function() {
       return settings.paymentChangedElements.filter(":checked").val() == settings.paymentId;
+    }
+
+    // Revert Spree's disableSaveOnClick when authorization is denied
+    var enableSaveOnClick = function() {
+      $('form.edit_order').find(':submit, :image').attr('disabled', false).addClass('primary').addClass('disabled')
     }
 
     settings.paymentChangedElements.on('change', function(e) {
@@ -118,7 +125,10 @@
         e.preventDefault();
         authorize(function (result) {
           form.submit();
-        });
+        }, function(result) {
+          enableSaveOnClick();
+        }
+        );
       }
     });
 
