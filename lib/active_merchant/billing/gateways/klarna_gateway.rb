@@ -31,7 +31,7 @@ module ActiveMerchant
         Klarna.client.update_session(session_id, order)
       end
 
-      def purchase(amount, payment, options = {})
+      def purchase(amount, payment_source, options = {})
         auth_response = authorize(amount, payment, options)
         if auth_response.success?
           capture(amount, auth_response.order_id, options)
@@ -40,18 +40,30 @@ module ActiveMerchant
         end
       end
 
-      def authorize(amount, payment, options={})
+
+      def authorize(amount, payment_source, options={})
         # TODO: check if we get a better handle for the order
         order = Spree::Order.find_by(number: options[:order_id].split("-").first)
-        region = payment.payment_method.preferences[:country]
+        region = payment_source.payment_method.preferences[:country]
         serializer = Spree::OrderSerializer.new(order, region)
+        response = Klarna.client.place_order(payment_source.authorization_token, serializer.to_hash)
 
-        response = Klarna.client.place_order(payment.authorization_token, serializer.to_hash)
+        if response.success?
+          payment_source.spree_order_id = order.id
+          payment_source.klarna_order_id = response.order_id
+          payment_source.fraud_status = response.fraud_status
+          payment_source.expires_at = DateTime.now + 2.weeks
+          payment_source.redirect_url = response.redirect_url if response.respond_to? :redirect_url
+
+          payment_source.save!
+        end
+
         Response.new(response.success?, "Place order", {}, {authorization: response.order_id})
       end
 
       def capture(amount, order_id, options={})
         response = Klarna.client.capture_order(order_id, {captured_amount: amount})
+
         Response.new(response.success?, "Capture")
       end
 

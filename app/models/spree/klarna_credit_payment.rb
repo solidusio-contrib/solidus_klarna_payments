@@ -22,5 +22,13 @@ module Spree
     def can_capture?(payment)
       payment.pending?
     end
+
+    def accepted?
+      self.fraud_status == "ACCEPTED"
+    end
+
+    def pending?
+      self.fraud_status == "PENDING"
+    end
   end
 end
