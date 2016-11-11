@@ -1,0 +1,13 @@
+<% if payment.source.brand == :klarna_credit %>
+  <tr>
+    <td colspan="2">
+      Klarna Credit
+    </td>
+    <td colspan="2">
+      Status:  <%= payment.source.fraud_status %>
+    </td>
+    <td colspan="2">
+      Expires at: <%= pretty_time(payment.source.expires_at)%>
+    </td>
+  </tr>
+<% end %>
