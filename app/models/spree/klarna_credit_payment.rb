@@ -2,6 +2,7 @@ module Spree
   class KlarnaCreditPayment < Spree::Base
     belongs_to :payment_method
     belongs_to :user, class_name: Spree.user_class, foreign_key: 'user_id'
+    belongs_to :order, class_name: Spree::Order, foreign_key: 'spree_order_id'
 
     def imported
       false
@@ -21,6 +22,16 @@ module Spree
 
     def can_capture?(payment)
       payment.pending?
+    end
+
+    def accept!
+      self.fraud_status = "ACCEPTED"
+      save
+    end
+
+    def reject!
+      self.fraud_status = "ACCEPTED"
+      save
     end
 
     def accepted?

@@ -31,7 +31,8 @@ module Spree
         order_lines: order_lines,
         merchant_reference1: order.number,
         options: options,
-        design: design
+        design: design,
+        merchant_urls: merchant_urls
       }.delete_if { |k, v| v.nil? }
     end
 
@@ -72,6 +73,20 @@ module Spree
         when :us then Spree::AmountCalculators::US::OrderCalculator.new
         else Spree::AmountCalculators::UK::OrderCalculator.new
         end
+    end
+
+    def merchant_urls
+      {
+        # terms: "string",
+        # checkout: "string",
+        # push: "string",
+        # validation: "string",
+        # shipping_option_update: "string",
+        # address_update: "string",
+        # country_change: "string",
+        confirmation: "http://#{Spree::Store.first.url}/orders/#{@order.number}",
+        notification: "http://#{Spree::Store.first.url}/klarna/notification"
+      }
     end
   end
 end
