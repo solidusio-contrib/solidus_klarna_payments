@@ -19,7 +19,7 @@ module Spree
       end
 
       def shipment_strategy
-        Spree::AmountCalculators::US::ShipmentCalculator.new
+        Spree::AmountCalculators::UK::ShipmentCalculator.new
       end
 
       private

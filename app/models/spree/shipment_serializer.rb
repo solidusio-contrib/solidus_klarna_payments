@@ -37,7 +37,7 @@ module Spree
     end
 
     def tax_rate
-      return total_amount if total_amount == 0
+      return 0 if total_amount == 0
       ((unit_price / total_amount) * 100).to_i
     end
   end

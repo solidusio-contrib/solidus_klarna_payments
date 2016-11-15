@@ -118,8 +118,7 @@ describe Spree::OrderSerializer do
 
     describe "the tax details" do
       it "sets the tax amount" do
-        expect(serialized[:order_tax_amount]).to eq(order.display_tax_total.cents)
-        expect(serialized[:order_tax_amount]).to be > 0
+        expect(serialized).to_not have_key(:order_tax_amount)
       end
 
       it "has no separate tax line" do
@@ -141,7 +140,7 @@ describe Spree::OrderSerializer do
       it "has the correct amounts" do
         expect(shipping_line[:quantity]).to eq(1)
         shipment = order.reload.shipments.first
-        expect(shipping_line[:tax_rate]).to eq(shipment.adjustments.tax.first.source.amount * 100)
+        expect(shipping_line[:tax_rate]).to eq(0)
       end
     end
 
