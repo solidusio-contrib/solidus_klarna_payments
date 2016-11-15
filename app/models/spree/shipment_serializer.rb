@@ -25,15 +25,15 @@ module Spree
     private
 
     def unit_price
-      shipment.pre_tax_amount.to_i * 100
+      (shipment.pre_tax_amount * 100).to_i
     end
 
     def total_amount
-      shipment.final_price.to_i * 100
+      (shipment.final_price * 100).to_i
     end
 
     def total_tax_amount
-      shipment.tax_total.to_i * 100
+      (shipment.tax_total * 100).to_i
     end
 
     def tax_rate
