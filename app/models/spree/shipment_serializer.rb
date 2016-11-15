@@ -14,22 +14,31 @@ module Spree
           reference: shipment.number,
           name: shipment.number,
           quantity: 1,
-          total_amount: shipment.display_final_price.cents,
-          unit_price: shipment.display_final_price.cents,
-          tax_rate: tax_rate,
-          total_tax_amount: total_tax_amount
+          unit_price: unit_price ,
+          total_amount: total_amount,
+          total_tax_amount: total_tax_amount,
+          tax_rate: tax_rate
         }
       end
     end
 
     private
 
+    def unit_price
+      shipment.pre_tax_amount.to_i * 100
+    end
+
+    def total_amount
+      shipment.final_price.to_i * 100
+    end
+
     def total_tax_amount
-      (shipment.additional_tax_total * 100).to_i
+      shipment.tax_total.to_i * 100
     end
 
     def tax_rate
-      ((shipment.additional_tax_total / shipment.cost) * 10000).to_i
+      return total_amount if total_amount == 0
+      ((unit_price / total_amount) * 100).to_i
     end
   end
 end

@@ -1,8 +1,15 @@
 require 'spec_helper'
-require 'byebug'
 
 describe Spree::OrderSerializer do
   let(:order) { create(:order_with_line_items, line_items_count: 3) }
+  let(:overbooked_order) do
+    create(:order_with_line_items, line_items_count: 3).tap do |order|
+      order.line_items.first.variant.stock_items.first.adjust_count_on_hand 2
+      order.line_items.first.update_attributes(quantity: 4)
+      order.reload.create_proposed_shipments
+      Spree::OrderUpdater.new(order).update
+    end.reload
+  end
   subject(:serializer) { Spree::OrderSerializer.new(order, region) }
   let(:serialized) { serializer.to_hash }
 
@@ -22,8 +29,9 @@ describe Spree::OrderSerializer do
     end
 
     it "has one line for shipping" do
+      serialized = Spree::OrderSerializer.new(overbooked_order, region).to_hash
       shipping_lines = serialized[:order_lines].count { |l| l[:type] == "shipping_fee" }
-      expect(shipping_lines).to eq(1)
+      expect(shipping_lines).to eq(overbooked_order.shipments.count)
     end
 
     it "has one line for sales tax" do
@@ -131,7 +139,6 @@ describe Spree::OrderSerializer do
       end
 
       it "has the correct amounts" do
-        byebug
         expect(shipping_line[:quantity]).to eq(1)
         shipment = order.reload.shipments.first
         expect(shipping_line[:tax_rate]).to eq(shipment.adjustments.tax.first.source.amount * 100)

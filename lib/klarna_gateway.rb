@@ -9,7 +9,8 @@ module KlarnaGateway
     KLARNA_SESSION_LIFETIME = 60.minutes
 
     def klarna_session
-      order = Spree::OrderSerializer.new(@order, klarna_payment_method.preferences[:country])
+      Spree::OrderUpdater.new(@order).update
+      order = Spree::OrderSerializer.new(@order.reload, klarna_payment_method.preferences[:country])
       order.options = klarna_options
       order.design = klarna_payment_method.preferences[:design]
 
