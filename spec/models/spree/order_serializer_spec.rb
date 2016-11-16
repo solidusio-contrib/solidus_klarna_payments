@@ -28,7 +28,7 @@ describe Spree::OrderSerializer do
       expect(serialized[:order_tax_amount]).to eq(order.display_tax_total.cents)
     end
 
-    it "has one line for shipping" do
+    it "has multiple lines of shipping fees" do
       serialized = Spree::OrderSerializer.new(overbooked_order, region).to_hash
       shipping_lines = serialized[:order_lines].count { |l| l[:type] == "shipping_fee" }
       expect(shipping_lines).to eq(overbooked_order.shipments.count)

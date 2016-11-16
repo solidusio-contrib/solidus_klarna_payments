@@ -37,8 +37,8 @@ module Spree
     end
 
     def tax_rate
-      return 0 if total_amount == 0
-      ((unit_price / total_amount) * 100).to_i
+      return 0 if total_tax_amount == 0 || total_amount == 0
+      (((shipment.final_price / shipment.pre_tax_amount) - 1) * 10000).to_i
     end
   end
 end
