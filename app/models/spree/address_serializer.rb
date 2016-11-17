@@ -15,7 +15,7 @@ module Spree
         street_address2: @address.address2,
         postal_code: @address.zipcode,
         city: @address.city,
-        region: @address.state_name,
+        region: @address.state.try(:name),
         phone: @address.phone,
         country: @address.country.iso
       }
