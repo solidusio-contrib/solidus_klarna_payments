@@ -1,13 +1,13 @@
 module Spree
 
   class OrderSerializer
-    attr_reader :order
+    attr_reader :order, :region
     attr_accessor :options
     attr_accessor :design
 
     def initialize(order, region = :us)
       @order = order
-      @region = region
+      @region = region.downcase.to_sym
       @options = {}
     end
 
@@ -23,7 +23,7 @@ module Spree
       {
         purchase_country: order.billing_address.country.iso,
         purchase_currency: order.currency,
-        locale: strategy.locale(order),
+        locale: strategy.locale(region),
         # amount with taxes and adjustments
         order_amount: order.display_total.cents,
         billing_address: billing_address,
@@ -69,7 +69,7 @@ module Spree
     end
 
     def strategy
-      @strategy ||= case @region.downcase.to_sym
+      @strategy ||= case region
         when :us then Spree::AmountCalculators::US::OrderCalculator.new
         else Spree::AmountCalculators::UK::OrderCalculator.new
         end

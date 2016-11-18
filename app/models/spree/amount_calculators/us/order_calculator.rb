@@ -27,7 +27,7 @@ module Spree
         Spree::AmountCalculators::US::ShipmentCalculator.new
       end
 
-      def locale(order)
+      def locale(region)
         "en-US"
       end
 

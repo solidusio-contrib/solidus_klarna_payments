@@ -167,10 +167,6 @@ describe Spree::OrderSerializer do
     let(:de_zone) { create(:global_zone, default_tax: true) }
     let!(:tax_rate) { create(:tax_rate, zone: de_zone, included_in_price: true) }
 
-    before do
-      order.billing_address.country = germany
-    end
-
     it "sets the locale" do
       expect(serialized[:locale]).to eq("de-DE")
     end

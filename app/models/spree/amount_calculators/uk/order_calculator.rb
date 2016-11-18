@@ -22,9 +22,9 @@ module Spree
         Spree::AmountCalculators::UK::ShipmentCalculator.new
       end
 
-      def locale(order)
-        case order.billing_address.country.iso
-        when "de" then "de-DE"
+      def locale(region)
+        case region
+        when :de then "de-DE"
         else "en-GB"
         end
       end
