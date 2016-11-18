@@ -23,7 +23,7 @@ module Spree
       {
         purchase_country: order.billing_address.country.iso,
         purchase_currency: order.currency,
-        locale: "en-us",
+        locale: strategy.locale(order),
         # amount with taxes and adjustments
         order_amount: order.display_total.cents,
         billing_address: billing_address,
