@@ -24,11 +24,11 @@ module ActiveMerchant
       end
 
       def create_session(order)
-        Klarna.client.create_session(order)
+        Klarna.client(:credit).create_session(order)
       end
 
       def update_session(session_id, order)
-        Klarna.client.update_session(session_id, order)
+        Klarna.client(:credit).update_session(session_id, order)
       end
 
       def purchase(amount, payment_source, options = {})
@@ -40,38 +40,53 @@ module ActiveMerchant
         end
       end
 
-
       def authorize(amount, payment_source, options={})
         # TODO: check if we get a better handle for the order
         order = Spree::Order.find_by(number: options[:order_id].split("-").first)
         region = payment_source.payment_method.preferences[:country]
         serializer = Spree::OrderSerializer.new(order, region)
-        response = Klarna.client.place_order(payment_source.authorization_token, serializer.to_hash)
+
+        response = Klarna.client(:credit).place_order(payment_source.authorization_token, serializer.to_hash)
+        update_source(payment_source, response, order)
 
         if response.success?
-          payment_source.spree_order_id = order.id
-          payment_source.klarna_order_id = response.order_id
-          payment_source.fraud_status = response.fraud_status
-          payment_source.expires_at = DateTime.now + 2.weeks
-          payment_source.redirect_url = response.redirect_url if response.respond_to? :redirect_url
-
-          payment_source.save!
+          ActiveMerchant::Billing::Response.new(true, "Placed order #{order.number} Klara id: #{payment_source.spree_order_id}", {}, authorization: response.order_id)
+        else
+          ActiveMerchant::Billing::Response.new(false, 'Klarna Gateway: Please check your payment method.', {}, { error_code: response.error_code, message: 'Klarna Gateway: Please check your payment method.'})
         end
-
-        Response.new(response.success?, "Place order", {}, {authorization: response.order_id})
       end
 
       def capture(amount, order_id, options={})
-        response = Klarna.client.capture_order(order_id, {captured_amount: amount})
+        response = Klarna.client.capture(order_id, {captured_amount: amount})
 
         Response.new(response.success?, "Capture")
       end
 
       def refund(amount, order_id, options={})
-        response = Klarna.client.refund_order(order_id, {refunded_amount: amount})
+        response = Klarna.client.refund(order_id, {refunded_amount: amount})
         Response.new(response.success?, "Refund")
       end
       alias_method :credit, :refund
+
+      private
+
+      def update_source(payment_source, response, order)
+        payment_source.spree_order_id = order.id
+        payment_source.response_body = response.body
+
+        if response.success?
+          payment_source.klarna_order_id = response.order_id
+          payment_source.fraud_status = response.fraud_status
+          payment_source.expires_at = DateTime.now + 2.weeks
+          payment_source.redirect_url = response.redirect_url if response.respond_to?(:redirect_url)
+        else
+          payment_source.error_code = response.error_code
+          payment_source.error_messages = response.error_messages
+          payment_source.correlation_id = response.correlation_id
+        end
+
+        payment_source.save!
+      end
     end
   end
 end
