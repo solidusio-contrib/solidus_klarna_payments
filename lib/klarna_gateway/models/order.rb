@@ -19,5 +19,9 @@ module KlarnaGateway
     def klarna_session_expired?
       !(self.klarna_session_expires_at.present? && self.klarna_session_expires_at >= DateTime.now)
     end
+
+    def to_klarna(country=:us)
+      Spree::OrderSerializer.new(self.reload, country)
+    end
   end
 end

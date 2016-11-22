@@ -9,9 +9,11 @@ class Order
     @klarna_client_token = attributes[:klarna_client_token] if attributes[:klarna_client_token]
     @klarna_session_expires_at = attributes[:klarna_session_expires_at] if attributes[:klarna_session_expires_at]
   end
+
+  def reload
+    self
+  end
 end
-
-
 
 describe KlarnaGateway::Order do
 
@@ -51,4 +53,9 @@ describe KlarnaGateway::Order do
     end
   end
 
+  context "#to_klarna_hash" do
+    it "returns a serialized hash for klarna" do
+      expect(order.to_klarna).to be_a(Spree::OrderSerializer)
+    end
+  end
 end

@@ -1,5 +1,4 @@
 module Spree
-
   class OrderSerializer
     attr_reader :order
     attr_accessor :options
@@ -77,9 +76,9 @@ module Spree
 
     def merchant_urls
       {
-        # terms: "string",
-        # checkout: "string",
-        # push: "string",
+        # terms: "http://#{Spree::Store.first.url}/terms",
+        # checkout: "http://#{Spree::Store.first.url}/orders/#{@order.number}",
+        # push: "http://#{Spree::Store.first.url}/klarna/push",
         # validation: "string",
         # shipping_option_update: "string",
         # address_update: "string",
