@@ -22,6 +22,13 @@ module Spree
         Spree::AmountCalculators::UK::ShipmentCalculator.new
       end
 
+      def locale(region)
+        case region
+        when :de then "de-DE"
+        else "en-GB"
+        end
+      end
+
       private
 
       def discount_line(order)

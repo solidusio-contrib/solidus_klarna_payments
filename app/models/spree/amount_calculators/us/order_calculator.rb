@@ -27,6 +27,10 @@ module Spree
         Spree::AmountCalculators::US::ShipmentCalculator.new
       end
 
+      def locale(region)
+        "en-US"
+      end
+
       private
 
       def tax_line(order)

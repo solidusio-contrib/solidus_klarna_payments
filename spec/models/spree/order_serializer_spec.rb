@@ -24,6 +24,10 @@ describe Spree::OrderSerializer do
       expect(serialized[:order_amount]).to eq(order.display_total.cents)
     end
 
+    it "sets the locale" do
+      expect(serialized[:locale]).to eq("en-US")
+    end
+
     it "sets the tax amount" do
       expect(serialized[:order_tax_amount]).to eq(order.display_tax_total.cents)
     end
@@ -61,6 +65,7 @@ describe Spree::OrderSerializer do
         order.update_totals
         order.persist_totals
       end
+
 
       context "on the whole order" do
         let(:promotion) { create(:promotion_with_order_adjustment) }
@@ -116,6 +121,10 @@ describe Spree::OrderSerializer do
       expect(serialized[:order_amount]).to eq(order.display_total.cents)
     end
 
+    it "sets the locale" do
+      expect(serialized[:locale]).to eq("en-GB")
+    end
+
     describe "the tax details" do
       it "sets the tax amount" do
         expect(serialized).to_not have_key(:order_tax_amount)
@@ -149,6 +158,17 @@ describe Spree::OrderSerializer do
         discount_lines = serialized[:order_lines].count { |l| l[:type] == "discount" }
         expect(discount_lines).to eq(0)
       end
+    end
+  end
+
+  context "in Germany" do
+    let(:region) { :de }
+    let!(:germany) { create(:country, name: "Deutschland", iso: "de") }
+    let(:de_zone) { create(:global_zone, default_tax: true) }
+    let!(:tax_rate) { create(:tax_rate, zone: de_zone, included_in_price: true) }
+
+    it "sets the locale" do
+      expect(serialized[:locale]).to eq("de-DE")
     end
   end
 end
