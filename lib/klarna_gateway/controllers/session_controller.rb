@@ -25,12 +25,7 @@ module KlarnaGateway
     end
 
     def klarna_reauthorize
-      response = klarna_payment_method.provider.update_session(@order.klarna_session_id, klarna_order)
-      if response.success?
-        render json: {status: response.success?, token: @order.klarna_client_token, data: klarna_order}
-      else
-        render json: {status: response.success?}
-      end
+      render json: {status: !@order.klarna_session_expired?, token: @order.klarna_client_token, data: klarna_order}
     end
 
     private

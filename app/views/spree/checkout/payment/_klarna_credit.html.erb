@@ -67,10 +67,7 @@
     settings.authorizationToken = $('#klarna_authorization_token', this);
 
     // Get a session from the backend and load the form
-    var getSession = function () {
-      if (settings.clientToken) {
-        return;
-      }
+    var initSession = function() {
       $.ajax({
         method: 'POST',
         url: settings.sessionUrl,
@@ -81,13 +78,24 @@
           client_token: response.token
         });
 
-        Klarna.Credit.load ({
-          container: "#klarna_container"
-        }, function(res) {
-          if (res.show_form) {
-            settings.showForm = res.show_form;
-          }
-        });
+        loadKlarnaForm();
+      });
+    }
+
+    // Loads the Klarna Form
+    var loadKlarnaForm = function () {
+      if (!settings.clientToken) {
+        return;
+      }
+
+      Klarna.Credit.load ({
+        container: "#klarna_container"
+      }, function(res) {
+        if (res.show_form) {
+          settings.showForm = res.show_form;
+        } else {
+          console.log(res)
+        }
       });
     }
 
@@ -115,7 +123,7 @@
     settings.paymentChangedElements.on('change', function(e) {
       // check if Klarna Credit is selected
       if (klarnaSelected()) {
-        getSession();
+        initSession();
       }
     })
 

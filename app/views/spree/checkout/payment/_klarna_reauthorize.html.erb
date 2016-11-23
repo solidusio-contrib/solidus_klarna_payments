@@ -52,6 +52,7 @@
 
     if (!settings.orderId && this.data('orderId') !== undefined) {
       settings.orderId = this.data('orderId');
+      settings.paymentUrl = "/checkout/payment"
     }
 
     if (settings.submitButton) {
@@ -73,14 +74,14 @@
             client_token: response.token
           });
 
-          settings.canvas.hide();
-          settings.submitCanvas.show();
+          delete response.data.merchant_urls;
 
-          Klarna.Credit.reauthorize(response.data, {}, function(response) {
-            console.log("hey", response)
+          Klarna.Credit.reauthorize(response.data, function(response) {
+            settings.canvas.hide();
+            settings.submitCanvas.show();
           });
         } else {
-          // redirect back to payments
+          window.location.assign(settings.paymentUrl)
         }
       });
     }
