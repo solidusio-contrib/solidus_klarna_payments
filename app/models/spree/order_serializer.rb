@@ -3,6 +3,7 @@ module Spree
     attr_reader :order, :region
     attr_accessor :options
     attr_accessor :design
+    attr_accessor :skip_personal_data
 
     def initialize(order, region = :us)
       @order = order
@@ -14,6 +15,13 @@ module Spree
       strategy.adjust_with(order) do
         config
       end
+    end
+
+    def addresses
+      {
+        billing_address: billing_address,
+        shipping_address: shipping_address
+      }
     end
 
     private
@@ -70,12 +78,13 @@ module Spree
     def strategy
       @strategy ||= case region
         when :us then Spree::AmountCalculators::US::OrderCalculator.new
-        else Spree::AmountCalculators::UK::OrderCalculator.new
+        else Spree::AmountCalculators::UK::OrderCalculator.new(skip_personal_data)
         end
     end
 
     def merchant_urls
       {
+        # TODO: use the current store url
         # terms: "http://#{Spree::Store.first.url}/terms",
         # checkout: "http://#{Spree::Store.first.url}/orders/#{@order.number}",
         # push: "http://#{Spree::Store.first.url}/klarna/push",
