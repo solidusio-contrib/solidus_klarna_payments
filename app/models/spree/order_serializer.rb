@@ -1,9 +1,8 @@
 module Spree
   class OrderSerializer
     attr_reader :order, :region
-    attr_accessor :options
-    attr_accessor :design
-    attr_accessor :skip_personal_data
+    attr_accessor :options, :design, :skip_personal_data
+    attr_writer :store
 
     def initialize(order, region = :us)
       @order = order
@@ -92,9 +91,17 @@ module Spree
         # shipping_option_update: "string",
         # address_update: "string",
         # country_change: "string",
-        confirmation: "http://#{Spree::Store.first.url}/orders/#{@order.number}",
-        notification: "http://#{Spree::Store.first.url}/klarna/notification"
+        confirmation: url_helpers.order_url(@order.number, host: store.url),
+        notification: url_helpers.klarna_notification_url(host: store.url)
       }
+    end
+
+    def store
+      @store || Spree::Store.first
+    end
+
+    def url_helpers
+      Spree::Core::Engine.routes.url_helpers
     end
   end
 end
