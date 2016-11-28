@@ -10,6 +10,8 @@ module KlarnaGateway
       require 'httplog' if Rails.env.development?
 
       Spree::PermittedAttributes.source_attributes << "authorization_token"
+
+      Spree::Admin::OrdersController.include(KlarnaGateway::Admin::OrdersController)
       Spree::CheckoutController.include(KlarnaGateway::SessionController)
       Spree::Order.include(KlarnaGateway::Order)
     end

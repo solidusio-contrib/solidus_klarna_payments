@@ -1,0 +1,5 @@
+<% if @order.klarna_order_id? %>
+  <li class="<%= "active" if (current == "Klarna") %>"  data-hook="admin_order_tabs_customer_details">
+    <%= link_to_with_icon 'money', "Klarna", admin_order_klarna_path(@order) %>
+  </li>
+<% end %>

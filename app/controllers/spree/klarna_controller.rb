@@ -3,7 +3,6 @@ module Spree
 
     skip_before_action :verify_authenticity_token
 
-
     def notification
       if params[:event_type] === "FRAUD_RISK_ACCEPTED"
         klarna_order = Spree::KlarnaCreditPayment.where(klarna_order_id: params[:order_id]).first
@@ -16,7 +15,6 @@ module Spree
       klarna_order.order.touch
       render text: "ok"
     end
-
 
     def push
       binding.pry

@@ -48,6 +48,7 @@ module ActiveMerchant
 
         response = Klarna.client(:credit).place_order(payment_source.authorization_token, serializer.to_hash)
         update_source(payment_source, response, order)
+        update_order(response, order)
 
         if response.success?
           ActiveMerchant::Billing::Response.new(true, "Placed order #{order.number} Klara id: #{payment_source.spree_order_id}", {}, authorization: response.order_id)
@@ -63,12 +64,42 @@ module ActiveMerchant
       end
 
       def refund(amount, order_id, options={})
-        response = Klarna.client.refund(order_id, {refunded_amount: amount})
+        response = Klarna.client(:refund).create(order_id, {refunded_amount: amount})
         Response.new(response.success?, "Refund")
       end
       alias_method :credit, :refund
 
+      def get(order_id)
+        Klarna.client.get(order_id)
+      end
+
+      def acknowledge(order_id)
+        Klarna.client.acknowledge(order_id)
+      end
+
+      def extend(order_id)
+        Klarna.client.extend(order_id)
+      end
+
+      def release(order_id)
+        Klarna.client.release(order_id)
+      end
+
       private
+
+      def update_order(response, order)
+        if response.success?
+          order.update_attributes(
+            klarna_order_id: response.order_id,
+            klarna_order_state: response.fraud_status
+          )
+        else
+          order.update_attributes(
+            klarna_order_id: nil,
+            klarna_order_state: response.error_code
+          )
+        end
+      end
 
       def update_source(payment_source, response, order)
         payment_source.spree_order_id = order.id

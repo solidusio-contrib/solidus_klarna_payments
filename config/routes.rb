@@ -8,4 +8,9 @@ Spree::Core::Engine.routes.draw do
 
   post '/klarna/push', to: 'klarna#push', as: :klarna_push
 
+  get '/admin/orders/:id/klarna', to: 'admin/orders#klarna', as: :admin_order_klarna
+  post '/admin/orders/:id/klarna_update', to: 'admin/orders#klarna_update', as: :admin_order_klarna_update
+  post '/admin/orders/:id/klarna_extend', to: 'admin/orders#klarna_extend', as: :admin_order_klarna_extend
+  post '/admin/orders/:id/klarna_release', to: 'admin/orders#klarna_release', as: :admin_order_klarna_release
+
 end

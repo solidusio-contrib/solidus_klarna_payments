@@ -31,7 +31,7 @@ module Spree
     end
 
     def reject!
-      self.fraud_status = "ACCEPTED"
+      self.fraud_status = "REJECTED"
       save
     end
 
@@ -41,6 +41,31 @@ module Spree
 
     def pending?
       self.fraud_status == "PENDING"
+    end
+
+    def rejected?
+      self.fraud_status == "REJECTED"
+    end
+
+    def error?
+      self.error_code? && self.error_messages?
+    end
+
+    def status
+      self.fraud_status || self.error_code
+    end
+
+    def status_icon
+      case self.fraud_status
+        when "ACCEPTED"
+          'ready'
+        when "PENDING"
+          'pending'
+        when "REJECTED"
+          'void'
+        else
+          'void' if error?
+      end
     end
   end
 end
