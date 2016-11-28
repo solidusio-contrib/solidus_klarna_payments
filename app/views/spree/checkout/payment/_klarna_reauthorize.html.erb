@@ -27,19 +27,6 @@
 <div class="clear"></div>
 </br>
 
-<script type="text/javascript" id="klarna­credit­lib­x">
-/* <![CDATA[ */
- (function(w, d) {
-   var url = 'https://credit.klarnacdn.net/lib/v1/api.js';
-    n = d.createElement('script');
-    c = d.getElementById('klarna­credit­lib­x');
-    n.async = !0;
-    n.src = url + '?' + (new Date ()).getTime();
-    c.parentNode.replaceChild(n, c);
-  })(this, document);
- /* ]]> */
-</script>
-
 <script type="text/javascript">
   $.fn.klarnaReauthorize = function(options) {
     var settings = $.extend({
@@ -89,10 +76,26 @@
     getSession();
   }
 
-  $(document).ready(function() {
-    $(".klarna_credit_box").klarnaReauthorize({
-      submitButton: $("form#checkout_form_confirm input[type='submit']")
-    });
-  })
+  var addKlarnaCreditLoad = function() {
+    $(document).ready(function() {
+      $(".klarna_credit_box").klarnaReauthorize({
+        submitButton: $("form#checkout_form_confirm input[type='submit']")
+      });
+    })
+  }
 
+</script>
+<script type="text/javascript" id="klarna­credit­lib­x">
+/* <![CDATA[ */
+ (function(w, d) {
+   var url = 'https://credit.klarnacdn.net/lib/v1/api.js';
+    n = d.createElement('script');
+    c = d.getElementById('klarna­credit­lib­x');
+    n.async = !0;
+    n.src = url + '?' + (new Date ()).getTime();
+    c.parentNode.replaceChild(n, c);
+    // klarna-gateway: wait until this file is loaded
+    n.onload = addKlarnaCreditLoad;
+  })(this, document);
+ /* ]]> */
 </script>

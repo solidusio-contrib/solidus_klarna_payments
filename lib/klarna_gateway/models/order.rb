@@ -1,6 +1,6 @@
 module KlarnaGateway
   module Order
-    KLARNA_SESSION_LIFETIME = 60.minutes
+    KLARNA_SESSION_LIFETIME = 48.hours
 
     def update_klarna_session(session_id: nil, client_token: nil)
       self.update_attributes(
