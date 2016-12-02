@@ -79,7 +79,7 @@
       $.ajax({
         method: 'POST',
         url: settings.sessionUrl,
-        dataType: 'json'
+        data: {klarna_payment_method_id: settings.paymentId}
       }).done(function(response) {
         settings.clientToken = response.token
         Klarna.Credit.init ({

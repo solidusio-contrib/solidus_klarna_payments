@@ -50,18 +50,22 @@ module KlarnaGateway
       order.options = klarna_options
       order.skip_personal_data = skip_personal_data
       order.design = klarna_payment_method.preferences[:design]
+      order.store = current_store
       order
     end
 
-    # TODO: hand over the payment method id in case there's more than one Klarna Credit
     def klarna_payment_method
-      @klarna_payment_method ||= Spree::PaymentMethod.where(type: 'Spree::Gateway::KlarnaCredit').last
+      @klarna_payment_method ||= Spree::PaymentMethod.find_by(id: klarna_payment_method_id, type: 'Spree::Gateway::KlarnaCredit')
     end
 
     def klarna_options
       klarna_payment_method.preferences.select do |key, value|
         key.to_s.start_with?("color_", "radius_") && value.present?
       end
+    end
+
+    def klarna_payment_method_id
+      params[:klarna_payment_method_id] || @order.payments.where(source_type: 'Spree::KlarnaCreditPayment').last.payment_method_id
     end
   end
 end
