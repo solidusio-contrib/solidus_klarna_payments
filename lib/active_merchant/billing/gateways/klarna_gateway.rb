@@ -108,8 +108,11 @@ module ActiveMerchant
         if response.success?
           payment_source.klarna_order_id = response.order_id
           payment_source.fraud_status = response.fraud_status
-          payment_source.expires_at = DateTime.now + 2.weeks
           payment_source.redirect_url = response.redirect_url if response.respond_to?(:redirect_url)
+          klarna_order = Klarna.client(:order).get(response.order_id)
+          if klarna_order.success?
+            payment_source.expires_at = klarna_order.expires_at
+          end
         else
           payment_source.error_code = response.error_code
           payment_source.error_messages = response.error_messages
