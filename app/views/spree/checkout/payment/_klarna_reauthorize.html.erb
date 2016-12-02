@@ -32,7 +32,7 @@
     var settings = $.extend({
       submitButton: null,
       orderId: null,
-      sessionUrl: "/checkout/:id/klarna_reauthorize"
+      sessionUrl: "/checkout/state/klarna_order_status"
     }, options);
 
     settings.canvas = this;
@@ -52,7 +52,7 @@
         return;
       }
       $.ajax({
-        method: 'POST',
+        method: 'GET',
         url: settings.sessionUrl,
         dataType: 'json'
       }).done(function(response) {

@@ -101,13 +101,20 @@
 
     // Try to authorize
     var authorize = function (approved, notApproved) {
-      Klarna.Credit.authorize(function(res){
-        if (res.approved === true) {
-          settings.authorizationToken.val(res.authorization_token);
-          approved(res)
-        } else {
-          notApproved(res)
-        }
+      // First get the current, serialized order
+      $.ajax({
+        method: 'GET',
+        url: "/checkout/state/klarna_order_addresses",
+        dataType: 'json'
+      }).done(function(result) {
+        Klarna.Credit.authorize(result, function(res) {
+          if (res.approved === true) {
+            settings.authorizationToken.val(res.authorization_token);
+            approved(res)
+          } else {
+            notApproved(res)
+          }
+        });
       });
     }
 
