@@ -31,16 +31,20 @@ module KlarnaGateway
       end
     end
 
-    def klarna_approve!
-      klarna_payment_provider.acknowledge(self.klarna_order_id)
+    def has_klarna_payments?
+      payments.where(source_type: 'Spree::KlarnaCreditPayment').any?
     end
 
-    def klarna_extend!
-      klarna_payment_provider.extend(self.klarna_order_id)
+    def authorized_klarna_payments
+      payments.where(source_type: 'Spree::KlarnaCreditPayment').find_all do |payment|
+        payment.source.authorized?
+      end
     end
 
-    def klarna_release!
-      klarna_payment_provider.release(self.klarna_order_id)
+    def captured_klarna_payments
+      payments.where(source_type: 'Spree::KlarnaCreditPayment').find_all do |payment|
+        payment.source.captured?
+      end
     end
 
     private

@@ -13,12 +13,16 @@
       </td>
 
       <td class="align-center">
-        <span class="state <%= payment.source.status_icon %>"><%= payment.source.status %></span>
+        Fraud Status: <br/><span class="state <%= payment.source.status_icon %>"><%= payment.source.fraud_status %></span>
+      </td>
+
+      <td class="align-center">
+        Status: <br/><%= payment.source.status %></span>
       </td>
 
       <% if payment.source.accepted? %>
-        <td colspan="3" class="align-center">
-          <%= payment.source.klarna_order_id  %>
+        <td colspan="2" class="align-center">
+          <%= payment.source.order_id  %>
         </td>
         <td colspan="1" class="align-center">
           Expires at: &nbsp; <%= I18n.l(payment.source.expires_at, format: '%Y-%m-%d') if payment.source.expires_at?%>

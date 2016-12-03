@@ -3,13 +3,17 @@ ENV['RAILS_ENV'] = 'test'
 
 require File.expand_path("../dummy/config/environment.rb", __FILE__)
 
+require "database_cleaner"
+require "pry"
+
 require 'spree/core/version'
 require 'rails/all'
 require 'rspec/rails'
 require 'klarna_gateway'
+
 require 'spree/testing_support/factories'
-require "database_cleaner"
-require "pry"
+require 'factories/klarna_payment_factory'
+require 'support/klarna_api_helper'
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods

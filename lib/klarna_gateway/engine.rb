@@ -8,12 +8,17 @@ module KlarnaGateway
 
     config.to_prepare do
       require 'httplog' if Rails.env.development?
-
       Spree::PermittedAttributes.source_attributes << "authorization_token"
+    end
 
-      Spree::Admin::OrdersController.include(KlarnaGateway::Admin::OrdersController)
+    config.after_initialize do
+      if defined?(Spree::Admin)
+        Spree::Admin::OrdersController.include(KlarnaGateway::Admin::OrdersController)
+        Spree::Admin::PaymentsController.include(KlarnaGateway::Admin::PaymentsController)
+      end
       Spree::CheckoutController.include(KlarnaGateway::SessionController)
       Spree::Order.include(KlarnaGateway::Order)
+      Spree::Payment.include(KlarnaGateway::Payment)
     end
   end
 end

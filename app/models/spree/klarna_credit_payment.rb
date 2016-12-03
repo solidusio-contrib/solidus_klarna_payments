@@ -18,11 +18,27 @@ module Spree
     end
 
     def actions
-      %w(capture)
+      %w(refresh capture cancel extend_period release)
+    end
+
+    def can_refresh?(payment)
+      true
+    end
+
+    def can_extend_period?(payment)
+      payment.pending? && authorized? && !expired?
     end
 
     def can_capture?(payment)
-      payment.pending?
+      payment.pending? && authorized?
+    end
+
+    def can_cancel?(payment)
+      payment.pending? && authorized?
+    end
+
+    def can_release?(payment)
+      payment.completed? && part_captured?
     end
 
     def accept!
@@ -51,10 +67,6 @@ module Spree
       self.error_code? && self.error_messages?
     end
 
-    def status
-      self.fraud_status || self.error_code
-    end
-
     def status_icon
       case self.fraud_status
         when "ACCEPTED"
@@ -66,6 +78,35 @@ module Spree
         else
           'void' if error?
       end
+    end
+
+
+    def authorized?
+      self.status.present? && self.status == "AUTHORIZED"
+    end
+
+    def part_captured?
+      self.status.present? && self.status == "PART_CAPTURED"
+    end
+
+    def captured?
+      self.status.present? && self.status.match("CAPTURED")
+    end
+
+    def cancelled?
+      self.status.present? && self.status == "CANCELLED"
+    end
+
+    def expired?
+      self.status.present? && self.status == "EXPIRED"
+    end
+
+    def closed?
+      self.status.present? && self.status == "CLOSED"
+    end
+
+    def expired?
+      self.expires_at? && self.expires_at < DateTime.now
     end
   end
 end

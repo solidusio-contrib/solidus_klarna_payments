@@ -58,4 +58,41 @@ describe KlarnaGateway::Order do
       expect(order.to_klarna).to be_a(Spree::OrderSerializer)
     end
   end
+
+  context "#authorized_klarna_payments" do
+    let(:order) { create(:order) }
+
+    let(:payment) do
+      create(:klarna_payment, order: order).tap do |payment|
+        payment.source.update_attributes(payment_method_id: payment.payment_method.id)
+      end
+    end
+
+    it "returns klarna payments with AUTHORIZED status" do
+      expect(order.payments.count).to eq(0)
+      expect(order.authorized_klarna_payments.count).to eq(0)
+
+      payment && order.reload
+
+      payment.source.update_attributes(status: 'AUTHORIZED')
+      expect(order.authorized_klarna_payments.count).to eq(1)
+    end
+
+    it "returns klarna payements with CAPTURED status" do
+      expect(order.payments.count).to eq(0)
+      expect(order.captured_klarna_payments.count).to eq(0)
+
+      payment && order.reload
+
+      payment.source.update_attributes(status: 'CAPTURED')
+      expect(order.captured_klarna_payments.count).to eq(1)
+
+      payment.source.update_attributes(status: 'PART_CAPTURED')
+      expect(order.captured_klarna_payments.count).to eq(1)
+
+      payment.source.update_attributes(status: 'AUTHORIZED')
+      expect(order.captured_klarna_payments.count).to eq(0)
+    end
+
+  end
 end
