@@ -159,6 +159,16 @@ describe Spree::OrderSerializer do
         expect(discount_lines).to eq(0)
       end
     end
+
+    context "without personal data" do
+      before do
+        serializer.skip_personal_data = true
+      end
+
+      it "excludes the address attributes" do
+        expect(serialized).to_not include(:billing_address, :shipping_address)
+      end
+    end
   end
 
   context "in Germany" do
@@ -169,6 +179,16 @@ describe Spree::OrderSerializer do
 
     it "sets the locale" do
       expect(serialized[:locale]).to eq("de-DE")
+    end
+
+    context "without personal data" do
+      before do
+        serializer.skip_personal_data = true
+      end
+
+      it "excludes the address attributes" do
+        expect(serialized).to_not include(:billing_address, :shipping_address)
+      end
     end
   end
 end

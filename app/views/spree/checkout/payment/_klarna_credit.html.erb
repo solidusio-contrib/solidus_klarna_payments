@@ -18,6 +18,14 @@
     text-align: center;
     padding: 20px;
   }
+  @media only screen and (max-width: 767px) {
+    #klarna_container {
+      padding: 5px;
+    }
+    .klarna_credit_box {
+      margin: -10px;
+    }
+  }
 </style>
 
 <div class="klarna_credit_box" data-order-id="<%= @order.number %>" data-payment-method-id="<%= payment_method.id %>">
@@ -71,7 +79,7 @@
       $.ajax({
         method: 'POST',
         url: settings.sessionUrl,
-        dataType: 'json'
+        data: {klarna_payment_method_id: settings.paymentId}
       }).done(function(response) {
         settings.clientToken = response.token
         Klarna.Credit.init ({
@@ -101,13 +109,20 @@
 
     // Try to authorize
     var authorize = function (approved, notApproved) {
-      Klarna.Credit.authorize(function(res){
-        if (res.approved === true) {
-          settings.authorizationToken.val(res.authorization_token);
-          approved(res)
-        } else {
-          notApproved(res)
-        }
+      // First get the current, serialized order
+      $.ajax({
+        method: 'GET',
+        url: "/checkout/state/klarna_order_addresses",
+        dataType: 'json'
+      }).done(function(result) {
+        Klarna.Credit.authorize(result, function(res) {
+          if (res.approved === true) {
+            settings.authorizationToken.val(res.authorization_token);
+            approved(res)
+          } else {
+            notApproved(res)
+          }
+        });
       });
     }
 

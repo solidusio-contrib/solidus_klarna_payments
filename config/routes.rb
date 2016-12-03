@@ -2,7 +2,8 @@
 Spree::Core::Engine.routes.draw do
 
   post '/checkout/:state/klarna_session', to: 'checkout#klarna_session', as: :checkout_klarna_session
-  post '/checkout/:state/klarna_reauthorize', to: 'checkout#klarna_reauthorize', as: :checkout_klarna_reauthorize
+  get '/checkout/:state/klarna_order_status', to: 'checkout#order_status', as: :checkout_klarna_order_status
+  get '/checkout/:state/klarna_order_addresses', to: 'checkout#order_addresses', as: :checkout_klarna_order_addresses
 
   post '/klarna/notification', to: 'klarna#notification', as: :klarna_notification
 
