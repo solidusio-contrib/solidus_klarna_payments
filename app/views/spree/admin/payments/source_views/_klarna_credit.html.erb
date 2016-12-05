@@ -87,11 +87,11 @@
       </tr>
       <tr>
         <td>Status</td>
-        <td class="align-center"><%= @klarna_order["status"]%> </td>
+        <td class="align-center"><span class="state <%= payment.source.status_icon %>"></span><%= @klarna_order["status"]%> </td>
       </tr>
       <tr>
         <td>Fraud Status</td>
-        <td class="align-center"><%= @klarna_order["fraud_status"]%> </td>
+        <td class="align-center"><span class="state <%= payment.source.fraud_status_icon %>"></span>  <%= @klarna_order["fraud_status"]%> </td>
       </tr>
       <tr>
         <td>Order Amount</td>

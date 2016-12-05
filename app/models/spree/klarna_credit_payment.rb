@@ -67,7 +67,7 @@ module Spree
       self.error_code? && self.error_messages?
     end
 
-    def status_icon
+    def fraud_status_icon
       case self.fraud_status
         when "ACCEPTED"
           'ready'
@@ -77,6 +77,17 @@ module Spree
           'void'
         else
           'void' if error?
+      end
+    end
+
+    def status_icon
+      case self.status
+        when "AUTHORIZED"
+        when "PART_CAPTURED"
+        when "CAPTURED"
+          'ready'
+        else
+          'void'
       end
     end
 

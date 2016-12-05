@@ -8,6 +8,10 @@ module KlarnaGateway
         run 'bundle exec rake railties:install:migrations FROM=klarna_gateway'
       end
 
+      def add_stylesheets
+        inject_into_file 'vendor/assets/stylesheets/spree/backend/all.css', " *= require spree/backend/klarna_gateway\n", before: /\*\//, verbose: true
+      end
+
       def run_migrations
         run_migrations = options[:auto_run_migrations] || ['', 'y', 'Y'].include?(ask 'Would you like to run the migrations now? [Y/n]')
         if run_migrations
@@ -18,4 +22,4 @@ module KlarnaGateway
       end
     end
   end
-end  
+end
