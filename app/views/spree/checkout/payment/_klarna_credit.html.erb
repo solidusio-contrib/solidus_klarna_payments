@@ -113,7 +113,8 @@
       $.ajax({
         method: 'GET',
         url: "/checkout/state/klarna_order_addresses",
-        dataType: 'json'
+        dataType: 'json',
+        data: {klarna_payment_method_id: settings.paymentId}
       }).done(function(result) {
         Klarna.Credit.authorize(result, function(res) {
           if (res.approved === true) {
