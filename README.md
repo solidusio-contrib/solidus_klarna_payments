@@ -20,6 +20,23 @@ Or install it yourself as:
 
     $ gem install klarna_gateway
 
+
+## Documentation
+
+### Javascript API [link](https://credit.klarnacdn.net/lib/v1/index.html)
+
+Api descrpition for Frontend JS implementation.
+
+### Credit API [link](https://developers.klarna.com/api/)
+
+Api descrpition for Backend implementation.
+
+### Klarna Developers Portal [link](https://developers.klarna.com/)
+
+General description of Klarna payment solutions.
+
+
+
 ## Usage
 
 TODO: Write usage instructions here

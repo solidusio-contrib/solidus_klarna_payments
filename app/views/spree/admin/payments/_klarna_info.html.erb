@@ -1,0 +1,42 @@
+<style type="text/css">
+  .header {
+    background-color: #0074C8;
+    color: white;
+    padding: 5px;
+  }
+</style>
+
+<% if payment.source.brand == :klarna_credit %>
+    <tr id="<%= payment.id %>">
+      <td colspan="1" class="header">
+        <img src="https://www.klarna.com/application/files/3114/5674/1539/Klarna-white-RGB.svg" width="80px">
+      </td>
+
+      <td colspan="2" class="align-center">
+        Fraud Status: <br/>
+        <span class="state <%= payment.source.fraud_status_icon %>">
+          <%= payment.source.fraud_status %>
+        </span>
+      </td>
+
+      <td colspan="2" class="align-center">
+        Status: <br/>
+        <span class="state <%= payment.source.status_icon %>">
+          <%= payment.source.status %>
+        </span>
+      </td>
+
+      <% if payment.source.accepted? %>
+        <td colspan="1" class="align-center">
+          Expires at: &nbsp; <%= I18n.l(payment.source.expires_at, format: '%Y-%m-%d') if payment.source.expires_at?%>
+        </td>
+      <% elsif payment.source.error? %>
+        <td colspan="2" class="align-center" class="with-tip" title="<%= payment.source.error_messages %>">
+          Error (<%= icon('fa fa-expand')%>)
+        </td>
+        <td colspan="1" class="align-center">
+          At: <%= I18n.l(payment.updated_at, format: '%Y-%m-%d') %>
+        </td>
+      <% end %>
+    </tr>
+<% end %>

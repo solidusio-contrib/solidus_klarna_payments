@@ -1,12 +1,13 @@
+require "spree_core"
+require "spree_frontend"
+
+require "klarna_gateway/engine"
 require "klarna_gateway/version"
+
 require "active_merchant/billing/gateways/klarna_gateway"
 
-module KlarnaGateway
-  class Engine < Rails::Engine
-    engine_name 'klarna_gateway'
-
-    initializer "spree.klarna_gateway.payment_methods", :after => "spree.register.payment_methods" do |app|
-        app.config.spree.payment_methods << Spree::Gateway::KlarnaCredit
-    end
-  end
-end
+require "klarna_gateway/models/order"
+require "klarna_gateway/models/payment"
+require "klarna_gateway/controllers/session_controller"
+require "klarna_gateway/controllers/admin/orders_controller"
+require "klarna_gateway/controllers/admin/payments_controller"
