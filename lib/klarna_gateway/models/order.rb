@@ -24,13 +24,6 @@ module KlarnaGateway
       KlarnaGateway::OrderSerializer.new(self.reload, country)
     end
 
-    def klarna_order
-      response = klarna_payment_provider.get(self.klarna_order_id)
-      if response.success?
-        response.body
-      end
-    end
-
     def has_klarna_payments?
       payments.where(source_type: 'Spree::KlarnaCreditPayment').any?
     end

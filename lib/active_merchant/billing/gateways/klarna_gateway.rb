@@ -154,7 +154,10 @@ module ActiveMerchant
       end
 
       def update_payment_source!(payment_source, klarna_order_id)
-        update_payment_source(payment_source, klarna_order_id).save
+        update_payment_source(payment_source, klarna_order_id).tap do |order|
+          order.save!
+          order
+        end
       end
     end
   end

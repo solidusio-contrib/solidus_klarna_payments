@@ -5,6 +5,10 @@ module KlarnaGateway
       delegate :can_refresh?, :can_extend_period?, :can_capture?, :can_cancel?, :can_release?, to: :source
     end
 
+    def klarna_order
+      provider.get(klarna_order_id).body
+    end
+
     def refresh!
       provider.get_and_update_source(klarna_order_id)
     end
@@ -24,6 +28,10 @@ module KlarnaGateway
     def cancel!
       provider.cancel(klarna_order_id)
       void!
+    end
+
+    def is_klarna?
+      source && source.brand == :klarna_credit
     end
 
     private

@@ -80,6 +80,29 @@ module KlarnaApiHelper
 
     let(:api_client) { double('KlarnaApi') }
 
+    let(:order) { create(:order) }
+
+    let(:klarna_order) do
+      order.tap do |order|
+        order.payments << payment
+        order.save!
+      end
+    end
+
+    let(:check_order) do
+      order.tap do |order|
+        order.payments << create(:check_payment)
+        order.save!
+      end
+    end
+
+    let(:credit_card_order) do
+      order.tap do |order|
+        order.payments << create(:credit_card_payment)
+        order.save!
+      end
+    end
+
     yield
   end
 end
