@@ -33,7 +33,11 @@ module KlarnaApiHelper
 
     let(:klarna_order_response) {
       a_successful_response.call double('ApiResponse',
-        body: {},
+        body: {
+          order_id: 1234,
+          fraud_status: "ACCEPTED",
+          status: "AUTHORIZED"
+        },
         order_id: 1234,
         fraud_status: "ACCEPTED",
         status: "AUTHORIZED",

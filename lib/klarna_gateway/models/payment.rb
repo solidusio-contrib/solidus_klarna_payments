@@ -31,7 +31,7 @@ module KlarnaGateway
     end
 
     def is_klarna?
-      source && source.brand == :klarna_credit
+      source.present? && source.brand == :klarna_credit
     end
 
     private
