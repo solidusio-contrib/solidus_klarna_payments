@@ -1,101 +1,103 @@
-<style type="text/css">
-  .align-center {
-    width: 100%;
-    text-align: center;
-  }
+<% if @order.has_klarna_payments? %>
+  <style type="text/css">
+    .align-center {
+      width: 100%;
+      text-align: center;
+    }
 
-  .hiddden {
-    display: none;
-  }
-</style>
+    .hiddden {
+      display: none;
+    }
+  </style>
 
-<div class="klarna_credit_box"
-  data-order-id="<%= @order.number %>"
-  data-order-session-id="">
-  <fieldset id="order_details">
+  <div class="klarna_credit_box"
+    data-order-id="<%= @order.number %>"
+    data-order-session-id="">
+    <fieldset id="order_details">
 
-    <div class="clear"></div>
-    <legend align="center">Payment Verification</legend>
-    <div class="row">
-      <div class="align-center">
-        <span class="spiner"><img src="/assets/spinner.gif" /></span>
+      <div class="clear"></div>
+      <legend align="center">Payment Verification</legend>
+      <div class="row">
+        <div class="align-center">
+          <span class="spiner"><img src="/assets/spinner.gif" /></span>
+        </div>
       </div>
-    </div>
-  </fieldset>
-</div>
+    </fieldset>
+  </div>
 
-<div class="clear"></div>
-</br>
+  <div class="clear"></div>
+  </br>
 
-<script type="text/javascript">
-  $.fn.klarnaReauthorize = function(options) {
-    var settings = $.extend({
-      submitButton: null,
-      orderId: null,
-      sessionUrl: "/checkout/state/klarna_order_status"
-    }, options);
+  <script type="text/javascript">
+    $.fn.klarnaReauthorize = function(options) {
+      var settings = $.extend({
+        submitButton: null,
+        orderId: null,
+        sessionUrl: "/checkout/state/klarna_order_status"
+      }, options);
 
-    settings.canvas = this;
+      settings.canvas = this;
 
-    if (!settings.orderId && this.data('orderId') !== undefined) {
-      settings.orderId = this.data('orderId');
-      settings.paymentUrl = "/checkout/payment"
-    }
-
-    if (settings.submitButton) {
-      settings.submitCanvas = settings.submitButton.parent().hide();
-    }
-
-    // Get a session from the backend and load the form
-    var getSession = function () {
-      if (settings.clientToken) {
-        return;
+      if (!settings.orderId && this.data('orderId') !== undefined) {
+        settings.orderId = this.data('orderId');
+        settings.paymentUrl = "/checkout/payment"
       }
-      $.ajax({
-        method: 'GET',
-        url: settings.sessionUrl,
-        dataType: 'json'
-      }).done(function(response) {
-        if (response.status) {
-          Klarna.Credit.init ({
-            client_token: response.token
-          });
 
-          delete response.data.merchant_urls;
+      if (settings.submitButton) {
+        settings.submitCanvas = settings.submitButton.parent().hide();
+      }
 
-          Klarna.Credit.reauthorize(response.data, function(response) {
-            settings.canvas.hide();
-            settings.submitCanvas.show();
-          });
-        } else {
-          window.location.assign(settings.paymentUrl)
+      // Get a session from the backend and load the form
+      var getSession = function () {
+        if (settings.clientToken) {
+          return;
         }
-      });
+        $.ajax({
+          method: 'GET',
+          url: settings.sessionUrl,
+          dataType: 'json'
+        }).done(function(response) {
+          if (response.status) {
+            Klarna.Credit.init ({
+              client_token: response.token
+            });
+
+            delete response.data.merchant_urls;
+
+            Klarna.Credit.reauthorize(response.data, function(response) {
+              settings.canvas.hide();
+              settings.submitCanvas.show();
+            });
+          } else {
+            window.location.assign(settings.paymentUrl)
+          }
+        });
+      }
+
+      getSession();
     }
 
-    getSession();
-  }
+    var addKlarnaCreditLoad = function() {
+      $(document).ready(function() {
+        $(".klarna_credit_box").klarnaReauthorize({
+          submitButton: $("form#checkout_form_confirm input[type='submit']")
+        });
+      })
+    }
 
-  var addKlarnaCreditLoad = function() {
-    $(document).ready(function() {
-      $(".klarna_credit_box").klarnaReauthorize({
-        submitButton: $("form#checkout_form_confirm input[type='submit']")
-      });
-    })
-  }
-
-</script>
-<script type="text/javascript" id="klarna­credit­lib­x">
-/* <![CDATA[ */
- (function(w, d) {
-   var url = 'https://credit.klarnacdn.net/lib/v1/api.js';
-    n = d.createElement('script');
-    c = d.getElementById('klarna­credit­lib­x');
-    n.async = !0;
-    n.src = url + '?' + (new Date ()).getTime();
-    c.parentNode.replaceChild(n, c);
-    // klarna-gateway: wait until this file is loaded
-    n.onload = addKlarnaCreditLoad;
-  })(this, document);
- /* ]]> */
-</script>
+  </script>
+  <script type="text/javascript" id="klarna­credit­lib­x">
+  /* <![CDATA[ */
+   (function(w, d) {
+     var url = 'https://credit.klarnacdn.net/lib/v1/api.js';
+      n = d.createElement('script');
+      c = d.getElementById('klarna­credit­lib­x');
+      n.async = !0;
+      n.src = url + '?' + (new Date ()).getTime();
+      c.parentNode.replaceChild(n, c);
+      // klarna-gateway: wait until this file is loaded
+      n.onload = addKlarnaCreditLoad;
+    })(this, document);
+   /* ]]> */
+  </script>
+<% end %>
