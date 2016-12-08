@@ -27,7 +27,7 @@ module KlarnaGateway
 
     def config
       {
-        purchase_country: order.billing_address.try(:country).try(:iso) || region,
+        purchase_country: purchase_country,
         purchase_currency: order.currency,
         locale: strategy.locale(region),
         # amount with taxes and adjustments
@@ -40,6 +40,12 @@ module KlarnaGateway
         design: design,
         merchant_urls: merchant_urls
       }.delete_if { |k, v| v.nil? }
+    end
+
+    def purchase_country
+      order.billing_address.try(:country).try(:iso) ||
+        order.shipping_address.try(:country).try(:iso) ||
+        region
     end
 
     def order_lines
