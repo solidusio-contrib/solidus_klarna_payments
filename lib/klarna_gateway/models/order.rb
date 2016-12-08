@@ -21,7 +21,7 @@ module KlarnaGateway
     end
 
     def to_klarna(country=:us)
-      Spree::OrderSerializer.new(self.reload, country)
+      KlarnaGateway::OrderSerializer.new(self.reload, country)
     end
 
     def klarna_order

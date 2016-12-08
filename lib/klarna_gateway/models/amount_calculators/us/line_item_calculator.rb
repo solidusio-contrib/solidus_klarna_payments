@@ -1,4 +1,4 @@
-module Spree
+module KlarnaGateway
   module AmountCalculators::US
     class LineItemCalculator
       def adjust_with(line_item)

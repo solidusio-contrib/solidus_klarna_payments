@@ -9,7 +9,7 @@ module ActiveMerchant
         # authorize(amount, payment_source, options={})
         context "On authorize" do
           before :each do
-            expect(Spree::OrderSerializer).to receive(:new).once.and_return({})
+            expect(::KlarnaGateway::OrderSerializer).to receive(:new).once.and_return({})
           end
 
           it "update payment status to AUTHORIZED when order is authorized" do

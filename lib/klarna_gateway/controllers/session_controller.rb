@@ -34,8 +34,8 @@ module KlarnaGateway
 
     def order_addresses
       addresses = {
-        billing_address: Spree::AddressSerializer.new(@order.billing_address).to_hash,
-        shipping_address: Spree::AddressSerializer.new(@order.shipping_address).to_hash
+        billing_address: KlarnaGateway::AddressSerializer.new(@order.billing_address).to_hash,
+        shipping_address: KlarnaGateway::AddressSerializer.new(@order.shipping_address).to_hash
       }
       addresses.update(addresses) do |k,v|
         {email: @order.email}.merge(v)

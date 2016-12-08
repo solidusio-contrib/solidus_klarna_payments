@@ -44,7 +44,7 @@ module ActiveMerchant
         # TODO: check if we get a better handle for the order
         order = Spree::Order.find_by(number: options[:order_id].split("-").first)
         region = payment_source.payment_method.preferences[:country]
-        serializer = Spree::OrderSerializer.new(order, region)
+        serializer = ::KlarnaGateway::OrderSerializer.new(order, region)
 
         response = Klarna.client(:credit).place_order(payment_source.authorization_token, serializer.to_hash)
         update_payment_source_from_authorization(payment_source, response, order)

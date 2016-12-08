@@ -1,4 +1,4 @@
-module Spree
+module KlarnaGateway
   class ShipmentSerializer
     attr_reader :shipment, :strategy
 

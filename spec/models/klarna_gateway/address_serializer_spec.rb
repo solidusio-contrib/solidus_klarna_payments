@@ -1,7 +1,7 @@
 require "spec_helper.rb"
 
-describe Spree::AddressSerializer do
-  let(:serializer) { Spree::AddressSerializer.new(address) }
+describe KlarnaGateway::AddressSerializer do
+  let(:serializer) { KlarnaGateway::AddressSerializer.new(address) }
   subject(:serialized) { serializer.to_hash }
   let(:address) { Spree::Address.new(state: state, country: build(:country)) }
   let(:state) { build(:state) }
