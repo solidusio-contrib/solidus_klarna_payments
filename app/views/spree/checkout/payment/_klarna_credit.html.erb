@@ -85,8 +85,9 @@
         Klarna.Credit.init ({
           client_token: response.token
         });
-
-        loadKlarnaForm();
+        if (klarnaSelected()) {
+          loadKlarnaForm();
+        }
       });
     }
 
@@ -139,7 +140,7 @@
     settings.paymentChangedElements.on('change', function(e) {
       // check if Klarna Credit is selected
       if (klarnaSelected()) {
-        initSession();
+        loadKlarnaForm();
       }
     })
 
@@ -156,6 +157,7 @@
       }
     });
 
+    initSession();
     return this;
   };
 
