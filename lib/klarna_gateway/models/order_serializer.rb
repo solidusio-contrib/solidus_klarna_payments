@@ -99,13 +99,14 @@ module KlarnaGateway
         # shipping_option_update: "string",
         # address_update: "string",
         # country_change: "string",
-        confirmation: url_helpers.order_url(@order.number, host: store.url),
-        notification: url_helpers.klarna_notification_url(host: store.url)
+        confirmation: url_helpers.order_url(@order.number, host: store_url),
+        notification: url_helpers.klarna_notification_url(host: store_url)
       }
     end
 
-    def store
-      @store || Spree::Store.first
+    def store_url
+      store = @store || Spree::Store.try(:default) || Spree::Store.first
+      store.url.to_s.split("\n").first
     end
 
     def url_helpers
