@@ -1,14 +1,14 @@
 require 'spec_helper.rb'
 require 'byebug'
 
-describe Spree::LineItemSerializer do
+describe KlarnaGateway::LineItemSerializer do
   let(:order) { create(:order_with_line_items, line_items_count: 3) }
   let(:serialized) { serializer.to_hash }
-  subject(:serializer) { Spree::LineItemSerializer.new(line_item, calculator) }
+  subject(:serializer) { KlarnaGateway::LineItemSerializer.new(line_item, calculator) }
   let(:line_item) { order.line_items.first }
 
   context "in the UK" do
-    let(:calculator) { Spree::AmountCalculators::UK::LineItemCalculator.new }
+    let(:calculator) { KlarnaGateway::AmountCalculators::UK::LineItemCalculator.new }
     let(:region) { :us }
     let!(:uk) { create(:country, name: "United Kingdom") }
     let(:uk_zone) { create(:global_zone, default_tax: true) }

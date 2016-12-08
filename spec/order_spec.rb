@@ -55,7 +55,7 @@ describe KlarnaGateway::Order do
 
   context "#to_klarna_hash" do
     it "returns a serialized hash for klarna" do
-      expect(order.to_klarna).to be_a(Spree::OrderSerializer)
+      expect(order.to_klarna).to be_a(KlarnaGateway::OrderSerializer)
     end
   end
 

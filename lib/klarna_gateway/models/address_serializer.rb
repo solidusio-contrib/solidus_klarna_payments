@@ -1,12 +1,13 @@
-module Spree
+module KlarnaGateway
   class AddressSerializer
     attr_reader :address
 
-    def initialize(address)
-      @address = address
+    def initialize(the_address = nil)
+      @address = the_address
     end
 
     def to_hash
+      return {} if address.nil?
       {
         organization_name: address.company,
         given_name: address.first_name,
@@ -16,7 +17,7 @@ module Spree
         postal_code: address.zipcode,
         city: address.city,
         region: address.state.try(:name),
-        phone: address.phone,
+        phone: address.phone.to_s.gsub(/^\+1/, ""),
         country: address.country.iso
       }
     end

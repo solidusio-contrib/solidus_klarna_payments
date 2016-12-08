@@ -1,4 +1,4 @@
-module Spree
+module KlarnaGateway
   class OrderSerializer
     attr_reader :order, :region
     attr_accessor :options, :design, :skip_personal_data
@@ -27,7 +27,7 @@ module Spree
 
     def config
       {
-        purchase_country: order.billing_address.country.iso,
+        purchase_country: purchase_country,
         purchase_currency: order.currency,
         locale: strategy.locale(region),
         # amount with taxes and adjustments
@@ -40,6 +40,12 @@ module Spree
         design: design,
         merchant_urls: merchant_urls
       }.delete_if { |k, v| v.nil? }
+    end
+
+    def purchase_country
+      order.billing_address.try(:country).try(:iso) ||
+        order.shipping_address.try(:country).try(:iso) ||
+        region
     end
 
     def order_lines
@@ -59,6 +65,7 @@ module Spree
     end
 
     def billing_address
+      return shipping_address if order.billing_address.nil?
       {
         email: @order.email
       }.merge(
@@ -67,6 +74,7 @@ module Spree
     end
 
     def shipping_address
+      return nil if order.shipping_address.nil?
       {
         email: @order.email
       }.merge(
@@ -76,28 +84,29 @@ module Spree
 
     def strategy
       @strategy ||= case region
-        when :us then Spree::AmountCalculators::US::OrderCalculator.new
-        else Spree::AmountCalculators::UK::OrderCalculator.new(skip_personal_data)
+        when :us then KlarnaGateway::AmountCalculators::US::OrderCalculator.new
+        else KlarnaGateway::AmountCalculators::UK::OrderCalculator.new(skip_personal_data)
         end
     end
 
     def merchant_urls
       {
         # TODO: use the current store url
-        # terms: "http://#{Spree::Store.first.url}/terms",
-        # checkout: "http://#{Spree::Store.first.url}/orders/#{@order.number}",
-        # push: "http://#{Spree::Store.first.url}/klarna/push",
+        # terms: "http://host/terms",
+        # checkout: "http://host/orders/#{@order.number}",
+        # push: "http://host/klarna/push",
         # validation: "string",
         # shipping_option_update: "string",
         # address_update: "string",
         # country_change: "string",
-        confirmation: url_helpers.order_url(@order.number, host: store.url),
-        notification: url_helpers.klarna_notification_url(host: store.url)
+        confirmation: url_helpers.order_url(@order.number, host: store_url),
+        notification: url_helpers.klarna_notification_url(host: store_url)
       }
     end
 
-    def store
-      @store || Spree::Store.first
+    def store_url
+      store = @store || Spree::Store.try(:default) || Spree::Store.first
+      store.url.to_s.split("\n").first
     end
 
     def url_helpers

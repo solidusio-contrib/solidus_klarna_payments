@@ -1,4 +1,4 @@
-module Spree
+module KlarnaGateway
   module AmountCalculators::UK
     class ShipmentCalculator
       def adjust_with(shipment)

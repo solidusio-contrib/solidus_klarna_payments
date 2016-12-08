@@ -1,4 +1,4 @@
-module Spree
+module KlarnaGateway
   class LineItemSerializer
     attr_reader :line_item, :strategy
 

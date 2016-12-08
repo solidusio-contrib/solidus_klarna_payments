@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::OrderSerializer do
+describe KlarnaGateway::OrderSerializer do
   let(:order) { create(:order_with_line_items, line_items_count: 3) }
   let(:overbooked_order) do
     create(:order_with_line_items, line_items_count: 3).tap do |order|
@@ -10,7 +10,7 @@ describe Spree::OrderSerializer do
       Spree::OrderUpdater.new(order).update
     end.reload
   end
-  subject(:serializer) { Spree::OrderSerializer.new(order, region) }
+  subject(:serializer) { KlarnaGateway::OrderSerializer.new(order, region) }
   let(:serialized) { serializer.to_hash }
 
   context "in the US" do
@@ -33,7 +33,7 @@ describe Spree::OrderSerializer do
     end
 
     it "has multiple lines of shipping fees" do
-      serialized = Spree::OrderSerializer.new(overbooked_order, region).to_hash
+      serialized = KlarnaGateway::OrderSerializer.new(overbooked_order, region).to_hash
       shipping_lines = serialized[:order_lines].count { |l| l[:type] == "shipping_fee" }
       expect(shipping_lines).to eq(overbooked_order.shipments.count)
     end

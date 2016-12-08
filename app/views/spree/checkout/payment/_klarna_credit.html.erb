@@ -53,30 +53,30 @@
 </script>
 
 <script type="text/javascript">
+  window.addEventListener('load', function() {
   $.fn.klarna = function(options) {
     var settings = $.extend({
       paymentChangedElements: $('input[name="order[payments_attributes][][payment_method_id]"]'),
       paymentId: null,
-      sessionUrl: "/checkout/:id/klarna_session",
+      sessionUrl: null,
       submitButton: $('form.edit_order :submit'),
       orderId: null
     }, options);
 
     if (!settings.orderId && this.data('orderId') !== undefined) {
       settings.orderId = this.data('orderId');
+      settings.sessionUrl = Spree.url(Spree.pathFor("/checkout/" + settings.orderId + "/klarna_session"))
     }
 
     if (settings.paymentId === null) {
       settings.paymentId = $(this).data('payment-method-id');
     }
 
-    settings.sessionUrl = settings.sessionUrl.replace(":id",settings.orderId);
-
     settings.authorizationToken = $('#klarna_authorization_token', this);
 
     // Get a session from the backend and load the form
     var initSession = function() {
-      $.ajax({
+      Spree.ajax({
         method: 'POST',
         url: settings.sessionUrl,
         data: {klarna_payment_method_id: settings.paymentId}
@@ -85,8 +85,9 @@
         Klarna.Credit.init ({
           client_token: response.token
         });
-
-        loadKlarnaForm();
+        if (klarnaSelected()) {
+          loadKlarnaForm();
+        }
       });
     }
 
@@ -110,9 +111,9 @@
     // Try to authorize
     var authorize = function (approved, notApproved) {
       // First get the current, serialized order
-      $.ajax({
+      Spree.ajax({
         method: 'GET',
-        url: "/checkout/state/klarna_order_addresses",
+        url: Spree.url(Spree.pathFor("/checkout/state/klarna_order_addresses")),
         dataType: 'json',
         data: {klarna_payment_method_id: settings.paymentId}
       }).done(function(result) {
@@ -133,17 +134,17 @@
 
     // Revert Spree's disableSaveOnClick when authorization is denied
     var enableSaveOnClick = function() {
-      $('form.edit_order').find(':submit, :image').attr('disabled', false).addClass('primary').addClass('disabled')
+      $('#checkout_form_payment').find(':submit, :image').attr('disabled', false).addClass('primary').addClass('disabled')
     }
 
     settings.paymentChangedElements.on('change', function(e) {
       // check if Klarna Credit is selected
       if (klarnaSelected()) {
-        initSession();
+        loadKlarnaForm();
       }
     })
 
-    $('form.edit_order').on('submit', function (e) {
+    $('#checkout_form_payment').on('submit', function (e) {
       var form = this;
       if (klarnaSelected()) {
         e.preventDefault();
@@ -156,8 +157,10 @@
       }
     });
 
+    initSession();
     return this;
   };
 
   $(".klarna_credit_box").klarna();
+  });
 </script>

@@ -1,4 +1,4 @@
-module Spree
+module KlarnaGateway
   module AmountCalculators::UK
     # The UK store expects tax amounts directly on the line items.
     class OrderCalculator
@@ -24,11 +24,11 @@ module Spree
       end
 
       def line_item_strategy
-        Spree::AmountCalculators::UK::LineItemCalculator.new
+        KlarnaGateway::AmountCalculators::UK::LineItemCalculator.new
       end
 
       def shipment_strategy
-        Spree::AmountCalculators::UK::ShipmentCalculator.new
+        KlarnaGateway::AmountCalculators::UK::ShipmentCalculator.new
       end
 
       def locale(region)
