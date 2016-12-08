@@ -53,6 +53,7 @@
 </script>
 
 <script type="text/javascript">
+  window.addEventListener('load', function() {
   $.fn.klarna = function(options) {
     var settings = $.extend({
       paymentChangedElements: $('input[name="order[payments_attributes][][payment_method_id]"]'),
@@ -143,7 +144,7 @@
       }
     })
 
-    $('form.edit_order').on('submit', function (e) {
+    $('#checkout_form_payment').on('submit', function (e) {
       var form = this;
       if (klarnaSelected()) {
         e.preventDefault();
@@ -160,4 +161,5 @@
   };
 
   $(".klarna_credit_box").klarna();
+  });
 </script>
