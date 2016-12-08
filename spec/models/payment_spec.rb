@@ -39,7 +39,7 @@ describe KlarnaGateway::Payment do
 
     context "#extend_period!" do
       it "calls the api to extend credit authorization period" do
-        expect(payment.send(:provider)).to receive(:extend).with(payment.source.order_id).and_return(true)
+        expect(payment.send(:provider)).to receive(:extend_period).with(payment.source.order_id).and_return(true)
         payment.extend_period!
       end
     end

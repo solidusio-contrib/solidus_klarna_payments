@@ -14,19 +14,27 @@ module KlarnaGateway
     end
 
     def approve!
-      provider.acknowledge(klarna_order_id)
+      provider.acknowledge(klarna_order_id).tap do |response|
+        log_entries.create!(details: response.to_yaml)
+      end
     end
 
     def extend_period!
-      provider.extend(klarna_order_id)
+      provider.extend_period(klarna_order_id).tap do |response|
+        log_entries.create!(details: response.to_yaml)
+      end
     end
 
     def release!
-      provider.release(klarna_order_id)
+      provider.release(klarna_order_id).tap do |response|
+        log_entries.create!(details: response.to_yaml)
+      end
     end
 
     def cancel!
-      provider.cancel(klarna_order_id)
+      provider.cancel(klarna_order_id).tap do |response|
+        log_entries.create!(details: response.to_yaml)
+      end
       void!
     end
 

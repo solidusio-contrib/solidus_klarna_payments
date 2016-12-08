@@ -2,14 +2,7 @@ module KlarnaGateway
   module Admin
     module OrdersController
       def self.included(base)
-        # TODO: only on klarna_session (maybe even not there)
-        base.skip_action_callback(:ensure_valid_state)
         base.before_action(:check_klarna_payment_cancel, only: [:cancel])
-      end
-
-      def approve
-        @order.klarna_approve!
-        super
       end
 
       private
