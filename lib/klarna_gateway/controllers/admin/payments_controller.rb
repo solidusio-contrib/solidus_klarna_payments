@@ -8,7 +8,9 @@ module KlarnaGateway
       private
 
       def find_klarna_order
-        @klarna_order = @order.klarna_order
+        if @payment.is_klarna?
+          @klarna_order = @payment.klarna_order
+        end
       end
     end
   end

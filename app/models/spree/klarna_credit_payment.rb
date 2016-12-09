@@ -5,6 +5,8 @@ module Spree
     belongs_to :order, class_name: Spree::Order, foreign_key: 'spree_order_id'
     serialize :response_body, Hash
 
+    scope :with_payment_profile, -> { where(false) }
+
     def imported
       false
     end

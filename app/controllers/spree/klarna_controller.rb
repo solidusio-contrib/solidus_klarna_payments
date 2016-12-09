@@ -17,7 +17,7 @@ module Spree
     end
 
     def push
-      binding.pry
+      render text: "ok"
     end
   end
 end

@@ -51,9 +51,24 @@ module ActiveMerchant
         update_order(response, order)
 
         if response.success?
-          ActiveMerchant::Billing::Response.new(true, "Placed order #{order.number} Klara id: #{payment_source.spree_order_id}", {}, authorization: response.order_id)
+          ActiveMerchant::Billing::Response.new(
+            true,
+            "Placed order #{order.number} Klarna id: #{payment_source.order_id}",
+            response.body,
+            {
+              authorization: response.order_id,
+              fraud_review: payment_source.fraud_status
+            }
+          )
         else
-          ActiveMerchant::Billing::Response.new(false, 'Klarna Gateway: Please check your payment method.', {}, { error_code: response.error_code, message: 'Klarna Gateway: Please check your payment method.' })
+          ActiveMerchant::Billing::Response.new(
+            false,
+            'Klarna Gateway: Please check your payment method.',
+            response.body,
+            {
+              error_code: response.error_code
+            }
+          )
         end
       end
 
@@ -62,9 +77,20 @@ module ActiveMerchant
 
         if response.success?
           update_payment_source!(Spree::KlarnaCreditPayment.find_by(order_id: order_id), order_id)
-          ActiveMerchant::Billing::Response.new(true, "Captured order #{order_id}", {})
+          ActiveMerchant::Billing::Response.new(
+            true,
+            "Captured order with Klarna id:  #{order_id}",
+            response.body || {}
+          )
         else
-          ActiveMerchant::Billing::Response.new(false, 'Klarna Gateway: There was an error processing this payment.', {}, { error_code: response.error_code, message: response.error_message })
+          ActiveMerchant::Billing::Response.new(
+            false,
+            'Klarna Gateway: There was an error processing this payment.',
+            response.body || {},
+            {
+              error_code: response.error_code
+            }
+          )
         end
       end
 
@@ -73,11 +99,22 @@ module ActiveMerchant
 
         if response.success?
           update_payment_source!(Spree::KlarnaCreditPayment.find_by(order_id: order_id), order_id)
-          ActiveMerchant::Billing::Response.new(true, "Refund #{order_id}", {})
+          ActiveMerchant::Billing::Response.new(
+            true,
+            "Refunded order with Klarna id: #{order_id}",
+            response.body || {}
+          )
         else
-          ActiveMerchant::Billing::Response.new(false, 'Klarna Gateway: There was an error refunding this payment.', {}, { error_code: response.error_code, message: response.error_message })
+          ActiveMerchant::Billing::Response.new(
+            false,
+            'Klarna Gateway: There was an error refunding this payment.',
+            response.body || {},
+            { error_code: response.error_code }
+          )
         end
       end
+
+
       alias_method :credit, :refund
 
       def get(order_id)
@@ -85,15 +122,69 @@ module ActiveMerchant
       end
 
       def acknowledge(order_id)
-        Klarna.client.acknowledge(order_id)
+        response = Klarna.client.acknowledge(order_id)
+
+        if response.success?
+          update_payment_source!(Spree::KlarnaCreditPayment.find_by(order_id: order_id), order_id)
+          ActiveMerchant::Billing::Response.new(
+            true,
+            "Extended Period for order with Klarna id: #{order_id}",
+            response.body || {}
+          )
+        else
+          ActiveMerchant::Billing::Response.new(
+            false,
+            'Klarna Gateway: There was an error processing this payment.',
+            response.body || {},
+            {
+              error_code: response.error_code
+            }
+          )
+        end
       end
 
-      def extend(order_id)
-        Klarna.client.extend(order_id)
+      def extend_period(order_id)
+        response = Klarna.client.extend(order_id)
+
+        if response.success?
+          update_payment_source!(Spree::KlarnaCreditPayment.find_by(order_id: order_id), order_id)
+          ActiveMerchant::Billing::Response.new(
+            true,
+            "Extended Period for order with Klarna id: #{order_id}",
+            response.body || {}
+          )
+        else
+          ActiveMerchant::Billing::Response.new(
+            false,
+            'Klarna Gateway: There was an error processing this payment.',
+            response.body || {},
+            {
+              error_code: response.error_code
+            }
+          )
+        end
       end
 
       def release(order_id)
-        Klarna.client.release(order_id)
+        response = Klarna.client.release(order_id)
+
+        if response.success?
+          update_payment_source!(Spree::KlarnaCreditPayment.find_by(order_id: order_id), order_id)
+          ActiveMerchant::Billing::Response.new(
+            true,
+            "Captured order with Klarna id: #{order_id}",
+            response.body || {}
+          )
+        else
+          ActiveMerchant::Billing::Response.new(
+            false,
+            'Klarna Gateway: There was an error processing this payment.',
+            response.body || {},
+            {
+              error_code: response.error_code
+            }
+          )
+        end
       end
 
       def cancel(order_id)
@@ -101,9 +192,19 @@ module ActiveMerchant
 
         if response.success?
           update_payment_source!(Spree::KlarnaCreditPayment.find_by(order_id: order_id), order_id)
-          ActiveMerchant::Billing::Response.new(true, "Refund #{order_id}", {})
+          ActiveMerchant::Billing::Response.new(
+            true,
+            "Cancelled order with Klarna id: #{order_id}",
+            response.body || {},
+            {}
+          )
         else
-          ActiveMerchant::Billing::Response.new(false, 'Klarna Gateway: There was an error refunding this payment.', {}, { error_code: response.error_code, message: response.error_message })
+          ActiveMerchant::Billing::Response.new(
+            false,
+            'Klarna Gateway: There was an error refunding this payment.',
+            response.body || {},
+            { error_code: response.error_code }
+          )
         end
       end
 
@@ -154,7 +255,10 @@ module ActiveMerchant
       end
 
       def update_payment_source!(payment_source, klarna_order_id)
-        update_payment_source(payment_source, klarna_order_id).save
+        update_payment_source(payment_source, klarna_order_id).tap do |order|
+          order.save!
+          order
+        end
       end
     end
   end
