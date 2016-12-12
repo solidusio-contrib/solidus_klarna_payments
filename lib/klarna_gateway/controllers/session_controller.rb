@@ -2,8 +2,7 @@ module KlarnaGateway
   # TODO: pull this out of the checkout controller
   module SessionController
     def self.included(base)
-      # TODO: only on klarna_session (maybe even not there)
-      base.skip_action_callback(:ensure_valid_state)
+      base.skip_before_action(:ensure_valid_state, only: [:klarna_session, :order_status, :order_addresses])
     end
 
     def klarna_session
