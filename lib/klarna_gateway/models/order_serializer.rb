@@ -1,8 +1,7 @@
 module KlarnaGateway
   class OrderSerializer
     attr_reader :order, :region
-    attr_accessor :options, :design, :skip_personal_data
-    attr_writer :store
+    attr_accessor :options, :design, :skip_personal_data, :store
 
     def initialize(order, region = :us)
       @order = order
@@ -100,20 +99,19 @@ module KlarnaGateway
         # country_change: "string",
         confirmation: confirmation_url,
         notification: url_helpers.klarna_notification_url(host: store_url)
-      }
+      } if store.present?
     end
 
     def confirmation_url
       configured_url = KlarnaGateway.configuration.confirmation_url
       case configured_url
       when String then configured_url
-      when Proc then configured_url.call(@order)
+      when Proc then configured_url.call(store, @order)
       else url_helpers.order_url(@order.number, host: store_url)
       end
     end
 
     def store_url
-      store = @store || Spree::Store.try(:default) || Spree::Store.first
       store.url.to_s.split("\n").first
     end
 
