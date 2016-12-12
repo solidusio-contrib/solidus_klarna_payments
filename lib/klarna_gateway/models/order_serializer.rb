@@ -91,7 +91,6 @@ module KlarnaGateway
 
     def merchant_urls
       {
-        # TODO: use the current store url
         # terms: "http://host/terms",
         # checkout: "http://host/orders/#{@order.number}",
         # push: "http://host/klarna/push",
@@ -99,9 +98,18 @@ module KlarnaGateway
         # shipping_option_update: "string",
         # address_update: "string",
         # country_change: "string",
-        confirmation: url_helpers.order_url(@order.number, host: store_url),
+        confirmation: confirmation_url,
         notification: url_helpers.klarna_notification_url(host: store_url)
       }
+    end
+
+    def confirmation_url
+      configured_url = KlarnaGateway.configuration.confirmation_url
+      case configured_url
+      when String then configured_url
+      when Proc then configured_url.call(@order)
+      else url_helpers.order_url(@order.number, host: store_url)
+      end
     end
 
     def store_url

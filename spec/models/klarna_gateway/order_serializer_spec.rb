@@ -109,6 +109,18 @@ describe KlarnaGateway::OrderSerializer do
         end
       end
     end
+
+    context "with configured merchant url" do
+      before do
+        KlarnaGateway.configure do |config|
+          config.confirmation_url = ->(order) { "my_confirmation_url" }
+        end
+      end
+
+      it "is present in the output" do
+        expect(serialized[:merchant_urls][:confirmation]).to eq("my_confirmation_url")
+      end
+    end
   end
 
   context "in the UK with included tax" do
