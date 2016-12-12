@@ -32,9 +32,9 @@ module ActiveMerchant
       end
 
       def purchase(amount, payment_source, options = {})
-        auth_response = authorize(amount, payment, options)
+        auth_response = authorize(amount, payment_source, options)
         if auth_response.success?
-          capture(amount, auth_response.order_id, options)
+          capture(amount, payment_source.order_id, options)
         else
           auth_response
         end
