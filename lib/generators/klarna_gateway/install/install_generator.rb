@@ -17,7 +17,13 @@ module KlarnaGateway
           <<-INIT
 KlarnaGateway.configure do |config|
   ## Generate the completion route dynamically
+  # expected:
+  # config.confirmation_url = <String>
+  # config.confirmation_url = <Proc>
+  # Examples:
+  # config.confirmation_url = helpers.path_to_order
   # config.confirmation_url = ->(order) { url_helpers.order_url(order.number, host: "my host") }
+  #
 end
           INIT
         end
