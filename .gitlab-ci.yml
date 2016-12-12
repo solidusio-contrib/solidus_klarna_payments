@@ -1,0 +1,6 @@
+RSpec:
+  script:
+  - rvm use 2.3
+  - ruby -v
+  - bundle install
+  - bundle exec rake
