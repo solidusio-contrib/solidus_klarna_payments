@@ -41,9 +41,9 @@ module KlarnaGateway
     end
 
     def can_be_cancelled_from_klarna?
-      payments.where(source_type: 'Spree::KlarnaCreditPayment').find_all do |payment|
+      payments.where(source_type: 'Spree::KlarnaCreditPayment').none? do |payment|
         !payment.source.cancelled?
-      end.none?
+      end
     end
 
     private
