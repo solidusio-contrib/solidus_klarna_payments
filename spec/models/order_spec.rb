@@ -93,5 +93,21 @@ describe KlarnaGateway::Order do
         expect(klarna_order.captured_klarna_payments.count).to eq(0)
       end
     end
+
+    context "#can_be_cancelled_from_klarna?" do
+      it "check if there is non cancelled payments" do
+        payment.source.update_attributes(status: 'CAPTURED')
+        expect(klarna_order.can_be_cancelled_from_klarna?).to eq(false)
+
+        payment.source.update_attributes(status: 'PART_CAPTURED')
+        expect(klarna_order.can_be_cancelled_from_klarna?).to eq(false)
+
+        payment.source.update_attributes(status: 'AUTHORIZED')
+        expect(klarna_order.can_be_cancelled_from_klarna?).to eq(false)
+
+        payment.source.update_attributes(status: 'CANCELLED')
+        expect(klarna_order.can_be_cancelled_from_klarna?).to eq(true)
+      end
+    end
   end
 end
