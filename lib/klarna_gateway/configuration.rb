@@ -1,11 +1,18 @@
 module KlarnaGateway
   class << self
-    attr_accessor :configuration
+    attr_accessor :_configuration
+
+    def configuration
+      if self._configuration.nil?
+        raise "KlarnaGateway._configuration is missing. Please run <rails generate klarna_gateway:install> or create an initializer for this configuration"
+      end
+      self._configuration
+    end
   end
 
   def self.configure
-    self.configuration ||= Configuration.new
-    yield(configuration)
+    self._configuration ||= Configuration.new
+    yield(self._configuration)
   end
 
   class Configuration
