@@ -113,7 +113,8 @@ describe KlarnaGateway::OrderSerializer do
     context "with configured merchant url" do
       before do
         KlarnaGateway.configure do |config|
-          config.confirmation_url = ->(order) { "my_confirmation_url" }
+          serializer.store = create(:store)
+          config.confirmation_url = ->(store, order) { "my_confirmation_url" }
         end
       end
 
