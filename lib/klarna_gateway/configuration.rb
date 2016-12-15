@@ -4,7 +4,7 @@ module KlarnaGateway
 
     def configuration
       if self._configuration.nil?
-        raise "KlarnaGateway._configuration is missing. Please run <rails generate klarna_gateway:install> or create an initializer for this configuration"
+        raise ConfigurationMissing.new("KlarnaGateway._configuration is missing. Please run <rails generate klarna_gateway:install> or create an initializer for this configuration")
       end
       self._configuration
     end
@@ -18,4 +18,6 @@ module KlarnaGateway
   class Configuration
     attr_accessor :confirmation_url
   end
+
+  class ConfigurationMissing < StandardError; end
 end
