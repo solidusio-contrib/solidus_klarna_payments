@@ -112,7 +112,7 @@ module KlarnaGateway
     end
 
     def store_url
-      store.url.to_s.split("\n").first
+      store.url.to_s.split("\n").first.chomp
     end
 
     def url_helpers
