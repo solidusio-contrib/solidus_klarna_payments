@@ -20,6 +20,8 @@ module Spree
       preference :color_text_secondary, :string
       preference :radius_border, :string
 
+      delegate :cancel, to: :provider
+
       def provider_class
         ActiveMerchant::Billing::KlarnaGateway
       end
