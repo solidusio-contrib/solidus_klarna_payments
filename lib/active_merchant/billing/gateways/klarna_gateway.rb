@@ -76,11 +76,16 @@ module ActiveMerchant
         response = Klarna.client.capture(order_id, {captured_amount: amount})
 
         if response.success?
-          update_payment_source!(Spree::KlarnaCreditPayment.find_by(order_id: order_id), order_id)
+          payment_source = Spree::KlarnaCreditPayment.find_by(order_id: order_id)
+          update_payment_source!(payment_source, order_id)
           ActiveMerchant::Billing::Response.new(
             true,
             "Captured order with Klarna id:  #{order_id}",
-            response.body || {}
+            response.body || {},
+            {
+              authorization: order_id,
+              fraud_review: payment_source.fraud_status
+            }
           )
         else
           ActiveMerchant::Billing::Response.new(
