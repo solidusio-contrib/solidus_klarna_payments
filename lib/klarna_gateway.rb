@@ -8,7 +8,7 @@ require "klarna_gateway/version"
 require "active_merchant/billing/gateways/klarna_gateway"
 
 require "klarna_gateway/models/order"
-require "klarna_gateway/models/payment"
+require "klarna_gateway/models/payment/processing"
 require "klarna_gateway/models/order_serializer"
 require "klarna_gateway/models/address_serializer"
 require "klarna_gateway/models/line_item_serializer"

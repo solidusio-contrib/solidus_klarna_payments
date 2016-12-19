@@ -107,13 +107,12 @@ module ActiveMerchant
         else
           ActiveMerchant::Billing::Response.new(
             false,
-            'Klarna Gateway: There was an error refunding this payment.',
+            'Klarna Gateway: There was an error refunding this refund.',
             response.body || {},
             { error_code: response.error_code }
           )
         end
       end
-
 
       alias_method :credit, :refund
 
@@ -134,7 +133,7 @@ module ActiveMerchant
         else
           ActiveMerchant::Billing::Response.new(
             false,
-            'Klarna Gateway: There was an error processing this payment.',
+            'Klarna Gateway: There was an error processing this acknowledge.',
             response.body || {},
             {
               error_code: response.error_code
@@ -156,7 +155,7 @@ module ActiveMerchant
         else
           ActiveMerchant::Billing::Response.new(
             false,
-            'Klarna Gateway: There was an error processing this payment.',
+            'Klarna Gateway: There was an error processing this period extension.',
             response.body || {},
             {
               error_code: response.error_code
@@ -172,13 +171,13 @@ module ActiveMerchant
           update_payment_source!(Spree::KlarnaCreditPayment.find_by(order_id: order_id), order_id)
           ActiveMerchant::Billing::Response.new(
             true,
-            "Captured order with Klarna id: #{order_id}",
+            "Released reamining amount for order with Klarna id: #{order_id}",
             response.body || {}
           )
         else
           ActiveMerchant::Billing::Response.new(
             false,
-            'Klarna Gateway: There was an error processing this payment.',
+            'Klarna Gateway: There was an error processing this release.',
             response.body || {},
             {
               error_code: response.error_code
@@ -201,7 +200,7 @@ module ActiveMerchant
         else
           ActiveMerchant::Billing::Response.new(
             false,
-            'Klarna Gateway: There was an error refunding this payment.',
+            'Klarna Gateway: There was an error cancelling this payment.',
             response.body || {},
             { error_code: response.error_code }
           )

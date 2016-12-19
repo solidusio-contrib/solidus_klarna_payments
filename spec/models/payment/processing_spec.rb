@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 
-describe KlarnaGateway::Payment do
+describe KlarnaGateway::Payment::Processing do
   extend KlarnaApiHelper
   within_a_virtual_api do
 
@@ -30,13 +30,6 @@ describe KlarnaGateway::Payment do
       end
     end
 
-    context "#approve!" do
-      it "calls the api to approve or acknowledge the source" do
-        expect(payment.send(:provider)).to receive(:acknowledge).with(payment.source.order_id).and_return(true)
-        payment.approve!
-      end
-    end
-
     context "#extend_period!" do
       it "calls the api to extend credit authorization period" do
         expect(payment.send(:provider)).to receive(:extend_period).with(payment.source.order_id).and_return(true)
@@ -48,14 +41,6 @@ describe KlarnaGateway::Payment do
       it "calls the api to release remaining amount" do
         expect(payment.send(:provider)).to receive(:release).with(payment.source.order_id).and_return(true)
         payment.release!
-      end
-    end
-
-    context "#cancel!" do
-      it "calls the api to cancel the order and voids the order" do
-        expect(payment.send(:provider)).to receive(:cancel).with(payment.source.order_id).and_return(true)
-        expect(payment).to receive(:void!).and_return(true)
-        payment.cancel!
       end
     end
 
