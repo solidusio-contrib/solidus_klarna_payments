@@ -20,8 +20,6 @@ module Spree
       preference :color_text_secondary, :string
       preference :radius_border, :string
 
-      delegate :cancel, to: :provider
-
       def provider_class
         ActiveMerchant::Billing::KlarnaGateway
       end
@@ -42,8 +40,24 @@ module Spree
         false
       end
 
+      def cancel(order_id)
+        if source(order_id).fully_captured?
+          provider.refund(payment_amount(order_id), order_id)
+        else
+          provider.cancel(order_id)
+        end
+      end
+
       def payment_profiles_supported?
         false
+      end
+
+      def source(order_id)
+        payment_source_class.find_by_order_id(order_id)
+      end
+
+      def payment_amount(order_id)
+        Spree::Payment.find_by(source: source(order_id)).display_amount.cents
       end
     end
   end

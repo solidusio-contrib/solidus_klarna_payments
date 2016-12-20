@@ -23,7 +23,6 @@ KlarnaGateway.configure do |config|
   # Examples:
   # config.confirmation_url = helpers.path_to_order
   # config.confirmation_url = ->(store, order) { url_helpers.order_url(order.number, host: store.url) }
-  #
 end
           INIT
         end

@@ -21,6 +21,12 @@ module KlarnaGateway
         end
       end
 
+      def refund!
+        provider.refund(self.display_amount.cents, klarna_order_id).tap do |response|
+          handle_void_response(response)
+        end
+      end
+
       def klarna_order
         provider.get(klarna_order_id).body
       end
