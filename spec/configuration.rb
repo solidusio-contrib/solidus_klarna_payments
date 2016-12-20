@@ -10,8 +10,4 @@ describe "KlarnaGateway.configuration" do
     expect(KlarnaGateway).to receive(:_configuration).at_least(:once).and_return(KlarnaGateway::Configuration.new)
     expect(KlarnaGateway.configuration.confirmation_url).to be_nil
   end
-
-  it 'set cancel_order_without_klarna_verification to false by default' do
-    expect(KlarnaGateway.configuration.cancel_order_without_klarna_verification).to eq(false)
-  end
 end

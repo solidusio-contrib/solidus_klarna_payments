@@ -16,10 +16,7 @@ module KlarnaGateway
   end
 
   class Configuration
-    attr_accessor :confirmation_url, :cancel_order_without_klarna_verification
-    def initialize
-      @cancel_order_without_klarna_verification = false
-    end
+    attr_accessor :confirmation_url
   end
 
   class ConfigurationMissing < StandardError; end

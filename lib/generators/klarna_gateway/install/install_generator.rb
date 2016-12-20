@@ -23,10 +23,6 @@ KlarnaGateway.configure do |config|
   # Examples:
   # config.confirmation_url = helpers.path_to_order
   # config.confirmation_url = ->(store, order) { url_helpers.order_url(order.number, host: store.url) }
-  #
-  # When this value is set to true you can cancel all Solidus/Spree orders without checking the Klarna payment status.
-  # When this value is set to false only orders which klarna's payments are in authorized status can be cancelled (No autocaptured orders)
-  # config.cancel_order_without_klarna_verification = (true|false)
 end
           INIT
         end

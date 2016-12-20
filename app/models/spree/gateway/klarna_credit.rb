@@ -41,15 +41,23 @@ module Spree
       end
 
       def cancel(order_id)
-        if !KlarnaGateway.configuration.cancel_order_without_klarna_verification
-          provider.cancel(order_id)
+        if source(order_id).fully_captured?
+          provider.refund(payment_amount(order_id), order_id)
         else
-          ActiveMerchant::Billing::Response.new(true, "This payment is set to void without refunding the money")
+          provider.cancel(order_id)
         end
       end
 
       def payment_profiles_supported?
         false
+      end
+
+      def source(order_id)
+        payment_source_class.find_by_order_id(order_id)
+      end
+
+      def payment_amount(order_id)
+        Spree::Payment.find_by(source: source(order_id)).display_amount.cents
       end
     end
   end

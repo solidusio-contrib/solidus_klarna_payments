@@ -20,7 +20,7 @@ module Spree
     end
 
     def actions
-      %w(refresh capture cancel extend_period release)
+      %w(refresh capture cancel extend_period release refund)
     end
 
     def can_refresh?(payment)
@@ -41,6 +41,10 @@ module Spree
 
     def can_release?(payment)
       payment.completed? && part_captured?
+    end
+
+    def can_refund?(payment)
+      payment.completed? && captured? && !part_captured?
     end
 
     def accept!
@@ -104,6 +108,10 @@ module Spree
 
     def captured?
       self.status.present? && self.status.match("CAPTURED")
+    end
+
+    def fully_captured?
+      self.status.present? && self.status == "CAPTURED"
     end
 
     def cancelled?
