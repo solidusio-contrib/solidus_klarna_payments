@@ -20,8 +20,6 @@ module Spree
       preference :color_text_secondary, :string
       preference :radius_border, :string
 
-      delegate :cancel, to: :provider
-
       def provider_class
         ActiveMerchant::Billing::KlarnaGateway
       end
@@ -40,6 +38,14 @@ module Spree
 
       def credit_card?
         false
+      end
+
+      def cancel(order_id)
+        if !KlarnaGateway.configuration.cancel_order_without_klarna_verification
+          provider.cancel(order_id)
+        else
+          ActiveMerchant::Billing::Response.new(true, "This payment is set to void without refunding the money")
+        end
       end
 
       def payment_profiles_supported?
