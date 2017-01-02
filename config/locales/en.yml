@@ -24,4 +24,19 @@ en:
     extend_period: "Extend Expiring Period"
     refresh: "Refresh"
     release: "Release remaining amount"
-
+    # preferences
+    api_key: Merchant ID
+    api_secret: Secret
+    design: Design
+    color_details: Details color (hex)
+    color_button: Button color (hex)
+    color_button_text: Button text color (hex)
+    color_checkbox: Checkbox color (hex)
+    color_checkbox_checkmark: Checkbox checkmark color (hex)
+    color_header: Header color (hex)
+    color_link: Link color (hex)
+    color_border: Border color (hex)
+    color_border_selected: Selected border color (hex)
+    color_text: Text color (hex)
+    color_text_secondary: Secondary text color (hex)
+    radius_border: Border radius in pixel

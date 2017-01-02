@@ -3,8 +3,7 @@ module Spree
     class KlarnaCredit < Gateway
       preference :api_key, :string
       preference :api_secret, :string
-      preference :country, :string
-      preference :environment, :string
+      preference :country, :string, default: 'us'
 
       preference :design, :string
       preference :color_details, :string

@@ -8,7 +8,7 @@ module ActiveMerchant
         @options = options
 
         Klarna.configure do |config|
-          config.environment = @options[:server]
+          config.environment = @options[:test_mode] ? 'test' : 'production'
           config.country = @options[:country]
           config.api_key =  @options[:api_key]
           config.api_secret = @options[:api_secret]
