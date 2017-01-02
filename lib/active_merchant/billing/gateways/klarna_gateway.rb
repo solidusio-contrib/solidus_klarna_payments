@@ -13,9 +13,6 @@ module ActiveMerchant
           config.api_key =  @options[:api_key]
           config.api_secret = @options[:api_secret]
         end
-
-        @options[:logger] = ::Logger.new(STDOUT)
-        @options[:logger].level = ::Logger::WARN
       end
 
       # There is only :klarna_credit
