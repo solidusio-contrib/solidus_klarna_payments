@@ -20,7 +20,7 @@ module KlarnaGateway
       !(self.klarna_session_expires_at.present? && self.klarna_session_expires_at >= DateTime.now)
     end
 
-    def to_klarna(country=:us)
+    def to_klarna(country = :us)
       KlarnaGateway::OrderSerializer.new(self.reload, country)
     end
 

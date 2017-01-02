@@ -16,7 +16,6 @@ class Order
 end
 
 describe KlarnaGateway::Order do
-  extend KlarnaApiHelper
   context "withing a fake order class" do
     subject(:order) { Order.new }
 
@@ -61,45 +60,51 @@ describe KlarnaGateway::Order do
     end
   end
 
-  within_a_virtual_api do
-    context "#authorized_klarna_payments" do
-      it "returns klarna payments with AUTHORIZED status" do
-        expect(klarna_order.authorized_klarna_payments.count).to eq(0)
-
-        payment.source.update_attributes(status: 'AUTHORIZED')
-        expect(klarna_order.authorized_klarna_payments.count).to eq(1)
-      end
+  context "#klarna_payments?", :klarna_api do
+    it "checks when an order has klarna payments" do
+      expect(check_order.payments.klarna_credit.any?).to be_falsy
+      expect(credit_card_order.payments.klarna_credit.any?).to be_falsy
+      expect(klarna_order.payments.klarna_credit.any?).to be_truthy
     end
+  end
 
-    context "#captured_klarna_payments" do
-      it "returns klarna payements with CAPTURED status" do
-        expect(klarna_order.captured_klarna_payments.count).to eq(0)
+  context "#authorized_klarna_payments", :klarna_api do
+    it "returns klarna payments with AUTHORIZED status" do
+      expect(klarna_order.authorized_klarna_payments.count).to eq(0)
 
-        payment.source.update_attributes(status: 'CAPTURED')
-        expect(klarna_order.captured_klarna_payments.count).to eq(1)
-
-        payment.source.update_attributes(status: 'PART_CAPTURED')
-        expect(klarna_order.captured_klarna_payments.count).to eq(1)
-
-        payment.source.update_attributes(status: 'AUTHORIZED')
-        expect(klarna_order.captured_klarna_payments.count).to eq(0)
-      end
+      payment.source.update_attributes(status: 'AUTHORIZED')
+      expect(klarna_order.authorized_klarna_payments.count).to eq(1)
     end
+  end
 
-    context "#can_be_cancelled_from_klarna?" do
-      it "check if there is non cancelled payments" do
-        payment.source.update_attributes(status: 'CAPTURED')
-        expect(klarna_order.can_be_cancelled_from_klarna?).to eq(false)
+  context "#captured_klarna_payments", :klarna_api do
+    it "returns klarna payements with CAPTURED status" do
+      expect(klarna_order.captured_klarna_payments.count).to eq(0)
 
-        payment.source.update_attributes(status: 'PART_CAPTURED')
-        expect(klarna_order.can_be_cancelled_from_klarna?).to eq(false)
+      payment.source.update_attributes(status: 'CAPTURED')
+      expect(klarna_order.captured_klarna_payments.count).to eq(1)
 
-        payment.source.update_attributes(status: 'AUTHORIZED')
-        expect(klarna_order.can_be_cancelled_from_klarna?).to eq(false)
+      payment.source.update_attributes(status: 'PART_CAPTURED')
+      expect(klarna_order.captured_klarna_payments.count).to eq(1)
 
-        payment.source.update_attributes(status: 'CANCELLED')
-        expect(klarna_order.can_be_cancelled_from_klarna?).to eq(true)
-      end
+      payment.source.update_attributes(status: 'AUTHORIZED')
+      expect(klarna_order.captured_klarna_payments.count).to eq(0)
+    end
+  end
+
+  context "#can_be_cancelled_from_klarna?", :klarna_api do
+    it "check if there is non cancelled payments" do
+      payment.source.update_attributes(status: 'CAPTURED')
+      expect(klarna_order.can_be_cancelled_from_klarna?).to eq(false)
+
+      payment.source.update_attributes(status: 'PART_CAPTURED')
+      expect(klarna_order.can_be_cancelled_from_klarna?).to eq(false)
+
+      payment.source.update_attributes(status: 'AUTHORIZED')
+      expect(klarna_order.can_be_cancelled_from_klarna?).to eq(false)
+
+      payment.source.update_attributes(status: 'CANCELLED')
+      expect(klarna_order.can_be_cancelled_from_klarna?).to eq(true)
     end
   end
 end
