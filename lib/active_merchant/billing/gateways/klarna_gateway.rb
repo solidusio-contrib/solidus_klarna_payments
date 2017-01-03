@@ -8,14 +8,11 @@ module ActiveMerchant
         @options = options
 
         Klarna.configure do |config|
-          config.environment = @options[:server]
+          config.environment = @options[:test_mode] ? 'test' : 'production'
           config.country = @options[:country]
           config.api_key =  @options[:api_key]
           config.api_secret = @options[:api_secret]
         end
-
-        @options[:logger] = ::Logger.new(STDOUT)
-        @options[:logger].level = ::Logger::WARN
       end
 
       # There is only :klarna_credit
@@ -43,7 +40,7 @@ module ActiveMerchant
       def authorize(amount, payment_source, options={})
         # TODO: check if we get a better handle for the order
         order = Spree::Order.find_by(number: options[:order_id].split("-").first)
-        region = payment_source.payment_method.preferences[:country]
+        region = payment_source.payment_method.options[:country]
         serializer = ::KlarnaGateway::OrderSerializer.new(order, region)
 
         response = Klarna.client(:credit).place_order(payment_source.authorization_token, serializer.to_hash)

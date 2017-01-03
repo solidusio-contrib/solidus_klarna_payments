@@ -45,10 +45,10 @@ module KlarnaGateway
     private
 
     def klarna_order(skip_personal_data: false)
-      order = @order.to_klarna(klarna_payment_method.preferences[:country])
+      order = @order.to_klarna(klarna_payment_method.options[:country])
       order.options = klarna_options
       order.skip_personal_data = skip_personal_data
-      order.design = klarna_payment_method.preferences[:design]
+      order.design = klarna_payment_method.options[:design]
       order.store = current_store
       order
     end
@@ -58,7 +58,7 @@ module KlarnaGateway
     end
 
     def klarna_options
-      klarna_payment_method.preferences.select do |key, value|
+      klarna_payment_method.options.select do |key, value|
         key.to_s.start_with?("color_", "radius_") && value.present?
       end
     end
