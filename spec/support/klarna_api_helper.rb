@@ -90,6 +90,7 @@ module KlarnaApiHelper
       order.tap do |order|
         order.payments << payment
         order.save!
+        payment.source.update_attributes(order: order)
       end
     end
 

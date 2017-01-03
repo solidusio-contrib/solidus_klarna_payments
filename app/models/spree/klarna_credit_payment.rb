@@ -97,7 +97,6 @@ module Spree
       end
     end
 
-
     def authorized?
       self.status.present? && self.status == "AUTHORIZED"
     end
@@ -128,6 +127,10 @@ module Spree
 
     def expired?
       self.expires_at? && self.expires_at < DateTime.now
+    end
+
+    def payments
+      Spree::Payment.where(source: self, payment_method: self.payment_method)
     end
   end
 end
