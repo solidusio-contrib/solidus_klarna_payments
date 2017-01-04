@@ -11,12 +11,15 @@ module KlarnaGateway
             order_amount: order.display_total.cents,
             order_tax_amount: order.display_tax_total.cents
           })
+
           if order.tax_total > 0
             result[:order_lines] << tax_line(order)
           end
+
           if order.promo_total < 0
-            result[:order_lines] << discount_line(order)
+            result[:order_lines] << KlarnaGateway::DiscountItemSerializer.new(order).to_hash
           end
+
           result
         end
 
@@ -42,19 +45,6 @@ module KlarnaGateway
             reference: "Sales Tax",
             unit_price: order.display_tax_total.cents,
             total_amount: order.display_tax_total.cents,
-            tax_rate: 0,
-            total_tax_amount: 0
-          }
-        end
-
-        def discount_line(order)
-          {
-            type: "discount",
-            quantity: 1,
-            name: "Discount",
-            reference: "Discount",
-            total_amount: (order.promo_total * 100).to_i,
-            unit_price: (order.promo_total * 100).to_i,
             tax_rate: 0,
             total_tax_amount: 0
           }
