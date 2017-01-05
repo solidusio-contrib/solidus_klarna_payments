@@ -52,5 +52,18 @@ describe KlarnaGateway::Payment::Processing do
         expect(check.is_klarna?).to be false
       end
     end
+
+    context "#notify!(params)" do
+      it "logs the response from an API notification" do
+        expect(ActiveMerchant::Billing::Response).to receive(:new).with(any_args).and_return({})
+        expect(payment).to receive(:record_response).with({}).and_return(true)
+        payment.notify!({
+          klarna: {
+            order_id: 123
+          }
+        })
+
+      end
+    end
   end
 end
