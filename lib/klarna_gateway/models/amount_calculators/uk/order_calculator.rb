@@ -15,7 +15,7 @@ module KlarnaGateway
           order_amount: order.display_total.cents
         })
         if order.promo_total < 0
-          result[:order_lines] << discount_line(order)
+          result[:order_lines] << KlarnaGateway::DiscountItemSerializer.new(order).to_hash
         end
         if skip_personal_data
           result.delete_if { |k,v| SENSITIVE_ATTRIBUTES.include?(k) }
@@ -36,21 +36,6 @@ module KlarnaGateway
         when :de then "de-DE"
         else "en-GB"
         end
-      end
-
-      private
-
-      def discount_line(order)
-        {
-          type: "discount",
-          quantity: 1,
-          name: "Discount",
-          reference: "Discount",
-          total_amount: (order.promo_total * 100).to_i,
-          unit_price: (order.promo_total * 100).to_i,
-          tax_rate: 0,
-          total_tax_amount: 0
-        }
       end
     end
   end

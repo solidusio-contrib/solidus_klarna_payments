@@ -135,6 +135,36 @@
   </table>
 </fieldset>
 
+<% if @klarna_order["order_lines"] %>
+  <fieldset class="no-border-bottom">
+    <legend align="center">
+      <span >Order Lines</span>
+    </legend>
+    <table>
+      <thead>
+        <tr>
+          <th>Quantity</th>
+          <th>Name</th>
+          <th>Reference</th>
+          <th>Total Amount</th>
+          <th>Total Discount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @klarna_order["order_lines"].each do |item| %>
+          <tr>
+            <td class="align-center"><%= item["quantity"] %></td>
+            <td class="align-center"><%= item["name"] %></td>
+            <td class="align-center"><%= item["reference"] %></td>
+            <td class="align-center"><%= cents_to_display_money(item["total_amount"], @klarna_order['purchase_currency']) %></td>
+            <td class="align-center"><%= cents_to_display_money(item["total_discount"] || 0, @klarna_order['purchase_currency']) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    <table>
+  </fieldset>
+<% end %>
+
 <% if @klarna_order["captures"] %>
   <fieldset class="no-border-bottom">
     <legend align="center">
