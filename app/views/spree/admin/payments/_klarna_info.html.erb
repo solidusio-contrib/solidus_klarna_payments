@@ -6,7 +6,7 @@
   }
 </style>
 
-<% if payment.source && payment.source.brand == :klarna_credit %>
+<% if payment.is_klarna? %>
     <tr class="klarna_payment" id="<%= payment.id %>" data-source="source_<%= payment.source.id %>">
       <td colspan="1" class="header">
         <img src="https://www.klarna.com/application/files/3114/5674/1539/Klarna-white-RGB.svg" width="80px">
@@ -31,11 +31,8 @@
           Expires at: &nbsp; <%= I18n.l(payment.source.expires_at, format: '%Y-%m-%d') if payment.source.expires_at?%>
         </td>
       <% elsif payment.source.error? %>
-        <td colspan="2" class="align-center" class="with-tip" title="<%= payment.source.error_messages %>">
+        <td colspan="1" class="align-center" class="with-tip" title="<%= payment.source.error_messages %>">
           Error (<%= icon('fa fa-expand')%>)
-        </td>
-        <td colspan="1" class="align-center">
-          At: <%= I18n.l(payment.updated_at, format: '%Y-%m-%d') %>
         </td>
       <% end %>
     </tr>
