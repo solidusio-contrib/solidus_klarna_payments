@@ -21,6 +21,21 @@ Or install it yourself as:
     $ gem install klarna_gateway
 
 
+## Configuration
+
+Copy Klarna specific migrations or run:
+
+    $ rails generate klarna_gateway:install
+
+Configure the Gem based on gem general attributes:
+
+    config.confirmation_url
+
+More information at:
+
+    lib/generators/klarna_gateway/install/install_generator.rb
+
+
 ## Documentation
 
 ### Javascript API [link](https://credit.klarnacdn.net/lib/v1/index.html)
@@ -35,11 +50,6 @@ Api descrpition for Backend implementation.
 
 General description of Klarna payment solutions.
 
-
-
-## Usage
-
-TODO: Write usage instructions here
 
 ## Development
 
