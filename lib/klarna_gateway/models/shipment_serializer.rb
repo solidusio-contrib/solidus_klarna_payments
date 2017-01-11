@@ -12,7 +12,7 @@ module KlarnaGateway
         {
           type: 'shipping_fee',
           reference: shipment.number,
-          name: shipment.number,
+          name: shipment.shipping_method.name,
           quantity: 1,
           unit_price: unit_price ,
           total_amount: total_amount,
