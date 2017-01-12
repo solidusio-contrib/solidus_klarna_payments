@@ -1,0 +1,13 @@
+require 'support/page_drivers/base.rb'
+require 'support/page_drivers/home.rb'
+require 'support/page_drivers/address.rb'
+require 'support/page_drivers/cart.rb'
+require 'support/page_drivers/complete.rb'
+require 'support/page_drivers/confirm.rb'
+require 'support/page_drivers/delivery.rb'
+require 'support/page_drivers/payment.rb'
+require 'support/page_drivers/product.rb'
+require 'support/page_drivers/registration.rb'
+
+require 'support/fixtures/data.rb'
+require 'support/page_drivers/checkout_process.rb'
