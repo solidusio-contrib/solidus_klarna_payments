@@ -2,7 +2,7 @@ module KlarnaGateway
   # TODO: pull this out of the checkout controller
   module SessionController
     def self.included(base)
-      base.skip_before_action(:ensure_valid_state, only: [:klarna_session, :order_status, :order_addresses])
+      base.skip_before_action(:ensure_valid_state, only: [:klarna_session, :order_status, :order_addresses, :klarna_update_session])
     end
 
     def klarna_session
@@ -40,6 +40,11 @@ module KlarnaGateway
         {email: @order.email}.merge(v)
       end
       render json: klarna_order.addresses
+    end
+
+    def klarna_update_session
+      @order.payments.last.source.update_attributes({ authorization_token: params[:token] })
+      render json: {status: "ok"}
     end
 
     private
