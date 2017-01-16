@@ -8,7 +8,9 @@ module PageDrivers
 
     def add_to_cart(number)
       fill_in :quantity, with: number
-      click_button 'Add To Cart'
+      within '[data-hook="product_price"]' do
+        find('button#add-to-cart-button').click
+      end
     end
   end
 end

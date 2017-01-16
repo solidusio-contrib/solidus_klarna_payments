@@ -4,12 +4,15 @@ require 'capybara/rspec'
 require 'capybara/rails'
 require 'support/drivers'
 require 'support/wait_for_ajax'
-
+require 'support/shared_contexts/ordering_with_klarna'
 
 # Configure Capybara expected host
-Capybara.app_host = 'https://klarna-solidus-demo.herokuapp.com'
+$data = TestData.new(ENV['STORE'])
+Capybara.app_host = $data.host
+
 Capybara.default_selector = :css
-Capybara.default_max_wait_time = 60
+Capybara.default_max_wait_time = 20
+CapybaraDefaultMaxWaitTime = 60
 
 Capybara.register_driver :selenium do |app|
   Capybara::Selenium::Driver.new(app, :browser => :chrome)
@@ -20,8 +23,6 @@ RSpec.configure do |config|
   config.include Capybara::DSL
 
   config.before(:each) do |example|
-    # default_url_options[:host] = 'https://klarna-solidus-demo.herokuapp.com'
-    Capybara.default_wait_time = 10 # seconds
     Capybara.current_driver = :selenium
   end
 

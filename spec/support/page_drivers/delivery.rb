@@ -7,7 +7,9 @@ module PageDrivers
     end
 
     def continue
-      click_button 'Save and Continue'
+      within 'form#checkout_form_delivery' do
+        find('input.continue').click
+      end
     end
   end
 end

@@ -7,7 +7,9 @@ module PageDrivers
     end
 
     def continue
-      click_button 'Checkout'
+      within '[data-hook="inside_cart_form"]' do
+        find('button#checkout-link').click
+      end
     end
   end
 end

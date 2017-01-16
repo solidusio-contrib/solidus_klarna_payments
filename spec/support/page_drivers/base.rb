@@ -1,6 +1,8 @@
 module PageDrivers
   class Base
+    include RSpec::Matchers
     include Capybara::DSL
+    include Capybara::RSpecMatchers
 
     def initialize(page)
       @page = page
