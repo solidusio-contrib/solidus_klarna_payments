@@ -33,7 +33,8 @@
       var settings = $.extend({
         submitButton: null,
         orderId: null,
-        sessionUrl: "/checkout/state/klarna_order_status"
+        sessionUrl: "/checkout/state/klarna_order_status",
+        updateSessionUrl: "/checkout/state/klarna_update_session"
       }, options);
 
       settings.canvas = this;
@@ -45,6 +46,22 @@
 
       if (settings.submitButton) {
         settings.submitCanvas = settings.submitButton.parent().hide();
+      }
+
+      var updateSession= function (response) {
+        return $.ajax({
+          method: 'POST',
+          url: settings.updateSessionUrl,
+          dataType: 'json',
+          data: {token: response.authorization_token}
+        }).done(function() {
+          if (response.approved) {
+            settings.canvas.hide();
+            settings.submitCanvas.show();
+          } else {
+            window.location.assign(settings.paymentUrl)
+          }
+        });
       }
 
       // Get a session from the backend and load the form
@@ -64,10 +81,7 @@
 
             delete response.data.merchant_urls;
 
-            Klarna.Credit.reauthorize(response.data, function(response) {
-              settings.canvas.hide();
-              settings.submitCanvas.show();
-            });
+            Klarna.Credit.reauthorize(response.data,updateSession);
           } else {
             window.location.assign(settings.paymentUrl)
           }
