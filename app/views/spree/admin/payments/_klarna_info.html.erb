@@ -7,7 +7,7 @@
 </style>
 
 <% if payment.source && payment.source.brand == :klarna_credit %>
-    <tr id="<%= payment.id %>">
+    <tr class="klarna_payment" id="<%= payment.id %>" data-source="source_<%= payment.source.id %>">
       <td colspan="1" class="header">
         <img src="https://www.klarna.com/application/files/3114/5674/1539/Klarna-white-RGB.svg" width="80px">
       </td>
@@ -40,4 +40,3 @@
       <% end %>
     </tr>
 <% end %>
-
