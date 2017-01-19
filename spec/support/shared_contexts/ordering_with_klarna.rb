@@ -1,6 +1,6 @@
 shared_context "ordering with klarna" do
   include WorkflowDriver::CheckoutProcess
-  def order_product(product_name)
+  def order_product(product_name, email = "test@test.com")
     visit '/'
 
     on_the_home_page.choose(product_name)
@@ -10,7 +10,7 @@ shared_context "ordering with klarna" do
     on_the_cart_page.has_item_by_name?(product_name)
     on_the_cart_page.continue
 
-    on_the_registration_page.checkout_as_guest
+    on_the_registration_page.checkout_as_guest(email)
     on_the_address_page.set_address($data.address)
     on_the_address_page.continue
 

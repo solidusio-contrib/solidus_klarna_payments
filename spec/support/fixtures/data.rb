@@ -9,6 +9,7 @@ class TestData
 
   Users = OpenStruct.new({
       valid: 'user@example.com',
+      denied: 'user+denied@example.com',
       no_credit: 'user+red@example.com',
       signup: 'user+signup_required@example.com',
       pending_accepted: 'user+pend-accept-05@example.com',
