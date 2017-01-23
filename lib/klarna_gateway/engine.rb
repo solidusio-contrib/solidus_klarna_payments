@@ -15,6 +15,7 @@ module KlarnaGateway
       Spree::CheckoutController.include(KlarnaGateway::SessionController)
       Spree::CheckoutController.prepend(KlarnaGateway::CheckoutController)
       Spree::Order.include(KlarnaGateway::Order)
+      Spree::Refund.include(KlarnaGateway::Refund)
       Spree::Payment.include(KlarnaGateway::Payment::Processing)
     end
   end
