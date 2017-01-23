@@ -6,23 +6,23 @@ module KlarnaGateway
       end
 
       def refresh!
-        provider.get_and_update_source(klarna_order_id)
+        payment_provider.get_and_update_source(klarna_order_id)
       end
 
       def extend_period!
-        provider.extend_period(klarna_order_id).tap do |response|
+        payment_provider.extend_period(klarna_order_id).tap do |response|
           record_response(response)
         end
       end
 
       def release!
-        provider.release(klarna_order_id).tap do |response|
+        payment_provider.release(klarna_order_id).tap do |response|
           record_response(response)
         end
       end
 
       def refund!
-        provider.refund(self.display_amount.cents, klarna_order_id).tap do |response|
+        payment_provider.refund(self.display_amount.cents, klarna_order_id).tap do |response|
           handle_void_response(response)
         end
       end
@@ -38,7 +38,7 @@ module KlarnaGateway
       end
 
       def klarna_order
-        provider.get(klarna_order_id).body
+        payment_provider.get(klarna_order_id).body
       end
 
       def is_klarna?
@@ -51,7 +51,7 @@ module KlarnaGateway
         source.order_id
       end
 
-      def provider
+      def payment_provider
         payment_method.provider
       end
     end
