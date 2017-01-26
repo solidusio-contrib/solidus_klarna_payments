@@ -1,32 +1,80 @@
 shared_context "ordering with klarna" do
-  include WorkflowDriver::CheckoutProcess
+  include WorkflowDriver::Process
+  include RSpec::Matchers
+  include Capybara::RSpecMatchers
+
   def order_product(product_name, email = "test@test.com")
-    visit '/'
+    on_the_home_page do |page|
+      page.load
+      expect(page.displayed?).to be(true)
 
-    on_the_home_page.choose(product_name)
-    on_the_product_page.has_name?(product_name)
-    on_the_product_page.add_to_cart(10)
+      page.choose(product_name)
+    end
 
-    on_the_cart_page.has_item_by_name?(product_name)
-    on_the_cart_page.continue
+    on_the_product_page do |page|
+      page.wait_for_title
+      expect(page.displayed?).to be(true)
 
-    on_the_registration_page.checkout_as_guest(email)
-    on_the_address_page.set_address($data.address)
-    on_the_address_page.continue
+      expect(page.title).to have_content(product_name)
+      page.add_to_cart(10)
+    end
 
-    on_the_delivery_page.has_item_by_name?(product_name)
-    on_the_delivery_page.continue
+    on_the_cart_page do |page|
+      page.line_items
+      expect(page.displayed?).to be(true)
+
+      expect(page.line_items).to have_content(product_name)
+      page.continue
+    end
+
+    on_the_registration_page do |page|
+      expect(page.displayed?).to be(true)
+
+      page.checkout_as_guest(email)
+    end
+
+    on_the_address_page do |page|
+      expect(page.displayed?).to be(true)
+
+      page.set_address($data.address)
+      page.continue
+    end
+
+    on_the_delivery_page do |page|
+      expect(page.displayed?).to be(true)
+
+      expect(page.stock_contents).to have_content(product_name)
+      page.continue
+    end
   end
 
   def pay_with_klarna
-    on_the_payment_page.select_klarna
-    on_the_payment_page.continue
+    on_the_payment_page do |page|
+      expect(page.displayed?).to be(true)
 
-    on_the_confirm_page.wait_for_reauthorization
-    on_the_confirm_page.continue
+      page.select_klarna
+      page.continue
+    end
 
-    on_the_complete_page.is_valid?
-    on_the_complete_page.get_order_number
+    on_the_confirm_page do |page|
+      expect(page.displayed?).to be(true)
+
+      wait_for_ajax
+      page.continue
+    end
+
+    on_the_complete_page do |page|
+      expect(page.displayed?).to be(true)
+
+      if $data.de?
+        expect(page.flash_message).to have_content('Ihre Bestellung wurde erfolgreich bearbeitet')
+      else
+        expect(page.flash_message).to have_content('Your order has been processed successfully')
+      end
+
+      expect(page.order_number.text).to match(/Order|Bestellnummer /)
+      page.get_order_number
+    end
   end
 end
 

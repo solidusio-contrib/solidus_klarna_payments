@@ -1,16 +1,14 @@
 module PageDrivers
-  class Product < Base
-    def has_name?(name)
-      within '#product-description' do
-        @page.has_css?(:h1, name)
-      end
-    end
+  class Product < SitePrism::Page
+    set_url "/products/{slug}"
+
+    element :title, "h1.product-title"
+    element :quantity, "input#quantity"
+    element :add_to_cart_button, "button#add-to-cart-button"
 
     def add_to_cart(number)
-      fill_in :quantity, with: number
-      within '[data-hook="product_price"]' do
-        find('button#add-to-cart-button').click
-      end
+      quantity.set number
+      add_to_cart_button.click
     end
   end
 end

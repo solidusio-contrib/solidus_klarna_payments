@@ -2,6 +2,7 @@ require 'spec_helper'
 
 require 'capybara/rspec'
 require 'capybara/rails'
+require 'site_prism'
 require 'support/drivers'
 require 'support/wait_for_ajax'
 require 'support/shared_contexts/ordering_with_klarna'

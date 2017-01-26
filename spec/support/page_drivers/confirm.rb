@@ -1,17 +1,22 @@
 module PageDrivers
-  class Confirm < Base
-    def change_payment
-      expect(page).to have_css('ol#checkout-step-confirm a', count: 3)
-      all('ol#checkout-step-confirm a').find{|e| e[:href].match(/payment/)}.click
-    end
+  class CheckoutSteps < SitePrism::Section
+    element :address, :xpath, 'li[0]'
+    element :delivery, :xpath, 'li[1]'
+    element :payment, :xpath, 'li[2]'
+  end
 
-    def wait_for_reauthorization
-      wait_for_ajax
-      expect(page).to have_css("form#checkout_form_confirm input.continue", visible: true)
+  class Confirm < SitePrism::Page
+    set_url "/checkout/confirm"
+
+    section :checkout_steps, CheckoutSteps, 'ol#checkout-step-confirm'
+    element :continue_button, "form#checkout_form_confirm input.continue"
+
+    def change_payment
+      checkout_steps.payment.click
     end
 
     def continue
-      find("form#checkout_form_confirm input.continue").click
+      continue_button.click
     end
   end
 end

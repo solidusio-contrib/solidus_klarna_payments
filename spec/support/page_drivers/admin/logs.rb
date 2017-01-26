@@ -1,23 +1,12 @@
 module PageDrivers
   module Admin
-    class Logs < Base
-      def has_logs?(counter)
-        within 'div#listing_log_entries' do
-          expect(page).to have_css('table.index', count: 2)
-        end
-      end
+    class LogEntry < SitePrism::Section
+      element :message, :xpath, 'tbody/tr[1]/td[2]'
+    end
 
-      def has_authorization_log?
-        within 'div#listing_log_entries' do
-          expect(page).to have_content('Placed order')
-        end
-      end
-
-      def has_capture_log?
-        within 'div#listing_log_entries' do
-          expect(page).to have_content('Captured order')
-        end
-      end
+    class Logs < SitePrism::Page
+      set_url '/admin/orders/{number}/payments/{payment_id}/log_entries'
+      sections :log_entries, LogEntry, '#listing_log_entries table.index'
     end
   end
 end

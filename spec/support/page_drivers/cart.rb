@@ -1,15 +1,12 @@
 module PageDrivers
-  class Cart < Base
-    def has_item_by_name?(name)
-      within '#line_items' do
-        @page.has_content?(name)
-      end
-    end
+  class Cart < SitePrism::Page
+    set_url "/cart"
+
+    element :line_items, "#line_items"
+    element :continue_button, "button#checkout-link"
 
     def continue
-      within '[data-hook="inside_cart_form"]' do
-        find('button#checkout-link').click
-      end
+      continue_button.click
     end
   end
 end

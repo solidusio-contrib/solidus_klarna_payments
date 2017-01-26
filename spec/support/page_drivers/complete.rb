@@ -1,16 +1,12 @@
 module PageDrivers
-  class Complete < Base
-    def is_valid?
-      if $data.de?
-        expect(page).to have_content('Ihre Bestellung wurde erfolgreich bearbeitet')
-      else
-        expect(page).to have_content('Your order has been processed successfully')
-      end
-    end
+  class Complete < SitePrism::Page
+    set_url "/orders{/order_number}"
+
+    element :flash_message, '#content .flash'
+    element :order_number, 'fieldset#order_summary h1'
 
     def get_order_number
-      expect(find('fieldset#order_summary h1').text).to match(/Order|Bestellnummer /)
-      find('fieldset#order_summary h1').text.gsub("Order|Bestellnummer ", "")
+      order_number.text.gsub("Order|Bestellnummer ", "")
     end
   end
 end

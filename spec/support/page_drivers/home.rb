@@ -1,8 +1,10 @@
 module PageDrivers
-  class Home < Base
+  class Home < SitePrism::Page
+    set_url "/"
+    elements :products, '[data-hook="homepage_products"] ul#products li'
 
     def choose(name)
-      click_link name
+      products.find{|e| e.text.match(name)}.click
     end
   end
 end

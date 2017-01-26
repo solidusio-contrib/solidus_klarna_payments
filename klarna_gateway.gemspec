@@ -44,6 +44,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "selenium-webdriver"
   spec.add_development_dependency "chromedriver-helper"
   spec.add_development_dependency "launchy"
+  spec.add_development_dependency "site_prism"
 
 
   spec.add_development_dependency "bundler", "~> 1.12"

@@ -10,23 +10,56 @@ describe 'Ordering with Klarna Payment Method' do
 
   it 'Denies the order from a banned user' do
     order_product('Ruby on Rails Bag', TestData::Users.denied)
-    on_the_payment_page.select_klarna
-    on_the_payment_page.continue
-    on_the_payment_page.is_klarna_unappoved?
+    on_the_payment_page do |page|
+      expect(page.displayed?).to be(true)
+
+      page.select_klarna
+      page.continue
+
+      page.klarna_credit do |frame|
+        if $data.de?
+          expect(frame).to have_content('Unable to approve application')
+        else
+          expect(frame).to have_content('Unable to approve application')
+        end
+      end
+    end
   end
 
   it 'can change to a check payment before confirming the payment' do
     order_product('Ruby on Rails Bag')
-    on_the_payment_page.select_klarna
-    on_the_payment_page.continue
+    on_the_payment_page do |page|
+      expect(page.displayed?).to be(true)
+
+      page.select_klarna
+      page.continue
+    end
 
     on_the_confirm_page.change_payment
 
-    on_the_payment_page.select_check
-    on_the_payment_page.continue
+    on_the_payment_page do |page|
+      expect(page.displayed?).to be(true)
 
-    on_the_confirm_page.continue
-    on_the_complete_page.is_valid?
-    on_the_complete_page.get_order_number
+      page.select_check
+      page.continue
+    end
+
+    on_the_confirm_page do |page|
+      expect(page.displayed?).to be(true)
+
+      page.continue
+    end
+
+    on_the_complete_page do |page|
+      expect(page.displayed?).to be(true)
+
+      if $data.de?
+        expect(page.flash_message).to have_content('Ihre Bestellung wurde erfolgreich bearbeitet')
+      else
+        expect(page.flash_message).to have_content('Your order has been processed successfully')
+      end
+
+      page.get_order_number
+    end
   end
 end
