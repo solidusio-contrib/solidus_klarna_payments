@@ -42,7 +42,11 @@ module KlarnaGateway
       end
 
       def is_klarna?
-        source.present? && source.brand == :klarna_credit
+        source.present? && source.is_a?(Spree::KlarnaCreditPayment)
+      end
+
+      def is_valid_klarna?
+        is_klarna? && source.order_id.present?
       end
 
       private

@@ -53,6 +53,15 @@ describe KlarnaGateway::Payment::Processing do
       end
     end
 
+    context "#is_valid_klarna?" do
+      let(:check) { create(:check_payment) }
+
+      it "checks if is a valid klarna payment" do
+        expect(payment.is_valid_klarna?).to be true
+        expect(check.is_klarna?).to be false
+      end
+    end
+
     context "#notify!(params)" do
       it "logs the response from an API notification" do
         expect(ActiveMerchant::Billing::Response).to receive(:new).with(any_args).and_return({})
