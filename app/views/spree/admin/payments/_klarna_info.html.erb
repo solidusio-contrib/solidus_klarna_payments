@@ -2,38 +2,53 @@
   .header {
     background-color: #0074C8;
     color: white;
-    padding: 5px;
+    padding: 1px;
+  }
+
+  .klarna_payment_method {
+    padding: 0;
+  }
+
+  .small {
+    font-size: 60%;
   }
 </style>
+<td class="klarna_payment_method align-center">
+  <% if payment.is_klarna? %>
+      <div class="klarna_payment" id="<%= payment.id %>" data-source="source_<%= payment.source.id %>">
+        <div class="klarna_payment_info header">
+          <img src="https://www.klarna.com/application/files/3114/5674/1539/Klarna-white-RGB.svg" height="10px">
+        </div>
 
-<% if payment.is_klarna? %>
-    <tr class="klarna_payment" id="<%= payment.id %>" data-source="source_<%= payment.source.id %>">
-      <td colspan="1" class="header">
-        <img src="https://www.klarna.com/application/files/3114/5674/1539/Klarna-white-RGB.svg" width="80px">
-      </td>
-
-      <td colspan="2" class="align-center">
-        Fraud Status: <br/>
+        <span class="small">
+          Fraud Status:
+        </span>
+        <br/>
         <span class="state <%= payment.source.fraud_status_icon %>">
           <%= payment.source.fraud_status %>
         </span>
-      </td>
 
-      <td colspan="2" class="align-center">
-        Status: <br/>
+        <span class="small">
+          Status:
+        </span>
+        <br/>
         <span class="state <%= payment.source.status_icon %>">
           <%= payment.source.status %>
         </span>
-      </td>
 
-      <% if payment.source.accepted? %>
-        <td colspan="1" class="align-center">
-          Expires at: &nbsp; <%= I18n.l(payment.source.expires_at, format: '%Y-%m-%d') if payment.source.expires_at?%>
-        </td>
-      <% elsif payment.source.error? %>
-        <td colspan="1" class="align-center" class="with-tip" title="<%= payment.source.error_messages %>">
-          Error (<%= icon('fa fa-expand')%>)
-        </td>
-      <% end %>
-    </tr>
-<% end %>
+        <% if payment.source.accepted? %>
+          <span class="small">
+            Expires at:
+          </span>
+          <br/>
+          <%= I18n.l(payment.source.expires_at, format: '%Y-%m-%d') if payment.source.expires_at?%>
+        <% elsif payment.source.error? %>
+          <span title="<%= payment.source.error_messages %>">
+            Error (<%= icon('fa fa-expand')%>)
+          </span>
+        <% end %>
+      </div>
+  <% else %>
+    <%= payment_method_name(payment) %>
+  <% end %>
+</td>
