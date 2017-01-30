@@ -29,6 +29,10 @@ module PageDrivers
         !payment_method.text.match(/CAPTURED/).nil?
       end
 
+      def is_klarna_cancelled?
+        !payment_method.text.match(/CANCELLED/).nil?
+      end
+
       def is_pending?
         !payment_state.text.match(/PENDING/).nil?
       end
@@ -37,8 +41,16 @@ module PageDrivers
         !payment_state.text.match(/COMPLETED/).nil?
       end
 
+      def is_void?
+        !payment_state.text.match(/VOID/).nil?
+      end
+
       def capture!
         actions.find('[data-action="capture"]').click
+      end
+
+      def cancel!
+        actions.find('[data-action="cancel"]').click
       end
     end
 
@@ -47,6 +59,7 @@ module PageDrivers
 
       sections :payments, PaymentItem, '[data-hook="payment_list"] tbody tr[data-hook="payments_row"]'
       section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
+      element :new_payment_button, '#content-header .header-actions #new_payment_section a'
 
     end
   end
