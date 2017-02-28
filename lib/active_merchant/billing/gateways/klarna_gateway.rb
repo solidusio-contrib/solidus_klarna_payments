@@ -77,7 +77,7 @@ module ActiveMerchant
           update_payment_source!(payment_source, order_id)
           ActiveMerchant::Billing::Response.new(
             true,
-            "Captured order with Klarna id:  #{order_id}",
+            "Captured order with Klarna id: '#{order_id}' Capture id: '#{response['Capture-ID']}'",
             response.body || {},
             {
               authorization: order_id,
@@ -104,7 +104,10 @@ module ActiveMerchant
           ActiveMerchant::Billing::Response.new(
             true,
             "Refunded order with Klarna id: #{order_id}",
-            response.body || {}
+            response.body || {},
+            {
+              authorization: response['Refund-ID']
+            }
           )
         else
           ActiveMerchant::Billing::Response.new(
