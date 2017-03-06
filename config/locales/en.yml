@@ -40,3 +40,4 @@ en:
     color_text: Text color (hex)
     color_text_secondary: Secondary text color (hex)
     radius_border: Border radius in pixel
+    klarna_general_error: "A technical error has occurred. Please try reloading the page or contact the merchant."
