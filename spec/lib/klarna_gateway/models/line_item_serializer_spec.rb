@@ -1,5 +1,4 @@
 require 'spec_helper.rb'
-require 'byebug'
 
 describe KlarnaGateway::LineItemSerializer do
   let(:order) { create(:order_with_line_items, line_items_count: 3) }
@@ -35,6 +34,10 @@ describe KlarnaGateway::LineItemSerializer do
 
     it "sets the tax_rate" do
       expect(serialized[:tax_rate]).to eq((tax_rate.amount * 10000).to_i)
+    end
+
+    it "sets the product url" do
+      expect(serialized[:product_url]).to_not eq(nil)
     end
   end
 end

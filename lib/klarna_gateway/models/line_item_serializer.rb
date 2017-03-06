@@ -21,7 +21,9 @@ module KlarnaGateway
           # Includes tax and discount. Must match (quantity * unit_price) - total_discount_amount within ±quantity
           total_amount: total_amount,
           # Must be within ±1 of total_amount - total_amount * 10000 / (10000 + tax_rate). Negative when type is discount
-          total_tax_amount: total_tax_amount
+          total_tax_amount: total_tax_amount,
+          image_url: image_url,
+          product_url: product_url
         }
       end
     end
@@ -44,6 +46,18 @@ module KlarnaGateway
 
     def unit_price
       line_item.display_price.cents + (total_tax_amount / line_item.quantity).floor
+    end
+
+    def image_url
+      image = line_item.variant.images.first
+      URI.join(
+        ActionController::Base.asset_host || Spree::Store.current.url,
+        image.attachment.url
+      ).to_s if image.present?
+    end
+
+    def product_url
+      Spree::Core::Engine.routes.url_helpers.product_url(line_item.variant, host: Spree::Store.current.url)
     end
   end
 end
