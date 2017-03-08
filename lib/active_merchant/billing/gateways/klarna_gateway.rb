@@ -174,7 +174,10 @@ module ActiveMerchant
           ActiveMerchant::Billing::Response.new(
             true,
             "Released reamining amount for order with Klarna id: #{order_id}",
-            response.body || {}
+            response.body || {},
+            {
+              authorization: order_id
+            }
           )
         else
           ActiveMerchant::Billing::Response.new(
@@ -197,7 +200,9 @@ module ActiveMerchant
             true,
             "Cancelled order with Klarna id: #{order_id}",
             response.body || {},
-            {}
+            {
+              authorization: order_id
+            }
           )
         else
           ActiveMerchant::Billing::Response.new(
