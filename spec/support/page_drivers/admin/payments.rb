@@ -60,7 +60,6 @@ module PageDrivers
       sections :payments, PaymentItem, '[data-hook="payment_list"] tbody tr[data-hook="payments_row"]'
       section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
       element :new_payment_button, '#content-header .header-actions #new_payment_section a'
-
     end
   end
 end

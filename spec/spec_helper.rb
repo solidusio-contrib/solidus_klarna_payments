@@ -3,16 +3,17 @@ ENV['RAILS_ENV'] = 'test'
 
 begin
   require File.expand_path("../dummy/config/environment.rb",  __FILE__)
+  ENV["RAILS_ROOT"] ||= File.dirname(__FILE__) + "../../../spec/dummy"
 rescue LoadError
   puts "Could not load dummy application. Please ensure you have run `bundle exec rake test_app`"
 end
 
-require "database_cleaner"
 require "pry"
 
 require 'spree/core/version'
 require 'rails/all'
 require 'rspec/rails'
+require 'rspec/autorun'
 require 'klarna_gateway'
 
 # Feature specs
@@ -27,12 +28,17 @@ require 'spree/testing_support/controller_requests'
 require 'spree/testing_support/authorization_helpers'
 require 'factories/klarna_payment_factory'
 require 'support/klarna_api_helper'
+<<<<<<< HEAD
 require 'support/site_prism'
+=======
+require 'solidus_sample'
+>>>>>>> Refactor tests WIP
 
 RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.include FactoryGirl::Syntax::Methods
+<<<<<<< HEAD
   config.include Spree::TestingSupport::ControllerRequests, type: :controller
   config.include_context "Klarna API helper", :klarna_api
 
@@ -48,6 +54,8 @@ RSpec.configure do |config|
   config.after do
     DatabaseCleaner.clean
   end
+=======
+>>>>>>> Refactor tests WIP
 end
 
 Capybara.register_driver :poltergeist do |app|

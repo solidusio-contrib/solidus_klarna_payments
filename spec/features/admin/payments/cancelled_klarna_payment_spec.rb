@@ -1,15 +1,16 @@
 require 'features_helper'
 
-describe 'Cancalled Klarna Payments' do
+describe 'Cancalled Klarna Payments', type: 'feature' do
   include_context "ordering with klarna"
   include WorkflowDriver::Process
 
-  it 'doesn\'t show klarna warning massage with cancelled orders.' do
+  it "doesn't show klarna warning massage with cancelled orders." do
     order_product('Ruby on Rails Bag')
     pay_with_klarna
 
     on_the_admin_login_page do |page|
       page.load
+
       expect(page.displayed?).to be(true)
 
       expect(page.title).to have_content('Admin Login')
@@ -65,7 +66,6 @@ describe 'Cancalled Klarna Payments' do
 
     on_the_admin_order_page do |page|
       expect(page.displayed?).to be(true)
-
       expect(page).not_to have_content('Updates to this order will not be reflected in Klarna')
 
       page.menu.customer.click

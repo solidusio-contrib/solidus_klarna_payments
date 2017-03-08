@@ -1,6 +1,6 @@
 require 'features_helper'
 
-describe 'Managing a Klarna Payment' do
+describe 'Managing a Klarna Payment', type: 'feature' do
   include_context "ordering with klarna"
   include WorkflowDriver::Process
 

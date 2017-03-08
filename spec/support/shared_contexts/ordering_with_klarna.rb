@@ -42,20 +42,46 @@ shared_context "ordering with klarna" do
 
     on_the_delivery_page do |page|
       expect(page.displayed?).to be(true)
-
-      expect(page.stock_contents).to have_content(product_name)
+      page.stock_contents.each do |stocks|
+        expect(stocks).to have_content(product_name)
+      end
       page.continue
     end
   end
 
-  def pay_with_klarna
+  def select_klarna_payment
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
 
       page.select_klarna
       page.continue
     end
+  end
 
+  def pay_with_klarna
+    select_klarna_payment
+
+    if $data.local?
+      confirm_on_local
+    else
+      confirm_on_remote
+    end
+  end
+
+  def confirm_on_local
+    expect do
+      on_the_confirm_page do |page|
+        expect(page.displayed?).to be(true)
+
+        wait_for_ajax
+        page.continue
+      end
+    end.to change(Spree::Order.complete, :count).by(1)
+
+    Spree::Order.complete.last.number
+  end
+
+  def confirm_on_remote
     on_the_confirm_page do |page|
       expect(page.displayed?).to be(true)
 

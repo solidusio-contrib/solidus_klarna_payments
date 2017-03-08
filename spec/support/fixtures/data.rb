@@ -113,4 +113,8 @@ class TestData
   def de?
     country == 'de'
   end
+
+  def local?
+    store == LocalStore
+  end
 end

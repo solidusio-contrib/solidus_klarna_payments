@@ -1,6 +1,6 @@
 require 'features_helper'
 
-describe 'Ordering with Klarna Payment Method' do
+describe 'Ordering with Klarna Payment Method', type: 'feature' do
   include_context "ordering with klarna"
 
   it 'Buy 10 Ruby on Rails Bag with Klarna' do
