@@ -18,6 +18,10 @@
     text-align: center;
     padding: 20px;
   }
+  .klarna_error {
+    display: none;
+      margin: 15px;
+  }
   @media only screen and (max-width: 767px) {
     #klarna_container {
       padding: 5px;
@@ -37,6 +41,7 @@
 
   <%= hidden_field_tag "#{param_prefix}[authorization_token]", "", {id: "klarna_authorization_token"} %>
   <div id="klarna_container"></div>
+  <div class="klarna_error flash error"><%= Spree.t('klarna_general_error') %></div>
 </div>
 
 <script type="text/javascript" id="klarna­credit­lib­x">
@@ -80,7 +85,12 @@
         method: 'POST',
         url: settings.sessionUrl,
         data: {klarna_payment_method_id: settings.paymentId}
-      }).done(function(response) {
+      }).success(function(response) {
+        if (response.token === null) {
+          window.console && console.log("[Klarna Credit] received empty token:", response)
+          displayError();
+          return;
+        }
         settings.clientToken = response.token
         Klarna.Credit.init ({
           client_token: response.token
@@ -88,7 +98,15 @@
         if (klarnaSelected()) {
           loadKlarnaForm();
         }
+      }).error(function(response) {
+        window.console && console.log("[Klarna Credit] received erroneous server response:", response);
+        displayError();
       });
+    }
+
+    var displayError = function() {
+      $('.klarna_error').show();
+      $('#klarna_container').hide();
     }
 
     // Loads the Klarna Form
