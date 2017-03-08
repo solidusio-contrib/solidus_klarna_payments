@@ -3,6 +3,7 @@ module KlarnaApiHelper
     let!(:a_successful_response) do
        -> (double) {
         allow(double).to receive(:success?).and_return(true)
+        allow(double).to receive(:[]).and_return("A-HEADER")
         allow(double).to receive(:error?).and_return(false)
         double
       }
