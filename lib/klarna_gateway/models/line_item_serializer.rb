@@ -2,9 +2,13 @@ module KlarnaGateway
   class LineItemSerializer
     attr_reader :line_item, :strategy
 
+
     def initialize(line_item, strategy)
       @line_item = line_item
-      @strategy = strategy
+      @strategy = case strategy
+                  when Symbol, String then strategy_for_region(strategy)
+                  else strategy
+                  end
     end
 
     # TODO: clarify what amounts exactly should be used
@@ -58,6 +62,13 @@ module KlarnaGateway
 
     def product_url
       Spree::Core::Engine.routes.url_helpers.product_url(line_item.variant, host: Spree::Store.current.url)
+    end
+
+    def strategy_for_region(region)
+      case region.downcase.to_sym
+        when :us then AmountCalculators::US::LineItemCalculator.new
+        else AmountCalculators::UK::LineItemCalculator.new
+        end
     end
   end
 end
