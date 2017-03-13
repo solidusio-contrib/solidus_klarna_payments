@@ -24,38 +24,26 @@ module KlarnaGateway
       KlarnaGateway::OrderSerializer.new(self.reload, country)
     end
 
-    def has_klarna_payments?
-      payments.where(source_type: 'Spree::KlarnaCreditPayment').any?
-    end
-
     def authorized_klarna_payments
-      payments.where(source_type: 'Spree::KlarnaCreditPayment').find_all do |payment|
+      payments.klarna_credit.find_all do |payment|
         payment.source.authorized?
       end
     end
 
     def captured_klarna_payments
-      payments.where(source_type: 'Spree::KlarnaCreditPayment').find_all do |payment|
+      payments.klarna_credit.find_all do |payment|
         payment.source.captured?
       end
     end
 
     def available_klarna_payments?
-      payments.where(source_type: 'Spree::KlarnaCreditPayment').any? do |payment|
-        payment.source.authorized? || payment.source.captured?
-      end
+      (authorized_klarna_payments.count + captured_klarna_payments.count) > 0
     end
 
     def can_be_cancelled_from_klarna?
-      payments.where(source_type: 'Spree::KlarnaCreditPayment').none? do |payment|
+      payments.klarna_credit.none? do |payment|
         !payment.source.cancelled?
       end
-    end
-
-    private
-
-    def klarna_payment_provider
-      payments.where(source_type: 'Spree::KlarnaCreditPayment').last.payment_method.provider
     end
   end
 end

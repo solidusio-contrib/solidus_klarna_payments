@@ -62,14 +62,6 @@ describe KlarnaGateway::Order do
   end
 
   within_a_virtual_api do
-    context "#has_klarna_payments?" do
-      it "checks when an order has klarna payments" do
-        expect(check_order.has_klarna_payments?).to be_falsy
-        expect(credit_card_order.has_klarna_payments?).to be_falsy
-        expect(klarna_order.has_klarna_payments?).to be_truthy
-      end
-    end
-
     context "#authorized_klarna_payments" do
       it "returns klarna payments with AUTHORIZED status" do
         expect(klarna_order.authorized_klarna_payments.count).to eq(0)

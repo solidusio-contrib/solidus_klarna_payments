@@ -5,7 +5,7 @@ module KlarnaGateway
     end
 
     def klarna_completion_route
-      source = @order.has_klarna_payments? && @order.payments.last.source
+      source = @order.payments.klarna_credit.map(&:source).last
       if source && source.accepted? && source.redirect_url?
         source.redirect_url
       end

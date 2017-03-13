@@ -1,4 +1,4 @@
-<% if @order.has_klarna_payments? %>
+<% if @order.payments.klarna_credit.any? %>
   <style type="text/css">
     .align-center {
       width: 100%;

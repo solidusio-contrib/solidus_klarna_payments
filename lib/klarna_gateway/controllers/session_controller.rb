@@ -43,7 +43,7 @@ module KlarnaGateway
     end
 
     def klarna_update_session
-      @order.payments.last.source.update_attributes({ authorization_token: params[:token] })
+      @order.klarna_payments.last.source.update_attributes({ authorization_token: params[:token] })
       render json: {status: "ok"}
     end
 
