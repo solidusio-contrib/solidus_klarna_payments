@@ -1,10 +1,10 @@
 require 'features_helper'
 
-describe 'Cancalled Klarna Payments', type: 'feature' do
+describe 'Cancalled Klarna Payments', type: 'feature', bdd: true do
   include_context "ordering with klarna"
   include WorkflowDriver::Process
 
-  it "doesn't show klarna warning massage with cancelled orders." do
+  it "doesn't show klarna warning message with cancelled orders." do
     order_product('Ruby on Rails Bag')
     pay_with_klarna
 

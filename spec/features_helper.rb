@@ -37,6 +37,20 @@ RSpec.configure do |config|
           api_secret: ENV['KLARNA_API_SECRET'],
           country: "us"
         })
+      Spree::PaymentMethod.create(
+        name: "Wrong Klarna",
+        type: 'Spree::Gateway::KlarnaCredit',
+        preferences: {
+          server: "test",
+          test_mode: true,
+          api_key: 'wrong_key',
+          api_secret: ENV['KLARNA_API_SECRET'],
+          country: "us"
+        })
+    end
+
+    if config.inclusion_filter.rules.has_key?(:bdd)
+      Spree::Store.current.update_attributes(url: "http://#{Spree::Store.current.url}") unless Spree::Store.current.url.match(/http/)
     end
   end
   config.before(:each) do |example|

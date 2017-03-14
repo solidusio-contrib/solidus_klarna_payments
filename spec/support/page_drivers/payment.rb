@@ -14,13 +14,17 @@ module PageDrivers
 
     elements :payment_methods, "fieldset#payment #payment-method-fields label"
     element :continue_button, "form#checkout_form_payment input.continue"
+    element :klarna_error, ".klarna_error"
 
     iframe :klarna_credit, KlarnaCredit, '#klarna-credit-main'
     iframe :klarna_credit_fullscreen, KlarnaCreditFullscreen, '#klarna-credit-fullscreen'
 
-    def select_klarna
-      payment_methods.find{|e| e.text.match(/Klarna/)}.click
+    def select_payment_method(name)
+      payment_methods.find{|e| e.text.match(/#{name}/)}
+    end
 
+    def select_klarna
+      select_payment_method('Klarna Credit').click
       wait_for_klarna_credit
 
       klarna_credit do |frame|
@@ -35,12 +39,12 @@ module PageDrivers
 
 
     def select_credit_card
-      payment_methods.find{|e| e.text.match(/Credit Card/)}.click
+      select_payment_method('Credit Card').click
     end
 
 
     def select_check
-      payment_methods.find{|e| e.text.match(/Check/)}.click
+      select_payment_method('Check').click
     end
 
     def continue

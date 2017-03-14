@@ -19,15 +19,6 @@ module ActiveMerchant
               expect(response[:message]).to eq("true")
             end
           end
-
-          it "rescue from any error and return an error hash" do
-            expect(Klarna).to receive(:client).with(:credit).and_raise("Some unexpected error")
-
-            payment.payment_method.provider.create_session(order).tap do |response|
-              expect(response.has_key?(:error)).to be(true)
-              expect(response[:error]).to eq("Some unexpected error")
-            end
-          end
         end
 
         context "On updating session" do
@@ -38,15 +29,6 @@ module ActiveMerchant
             payment.payment_method.provider.update_session(1, order).tap do |response|
               expect(response.has_key?(:message)).to be(true)
               expect(response[:message]).to eq("true")
-            end
-          end
-
-          it "rescue from any error and return an error hash" do
-            expect(Klarna).to receive(:client).with(:credit).and_raise("Some unexpected error")
-
-            payment.payment_method.provider.update_session(1, order).tap do |response|
-              expect(response.has_key?(:error)).to be(true)
-              expect(response[:error]).to eq("Some unexpected error")
             end
           end
         end

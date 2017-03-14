@@ -1,6 +1,6 @@
 require 'features_helper'
 
-describe 'Ordering with Klarna Payment Method', type: 'feature' do
+describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
   include_context "ordering with klarna"
 
   it 'Buy 10 Ruby on Rails Bag with Klarna' do
@@ -26,8 +26,9 @@ describe 'Ordering with Klarna Payment Method', type: 'feature' do
     end
   end
 
-  it 'can change to a check payment before confirming the payment' do
+  xit 'can change to a check payment before confirming the payment' do
     order_product('Ruby on Rails Bag')
+
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
 
@@ -35,11 +36,13 @@ describe 'Ordering with Klarna Payment Method', type: 'feature' do
       page.continue
     end
 
-    on_the_confirm_page.change_payment
+    on_the_confirm_page  do |page|
+      expect(page.displayed?).to be(true)
+      page.change_payment
+    end
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
-
       page.select_check
       page.continue
     end

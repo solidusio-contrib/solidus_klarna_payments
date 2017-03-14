@@ -1,6 +1,6 @@
 require 'features_helper'
 
-describe 'Managing a Klarna Payment', type: 'feature' do
+describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
   include_context "ordering with klarna"
   include WorkflowDriver::Process
 
@@ -31,6 +31,7 @@ describe 'Managing a Klarna Payment', type: 'feature' do
       expect(page.payments.first.is_klarna?).to be(true)
       expect(page.payments.first.is_pending?).to be(true)
       expect(page.payments.first.is_klarna_authorized?).to be(true)
+
       page.payments.first.capture!
       expect(page.payments.first.is_klarna_captured?).to be(true)
       expect(page.payments.first.is_completed?).to be(true)

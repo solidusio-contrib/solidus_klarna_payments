@@ -65,7 +65,6 @@
       <% end %>
       </div>
   </fieldset>
-<% end %>
 
   <% if @klarna_order["order_lines"] %>
     <fieldset class="no-border-bottom">
@@ -217,29 +216,29 @@
         <span >Refunds</span>
       </legend>
       <% @klarna_order["refunds"].each do |refund| %>
-          <table>
-            <thead>
-              <tr>
-                <th>Field</th>
-                <th>Value</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Refunded Amount</td>
-                <td class="align-center"><%= cents_to_display_money(refund["refunded_amount"], @klarna_order['purchase_currency']) %></td>
-              </tr>
-              <tr>
-                <td>Refunded At</td>
-                <td class="align-center"><%= pretty_time DateTime.parse(refund['refunded_at']) %></td>
-              </tr>
-              <tr>
-                <td>Description</td>
-                <td class="align-center"><%= refund['description'] %></td>
-              </tr>
-            </tbody>
-          </table>
-        <% end %>
+        <table>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Refunded Amount</td>
+              <td class="align-center"><%= cents_to_display_money(refund["refunded_amount"], @klarna_order['purchase_currency']) %></td>
+            </tr>
+            <tr>
+              <td>Refunded At</td>
+              <td class="align-center"><%= pretty_time DateTime.parse(refund['refunded_at']) %></td>
+            </tr>
+            <tr>
+              <td>Description</td>
+              <td class="align-center"><%= refund['description'] %></td>
+            </tr>
+          </tbody>
+        </table>
+      <% end %>
     </fieldset>
   <% end %>
 

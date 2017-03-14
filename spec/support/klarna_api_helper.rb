@@ -25,6 +25,7 @@ RSpec.shared_context "Klarna API helper", :klarna_api do
   let(:klarna_authorize_response) {
     a_successful_response.call double('ApiResponse',
       body: {},
+      headers: {},
       order_id: 1234,
       fraud_status: "ACCEPTED",
       redirect_url: "http://someplace.com"
@@ -38,6 +39,7 @@ RSpec.shared_context "Klarna API helper", :klarna_api do
         fraud_status: "ACCEPTED",
         status: "AUTHORIZED"
       },
+      headers: {},
       order_id: 1234,
       fraud_status: "ACCEPTED",
       status: "AUTHORIZED",
@@ -48,6 +50,7 @@ RSpec.shared_context "Klarna API helper", :klarna_api do
   let(:klarna_negative_response) {
     a_error_response.call double('ApiResponse',
       body: {},
+      headers: {},
       error_code: "SOME_ERROR",
       error_messages: "some error",
       correlation_id: 1234
@@ -57,6 +60,7 @@ RSpec.shared_context "Klarna API helper", :klarna_api do
   let(:klarna_captured_response) {
     a_successful_response.call double('ApiResponse',
       body: {},
+      headers: {},
       order_id: 1234,
       fraud_status: "ACCEPTED",
       status: "CAPTURED",
@@ -67,6 +71,7 @@ RSpec.shared_context "Klarna API helper", :klarna_api do
   let(:klarna_cancelled_response) {
     a_successful_response.call double('ApiResponse',
       body: {},
+      headers: {},
       order_id: 1234,
       fraud_status: "ACCEPTED",
       status: "CANCELLED",
@@ -76,7 +81,8 @@ RSpec.shared_context "Klarna API helper", :klarna_api do
 
   let(:klarna_empty_success_response) {
     a_successful_response.call double('ApiResponse',
-      body: {}
+      body: {},
+      headers: {}
     )
   }
 

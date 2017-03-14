@@ -1,8 +1,8 @@
 module PageDrivers
   class CheckoutSteps < SitePrism::Section
-    element :address, :xpath, 'li[0]'
-    element :delivery, :xpath, 'li[1]'
-    element :payment, :xpath, 'li[2]'
+    element :address, :xpath, 'li[1]'
+    element :delivery, :xpath, 'li[2]'
+    element :payment, :xpath, 'li[3]'
   end
 
   class Confirm < SitePrism::Page

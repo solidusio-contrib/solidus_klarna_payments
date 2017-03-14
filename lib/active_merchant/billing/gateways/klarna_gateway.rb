@@ -7,7 +7,7 @@ module ActiveMerchant
       class << self
         undef_method :supports?
       end
-      
+
       def initialize(options={})
         @options = options
 
