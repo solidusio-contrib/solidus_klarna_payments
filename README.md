@@ -1,8 +1,30 @@
-# KlarnaGateway
+# Klarna Credit integration for Solidus
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/klarna_gateway`. To experiment with that code, run `bin/console` for an interactive prompt.
+![Klarna](https://cdn.klarna.com/1.0/shared/image/generic/logo/en_us/basic/blue-black.png?height=30) 
 
-TODO: Delete this and the text above, and describe your gem
+This integration enables [Solidus](https://solidus.io) to provide [Klarna](https://www.klarna.com/) Credit as a payment method.
+
+![Checkout](docs/checkout.png)
+
+### Features
+
+- Integrates seamlessly as a payment provider
+- Supports auto capture
+- Supports partial captures, refunds and partial refunds
+- Configurable design
+- [ActiveMerchant](http://activemerchant.org) interface for Klarna Credit
+
+### Limitations
+
+- *Multiple* captures for one authorization are currently *not* supported because of Solidus' process when capturing payments. This might change in future versions of Solidus and this gem respectively. However, it is possible to use the MyKlarna portal to do that.
+- Changing customer data after they completed the order is not synced to the Klarna API. So please be aware that you have to change the information in the MyKlarna portal if needed.
+
+### Supported Solidus Versions
+
+- Solidus 1.3.x
+- Solidus 1.4.x
+
+It's planned to work on compatibility for the 2.x branch of Solidus.
 
 ## Installation
 
@@ -20,49 +42,41 @@ Or install it yourself as:
 
     $ gem install klarna_gateway
 
-
-## Configuration
-
-Copy Klarna specific migrations or run:
+In your project install Klarna specific migrations:
 
     $ rails generate klarna_gateway:install
 
-Configure the Gem based on gem general attributes:
+## Solidus configuration
 
-    config.confirmation_url
+After the installation it at least the credentials for your Klarna account have to be entered in the backend. Create a new payment method and select `Spree::Gateway::KlarnaCredit` as the gateway. After saving the payment method, you can configure your credentials and additionally set design options for the iframe the user sees in the checkout.
 
-More information at:
+![Configuration](docs/configuration.png)
 
-    lib/generators/klarna_gateway/install/install_generator.rb
+The "country" option is mandatory and refers to the region the account is associated with. In the example above it's `us` for the USA, other values would be `uk` for the United Kingdom and `de` for Germany.
 
+There are two other things to configure. Set the payment method to "active" and only enable it in the frontend. Some payment methods can be used in the backend by the merchant. As this doesn't make much sense for Klarna Credit, it should be disabled. You can also configure to automatically capture the payments when the customer confirms their order.
 
-## Documentation
+![Configuration](docs/configuration2.png)
 
-### Javascript API [link](https://credit.klarnacdn.net/lib/v1/index.html)
-
-Api descrpition for Frontend JS implementation.
-
-### Credit API [link](https://developers.klarna.com/api/)
-
-Api descrpition for Backend implementation.
-
-### Klarna Developers Portal [link](https://developers.klarna.com/)
-
-General description of Klarna payment solutions.
+*Note*: After you ran `klarna_gateway:install` the initializer in `config/initializers/klarna_gateway.rb` allows some configuration. It's usually not necessary to touch the file unless you're sure what you're doing.
 
 
-## Development
+## Technical information
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+### API documentation
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+- [Klarna's API](https://developers.klarna.com/api/) is used by the payment gateway
+- [Javascript SDK](https://credit.klarnacdn.net/lib/v1/index.html) for the frontend part
+
+For more information see [Klarna's Developers Portal](https://developers.klarna.com/).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/klarna_gateway.
+Contributions are always welcome. If you find a bug or have a suggestion, please open a ticket on Github. If you want to contribute code directly, just open a pull request and describe your change.
 
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
 
