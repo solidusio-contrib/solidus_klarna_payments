@@ -70,7 +70,7 @@ module ActiveMerchant
       end
 
       def capture(amount, order_id, options={})
-        response = Klarna.client.capture(order_id, {captured_amount: amount})
+        response = Klarna.client.capture(order_id, {captured_amount: amount, shipping_info: options[:shipping_info]})
 
         if response.success?
           payment_source = Spree::KlarnaCreditPayment.find_by(order_id: order_id)
