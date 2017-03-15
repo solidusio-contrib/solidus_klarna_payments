@@ -13,16 +13,6 @@
   <div class="klarna_credit_box"
     data-order-id="<%= @order.number %>"
     data-order-session-id="">
-    <fieldset id="order_details">
-
-      <div class="clear"></div>
-      <legend align="center">Payment Verification</legend>
-      <div class="row">
-        <div class="align-center">
-          <span class="spiner"><img src="/assets/spinner.gif" /></span>
-        </div>
-      </div>
-    </fieldset>
   </div>
 
   <div class="clear"></div>
@@ -37,15 +27,13 @@
         updateSessionUrl: "/checkout/state/klarna_update_session"
       }, options);
 
-      settings.canvas = this;
-
       if (!settings.orderId && this.data('orderId') !== undefined) {
         settings.orderId = this.data('orderId');
         settings.paymentUrl = "/checkout/payment"
       }
 
       if (settings.submitButton) {
-        settings.submitCanvas = settings.submitButton.parent().hide();
+        settings.submitButton.attr('disabled', true).removeClass('primary').addClass('gray');
       }
 
       var updateSession= function (response) {
@@ -56,8 +44,7 @@
           data: {token: response.authorization_token}
         }).done(function() {
           if (response.approved) {
-            settings.canvas.hide();
-            settings.submitCanvas.show();
+            settings.submitButton.attr('disabled', false).addClass('primary').removeClass('gray');
           } else {
             window.location.assign(settings.paymentUrl)
           }
