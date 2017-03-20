@@ -8,6 +8,21 @@
     .hiddden {
       display: none;
     }
+    .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #00ADEE;
+        border-radius: 50%;
+        width: 15px;
+        height: 15px;
+        display: inline-block;
+        margin: 0 5px;
+        animation: spin 1.5s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
   </style>
 
   <div class="klarna_credit_box"
@@ -24,19 +39,21 @@
         submitButton: null,
         orderId: null,
         sessionUrl: "/checkout/state/klarna_order_status",
-        updateSessionUrl: "/checkout/state/klarna_update_session"
+        updateSessionUrl: "/checkout/state/klarna_update_session",
+        loader: $('<div class="loader"></div>')
       }, options);
 
       if (!settings.orderId && this.data('orderId') !== undefined) {
         settings.orderId = this.data('orderId');
-        settings.paymentUrl = "/checkout/payment"
+        settings.paymentUrl = "/checkout/payment";
       }
 
       if (settings.submitButton) {
         settings.submitButton.attr('disabled', true).removeClass('primary').addClass('gray');
+        settings.submitButton.after(settings.loader);
       }
 
-      var updateSession= function (response) {
+      var updateSession = function(response) {
         return $.ajax({
           method: 'POST',
           url: settings.updateSessionUrl,
@@ -45,6 +62,7 @@
         }).done(function() {
           if (response.approved) {
             settings.submitButton.attr('disabled', false).addClass('primary').removeClass('gray');
+            settings.loader.hide();
           } else {
             window.location.assign(settings.paymentUrl)
           }
@@ -68,7 +86,7 @@
 
             delete response.data.merchant_urls;
 
-            Klarna.Credit.reauthorize(response.data,updateSession);
+            Klarna.Credit.reauthorize(response.data, updateSession);
           } else {
             window.location.assign(settings.paymentUrl)
           }
