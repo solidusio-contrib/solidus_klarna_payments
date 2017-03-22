@@ -1,0 +1,53 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api-na.playground.klarna.com/credit/v1/sessions
+    body:
+      encoding: UTF-8
+      string: '{"purchase_country":"US","purchase_currency":"USD","locale":"en-US","order_amount":11000,"billing_address":{"email":"argelia@zboncakwhite.com","organization_name":"Company","given_name":"John","family_name":"Doe","street_address":"PO
+        Box 1337","street_address2":"Northwest","postal_code":"24931","city":"Herndon","region":"Alabama","phone":"555-555-0199","country":"US"},"shipping_address":{"email":"argelia@zboncakwhite.com","organization_name":"Company","given_name":"John","family_name":"Doe","street_address":"A
+        Different Road","street_address2":"Northwest","postal_code":"35249","city":"Herndon","region":"Alabama","phone":"555-555-0199","country":"US"},"order_lines":[{"reference":"SKU-1","name":"Product
+        #1 - 573","quantity":1,"unit_price":1000,"tax_rate":0,"total_amount":1000,"total_tax_amount":0},{"type":"shipping_fee","reference":"H44076373454","name":"H44076373454","quantity":1,"unit_price":10000,"total_amount":10000,"total_tax_amount":0,"tax_rate":0}],"merchant_reference1":"R241442643","options":{},"merchant_urls":{"confirmation":"http://www.example7.com/orders/R241442643","notification":"http://www.example7.com/klarna/callbacks/notification"},"order_tax_amount":0}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic <ENCODED_AUTH_HEADER>
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 03 Jan 2017 14:32:02 GMT
+      Klarna-Correlation-Id:
+      - cca12a89-f634-42a9-8b40-1f6696a93449
+      Render-Time:
+      - '7'
+      Server:
+      - nginx
+      Vary:
+      - Accept-Encoding
+      Content-Length:
+      - '322'
+      Connection:
+      - keep-alive
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "session_id" : "ea7cfbf2-e011-4f91-857e-ff6b2205228d",
+          "client_token" : "eyJhbGciOiJub25lIn0.ewogICJzZXNzaW9uX2lkIiA6ICJlYTdjZmJmMi1lMDExLTRmOTEtODU3ZS1mZjZiMjIwNTIyOGQiLAogICJiYXNlX3VybCIgOiAiaHR0cHM6Ly9jcmVkaXQtbmEucGxheWdyb3VuZC5rbGFybmEuY29tIiwKICAiZGVzaWduIiA6ICJrbGFybmEiLAogICJsYW5ndWFnZSIgOiAiZW4iLAogICJwdXJjaGFzZV9jb3VudHJ5IiA6ICJVUyIsCiAgInRyYWNlX2Zsb3ciIDogZmFsc2UKfQ."
+        }
+    http_version: 
+  recorded_at: Tue, 03 Jan 2017 14:32:02 GMT
+recorded_with: VCR 3.0.3

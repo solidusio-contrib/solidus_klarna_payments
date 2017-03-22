@@ -38,14 +38,13 @@
       var settings = $.extend({
         submitButton: null,
         orderId: null,
-        sessionUrl: "/checkout/state/klarna_order_status",
-        updateSessionUrl: "/checkout/state/klarna_update_session",
+        sessionUrl: Spree.url("/klarna/session")
         loader: $('<div class="loader"></div>')
       }, options);
 
       if (!settings.orderId && this.data('orderId') !== undefined) {
         settings.orderId = this.data('orderId');
-        settings.paymentUrl = "/checkout/payment";
+        settings.paymentUrl = Spree.url("/checkout/payment")
       }
 
       if (settings.submitButton) {

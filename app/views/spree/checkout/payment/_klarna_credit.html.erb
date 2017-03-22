@@ -70,7 +70,7 @@
 
     if (!settings.orderId && this.data('orderId') !== undefined) {
       settings.orderId = this.data('orderId');
-      settings.sessionUrl = Spree.url(Spree.pathFor("/checkout/" + settings.orderId + "/klarna_session"))
+      settings.sessionUrl = Spree.url(Spree.pathFor("/klarna/session"))
     }
 
     if (settings.paymentId === null) {
@@ -131,7 +131,7 @@
       // First get the current, serialized order
       Spree.ajax({
         method: 'GET',
-        url: Spree.url(Spree.pathFor("/checkout/state/klarna_order_addresses")),
+        url: Spree.url(Spree.pathFor("/klarna/session/order_addresses")),
         dataType: 'json',
         data: {klarna_payment_method_id: settings.paymentId}
       }).done(function(result) {
