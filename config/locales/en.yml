@@ -41,3 +41,12 @@ en:
     color_text_secondary: Secondary text color (hex)
     radius_border: Border radius in pixel
     klarna_general_error: "A technical error has occurred. Please try reloading the page or contact the merchant."
+  klarna:
+    gateway_errors:
+      internal_server_error: "There was a technical error while processing the payment. Please try again."
+      http_error: "There was a technical error while processing the payment. Please try again."
+      bad_value: "There was a technical error while communicating with Klarna. Please contact the support."
+      bad_request: "There was a technical error while communicating with Klarna. Please contact the support."
+      service_unavailable: "There was a technical error while communicating with Klarna. Please contact the support."
+      invalid_operation: "There was a technical error while communicating with Klarna. Please contact the support."
+      rejected: "Klarna rejected the request. Please select another payment method."

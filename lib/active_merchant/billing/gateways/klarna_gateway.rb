@@ -60,7 +60,7 @@ module ActiveMerchant
         else
           ActiveMerchant::Billing::Response.new(
             false,
-            'Klarna Gateway: Please check your payment method.',
+            readable_error(response),
             response.body,
             {
               error_code: response.error_code
@@ -87,7 +87,7 @@ module ActiveMerchant
         else
           ActiveMerchant::Billing::Response.new(
             false,
-            'Klarna Gateway: There was an error processing this payment.',
+            readable_error(response),
             response.body || {},
             {
               error_code: response.error_code
@@ -268,6 +268,10 @@ module ActiveMerchant
           order.save!
           order
         end
+      end
+
+      def readable_error(response)
+        I18n.t(response.error_code.to_s.downcase, scope: "klarna.gateway_errors", default: "Klarna Gateway: Please check your payment method.")
       end
     end
   end
