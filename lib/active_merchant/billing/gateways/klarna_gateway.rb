@@ -97,7 +97,15 @@ module ActiveMerchant
       end
 
       def refund(amount, order_id, options={})
-        response = Klarna.client(:refund).create(order_id, {refunded_amount: amount})
+        # Get the refunded line items for better customer communications
+        line_items = []
+        if options[:originator].present?
+          region = options[:originator].try(:payment).payment_method.options[:country]
+          line_items = Array(options[:originator].try(:reimbursement).try(:return_items)).map do |item|
+            ::KlarnaGateway::LineItemSerializer.new(item.inventory_unit.line_item, region)
+          end
+        end
+        response = Klarna.client(:refund).create(order_id, {refunded_amount: amount, order_lines: line_items})
 
         if response.success?
           update_payment_source!(Spree::KlarnaCreditPayment.find_by(order_id: order_id), order_id)
