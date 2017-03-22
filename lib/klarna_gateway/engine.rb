@@ -17,6 +17,7 @@ module KlarnaGateway
       Spree::Order.include(KlarnaGateway::Order)
       Spree::Refund.include(KlarnaGateway::Refund)
       Spree::Payment.include(KlarnaGateway::Payment::Processing)
+      Spree::Payment.include(KlarnaGateway::Payment::Scope)
     end
   end
 end
