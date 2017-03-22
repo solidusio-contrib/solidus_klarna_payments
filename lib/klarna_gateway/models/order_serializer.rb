@@ -37,7 +37,8 @@ module KlarnaGateway
         merchant_reference1: order.number,
         options: options,
         design: design,
-        merchant_urls: merchant_urls
+        merchant_urls: merchant_urls,
+        shipping_info: shipping_info
       }.delete_if { |k, v| v.nil? }
     end
 
@@ -100,6 +101,16 @@ module KlarnaGateway
         confirmation: confirmation_url,
         notification: url_helpers.klarna_notification_url(host: store_url)
       } if store.present?
+    end
+
+    def shipping_info
+      @order.shipments.map do |shipment|
+        {
+          shipping_company: shipment.shipping_method.name,
+          tracking_number: shipment.tracking,
+          tracking_uri: shipment.tracking_url,
+        }
+      end
     end
 
     def confirmation_url
