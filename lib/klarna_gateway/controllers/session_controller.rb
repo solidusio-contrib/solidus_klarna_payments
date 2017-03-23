@@ -1,8 +1,6 @@
 module KlarnaGateway
   module SessionController
     def create
-      current_order.state = "payment"
-
       if current_order.klarna_session_expired?
         klarna_payment_method.provider.create_session(klarna_order(skip_personal_data: true).to_hash).tap do |response|
           current_order.update_klarna_session(
@@ -23,7 +21,7 @@ module KlarnaGateway
         raise "Could not create or update Klarna session for order '#{current_order.number}'."
       end
 
-      render json: {token: current_order.reload.klarna_client_token}
+      render json: {token: current_order.reload.klarna_client_token, checksum: klarna_order.checksum}
     end
 
     def show

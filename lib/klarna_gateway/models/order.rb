@@ -1,3 +1,5 @@
+require 'digest'
+
 module KlarnaGateway
   module Order
     KLARNA_SESSION_LIFETIME = 48.hours
@@ -22,6 +24,10 @@ module KlarnaGateway
 
     def to_klarna(country = :us)
       KlarnaGateway::OrderSerializer.new(self.reload, country)
+    end
+
+    def klarna_hash
+      Digest::SHA2.hexdigest(to_klarna)
     end
 
     def authorized_klarna_payments

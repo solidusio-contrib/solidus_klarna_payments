@@ -1,3 +1,5 @@
+require "digest"
+
 module KlarnaGateway
   class OrderSerializer
     attr_reader :order, :region
@@ -13,6 +15,10 @@ module KlarnaGateway
       strategy.adjust_with(order) do
         config
       end
+    end
+
+    def checksum
+      Digest::SHA2.hexdigest(to_hash.to_s)
     end
 
     def addresses
