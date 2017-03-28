@@ -25,7 +25,7 @@ module KlarnaGateway
     end
 
     def show
-      render json: {status: !current_order.klarna_session_expired?, token: current_order.klarna_client_token, data: klarna_order.to_hash}
+      render json: {status: !current_order.klarna_session_expired?, token: current_order.klarna_client_token, data: klarna_order.to_hash, checksum: klarna_order.checksum}
     end
 
     def order_addresses
