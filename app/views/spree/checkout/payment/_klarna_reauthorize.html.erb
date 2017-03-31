@@ -1,9 +1,0 @@
-<% if @order.payments.klarna_credit.any? %>
-  <script type="text/javascript" id="klarna-credit-lib-x">
-  /* <![CDATA[ */
-  KlarnaGateway.loadSdk(this, document, function() {
-    jQuery(".klarna_credit_box").klarnaReauthorize();
-  });
-  /* ]]> */
-  </script>
-<% end %>

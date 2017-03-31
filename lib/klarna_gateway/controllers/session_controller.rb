@@ -21,11 +21,11 @@ module KlarnaGateway
         raise "Could not create or update Klarna session for order '#{current_order.number}'."
       end
 
-      render json: {token: current_order.reload.klarna_client_token, checksum: klarna_order.checksum}
+      render json: {token: current_order.reload.klarna_client_token}
     end
 
     def show
-      render json: {status: !current_order.klarna_session_expired?, token: current_order.klarna_client_token, data: klarna_order.to_hash, checksum: klarna_order.checksum}
+      render json: {status: !current_order.klarna_session_expired?, token: current_order.klarna_client_token, data: klarna_order.to_hash}
     end
 
     def order_addresses
