@@ -71,11 +71,6 @@ describe KlarnaGateway::OrderSerializer do
         expect(serialized[:merchant_urls][:confirmation]).to eq("my_confirmation_url")
       end
     end
-
-    it "has the shipping_info line" do
-      expect(serialized[:shipping_info]).to be_kind_of(Array)
-      expect(serialized[:shipping_info].first[:shipping_company]).to be_present
-    end
   end
 
   context "in the UK with included tax" do

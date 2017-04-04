@@ -73,11 +73,12 @@ module ActiveMerchant
         response = Klarna.client.capture(order_id, {captured_amount: amount, shipping_info: options[:shipping_info]})
 
         if response.success?
+          capture_id = response['Capture-ID']
           payment_source = Spree::KlarnaCreditPayment.find_by(order_id: order_id)
-          update_payment_source!(payment_source, order_id)
+          update_payment_source!(payment_source, order_id, capture_id: capture_id)
           ActiveMerchant::Billing::Response.new(
             true,
-            "Captured order with Klarna id: '#{order_id}' Capture id: '#{response['Capture-ID']}'",
+            "Captured order with Klarna id: '#{order_id}' Capture id: '#{capture_id}'",
             response.body || {},
             {
               authorization: order_id,
@@ -225,6 +226,28 @@ module ActiveMerchant
         end
       end
 
+      def shipping_info(order_id, capture_id, shipping_info)
+        response = Klarna.client(:capture).shipping_info(
+          order_id,
+          capture_id,
+          shipping_info
+        )
+        if response.success?
+          ActiveMerchant::Billing::Response.new(
+            true,
+            "Updated shipment info for order: #{order_id}, capture: #{capture_id}",
+            response.body || {},
+          )
+        else
+          ActiveMerchant::Billing::Response.new(
+            false,
+            "Cannot update the shipment info for order: #{order_id} capture: #{capture_id}",
+            response.body || {},
+            { error_code: response.error_code }
+          )
+        end
+      end
+
       def get_and_update_source(order_id)
         update_payment_source!(Spree::KlarnaCreditPayment.find_by(order_id: order_id), order_id)
       end
@@ -262,17 +285,18 @@ module ActiveMerchant
         payment_source.save!
       end
 
-      def update_payment_source(payment_source, klarna_order_id)
+      def update_payment_source(payment_source, klarna_order_id, attributes = {})
         get(klarna_order_id).tap do |klarna_order|
           payment_source.status = klarna_order.status
           payment_source.fraud_status = klarna_order.fraud_status
           payment_source.expires_at = DateTime.parse(klarna_order.expires_at)
+          payment_source.assign_attributes(attributes)
         end
         payment_source
       end
 
-      def update_payment_source!(payment_source, klarna_order_id)
-        update_payment_source(payment_source, klarna_order_id).tap do |order|
+      def update_payment_source!(payment_source, klarna_order_id, attributes = {})
+        update_payment_source(payment_source, klarna_order_id, attributes).tap do |order|
           order.save!
           order
         end
