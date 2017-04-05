@@ -1,4 +1,4 @@
-# Klarna Paymetns Integration for Solidus
+# Klarna Payments Integration for Solidus
 
 ![Klarna](https://cdn.klarna.com/1.0/shared/image/generic/logo/en_us/basic/blue-black.png?height=30)
 
