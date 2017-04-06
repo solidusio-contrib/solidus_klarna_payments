@@ -45,5 +45,20 @@ module KlarnaGateway
         !payment.source.cancelled?
       end
     end
+
+    def update_klarna_shipments
+      return unless shipment_state_changed? && shipment_state == "shipped"
+      captured_klarna_payments.each do |payment|
+        payment.payment_method.provider.shipping_info(
+          payment.source.order_id,
+          payment.source.capture_id,
+          {
+            shipping_info: to_klarna(
+              payment.payment_method.preferred_country
+            ).shipping_info
+          }
+        )
+      end
+    end
   end
 end
