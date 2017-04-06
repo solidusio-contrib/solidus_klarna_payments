@@ -1,39 +1,7 @@
 <% param_prefix = "payment_source[#{payment_method.id}]" %>
 
-<style type="text/css">
-  .klarna_credit_box {
-    border: 1px solid #0074C8;§
-  }
-  .header {
-    background-color: #0074C8;
-    color: white;
-    padding: 10px 20px;
-  }
-
-  .header h3 {
-    float: left;
-    margin-right: 20px;
-  }
-  #klarna_container {
-    text-align: center;
-    padding: 20px;
-  }
-  .klarna_error {
-    display: none;
-      margin: 15px;
-  }
-  @media only screen and (max-width: 767px) {
-    #klarna_container {
-      padding: 5px;
-    }
-    .klarna_credit_box {
-      margin: -10px;
-    }
-  }
-</style>
-
 <div class="klarna_credit_box" data-order-id="<%= @order.number %>" data-payment-method-id="<%= payment_method.id %>">
-  <div class="header" style="width: 100%, background-color: ">
+  <div class="header">
     <div class="logo">
       <img src="https://cdn.klarna.com/1.0/shared/image/generic/logo/en_us/basic/white.png?width=80" width="80px">
     </div>
@@ -44,141 +12,10 @@
   <div class="klarna_error flash error"><%= Spree.t('klarna_general_error') %></div>
 </div>
 
-<script type="text/javascript" id="klarna­credit­lib­x">
+<script type="text/javascript" id="klarna-credit-lib-x">
 /* <![CDATA[ */
- (function(w, d) {
-   var url = 'https://credit.klarnacdn.net/lib/v1/api.js';
-    n = d.createElement('script');
-    c = d.getElementById('klarna­credit­lib­x');
-    n.async = !0;
-    n.src = url + '?' + (new Date ()).getTime();
-    c.parentNode.replaceChild(n, c);
-  })(this, document);
+KlarnaGateway.loadSdk(this, document, function() {
+  jQuery(".klarna_credit_box").klarnaAuthorize();
+});
  /* ]]> */
-</script>
-
-<script type="text/javascript">
-  window.addEventListener('load', function() {
-  $.fn.klarna = function(options) {
-    var settings = $.extend({
-      paymentChangedElements: $('input[name="order[payments_attributes][][payment_method_id]"]'),
-      paymentId: null,
-      sessionUrl: null,
-      submitButton: $('form.edit_order :submit'),
-      orderId: null
-    }, options);
-
-    if (!settings.orderId && this.data('orderId') !== undefined) {
-      settings.orderId = this.data('orderId');
-      settings.sessionUrl = Spree.url(Spree.pathFor("/klarna/session"))
-    }
-
-    if (settings.paymentId === null) {
-      settings.paymentId = $(this).data('payment-method-id');
-    }
-
-    settings.authorizationToken = $('#klarna_authorization_token', this);
-
-    // Get a session from the backend and load the form
-    var initSession = function() {
-      Spree.ajax({
-        method: 'POST',
-        url: settings.sessionUrl,
-        data: {klarna_payment_method_id: settings.paymentId}
-      }).success(function(response) {
-        if (response.token === null) {
-          window.console && console.log("[Klarna Credit] received empty token:", response)
-          displayError();
-          return;
-        }
-        settings.clientToken = response.token
-        Klarna.Credit.init ({
-          client_token: response.token
-        });
-        if (klarnaSelected()) {
-          loadKlarnaForm();
-        }
-      }).error(function(response) {
-        window.console && console.log("[Klarna Credit] received erroneous server response:", response);
-        displayError();
-      });
-    }
-
-    var displayError = function() {
-      $('.klarna_error').show();
-      $('#klarna_container').hide();
-    }
-
-    // Loads the Klarna Form
-    var loadKlarnaForm = function () {
-      if (!settings.clientToken) {
-        return;
-      }
-
-      Klarna.Credit.load ({
-        container: "#klarna_container"
-      }, function(res) {
-        if (res.show_form) {
-          settings.showForm = res.show_form;
-        } else {
-          console.log(res)
-        }
-      });
-    }
-
-    // Try to authorize
-    var authorize = function (approved, notApproved) {
-      // First get the current, serialized order
-      Spree.ajax({
-        method: 'GET',
-        url: Spree.url(Spree.pathFor("/klarna/session/order_addresses")),
-        dataType: 'json',
-        data: {klarna_payment_method_id: settings.paymentId}
-      }).done(function(result) {
-        Klarna.Credit.authorize(result, function(res) {
-          if (res.approved === true) {
-            settings.authorizationToken.val(res.authorization_token);
-            approved(res)
-          } else {
-            notApproved(res)
-          }
-        });
-      });
-    }
-
-    var klarnaSelected = function() {
-      return settings.paymentChangedElements.filter(":checked").val() == settings.paymentId;
-    }
-
-    // Revert Spree's disableSaveOnClick when authorization is denied
-    var enableSaveOnClick = function() {
-      $('#checkout_form_payment').find(':submit, :image').attr('disabled', false).addClass('primary').addClass('disabled')
-    }
-
-    settings.paymentChangedElements.on('change', function(e) {
-      // check if Klarna Credit is selected
-      if (klarnaSelected()) {
-        loadKlarnaForm();
-      }
-    })
-
-    $('#checkout_form_payment').on('submit', function (e) {
-      var form = this;
-      if (klarnaSelected()) {
-        e.preventDefault();
-        authorize(function (result) {
-          form.submit();
-        }, function(result) {
-          enableSaveOnClick();
-        }
-        );
-      }
-    });
-
-    initSession();
-    return this;
-  };
-
-  $(".klarna_credit_box").klarna();
-  });
 </script>

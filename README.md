@@ -43,7 +43,7 @@ Or install it yourself as:
 
     $ gem install klarna_gateway
 
-In your project install Klarna specific migrations:
+In your project include the migrations, JavaScript and stylesheets:
 
     $ rails generate klarna_gateway:install
 
@@ -64,7 +64,62 @@ There are two other things to configure. Set the payment method to "active" and 
 
 ## Technical information
 
-### API documentation
+The integration adds the necessary code to the checkout. It consists of mainly of three parts:
+
+- [a template](app/views/spree/checkout/payment/_klarna_credit.html.erb) to display the iframe when Klarna is selected as the payment method
+- a JavaScript library/jQuery plugin to handle sessions and authorisation
+- a CSS file with very little code to display the iframe correctly
+
+The template can be overwritten by copying [the file](app/views/spree/checkout/payment/_klarna_credit.html.erb) to `app/views/spree/checkout/payment/_klarna_credit.html.erb` in the main application. Note the initialisation JS code which is required for the integration to work.
+
+### JavaScript library
+
+The JavaScript library is used to initialize a session with Klarna, authorize the requested amount and handing the obtained _authorization token_ to Solidus. This token is later used when authorizing the payment in Solidus.
+
+If the checkout (template) was modified, it can be necessary to adapt the integration as well. The `KlarnaGateway` library was extracted to make that easier. It is initialized as follows:
+
+```javascript
+KlarnaGateway.loadSdk(this, document, function() {
+  jQuery(".klarna_credit_box").klarnaAuthorize();
+});
+```
+
+`loadSdk` will load the Klarna JavaScript SDK from the CDN and call the provided callback function when the file was loaded. Note that it's also possible to do that manually by including the file with a `<script>` tag. Please see the [JavaScript SDK](https://credit.klarnacdn.net/lib/v1/index.html) documentation for more details.
+
+The initialization is done in `klarnaAuthorize()` on the payment step page in the checkout. It will create a session with Klarna and load the iframe when Klarna is selected by the user. It is called on the container (`.klarna_credit_box` in this case) in which the iframe will be inserted.
+
+To make customizations easier `klarnaAuthorize()` takes some optional arguments. Here they are with their defaults:
+
+```javascript
+$(container).klarnaAuthorize({
+  // Element that stores the authorization token. This will usually be a hidden input
+  // field for the payment source.
+  authorizationToken: $("#klarna_authorization_token", this),
+
+  // The form that is submitted on the payment page. The submit event is prevented so
+  // the payment can be authorized before progressing any further.
+  form: $("#checkout_form_payment"),
+
+  // Elements that trigger a check whether Klarna is selected. The iframe is only loaded
+  // when Klarna is selected
+  paymentChangedElements: $("input[name=\"order[payments_attributes][][payment_method_id]\"]"),
+
+  // Where to find the payment method id. This is necessary if there are more than one Klarna
+  // payment methods in the store.
+  paymentId: $(this).data("payment-method-id"),
+
+  // The session URL of the store. The store needs to create a session from the server
+  // side. This should not be changed.
+  sessionUrl: Spree.url(Spree.pathFor("/klarna/session")),
+
+  // The submit button that triggers the authorization. This button will be disabled while
+  // the autorization is issued.
+  submitButton: $("form.edit_order :submit")
+})
+```
+
+
+### Klarna API documentation
 
 - [Klarna's API](https://developers.klarna.com/api/) is used by the payment gateway
 - [Javascript SDK](https://credit.klarnacdn.net/lib/v1/index.html) for the frontend part
