@@ -19,7 +19,7 @@
         url: settings.sessionUrl,
         data: {klarna_payment_method_id: settings.paymentId}
       }).success(function(response) {
-        if (response.token === null) {
+        if (!response.token) {
           window.console && console.log("[Klarna Credit] received empty token:", response);
           displayError();
           return;
