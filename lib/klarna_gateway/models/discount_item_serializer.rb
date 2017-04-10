@@ -11,7 +11,7 @@ module KlarnaGateway
         type: "discount",
         quantity: 1,
         # send the name and the promo code
-        name: name,
+        name: name.presence || "Discount",
         reference: "Discount",
         total_amount: (@order.promo_total * 100).to_i,
         unit_price: (@order.promo_total * 100).to_i,
