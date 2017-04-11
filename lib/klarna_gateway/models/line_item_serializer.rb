@@ -54,10 +54,15 @@ module KlarnaGateway
 
     def image_url
       image = line_item.variant.images.first
-      URI.join(
-        ActionController::Base.asset_host || Spree::Store.current.url,
-        image.attachment.url
-      ).to_s if image.present?
+      return unless image.present?
+      host = ActionController::Base.asset_host || Spree::Store.current.url
+      begin
+        scheme = "http://" unless host.to_s.match(/^https?:\/\//)
+        uri = URI::parse("#{scheme}#{host}#{image.attachment.url}")
+      rescue URI::InvalidURIError => e
+        return nil
+      end
+      uri.to_s
     end
 
     def product_url
