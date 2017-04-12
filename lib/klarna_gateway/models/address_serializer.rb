@@ -16,10 +16,20 @@ module KlarnaGateway
         street_address2: address.address2,
         postal_code: address.zipcode,
         city: address.city,
-        region: address.state.try(:name),
+        region: region,
         phone: address.phone.to_s.gsub(/^\+1/, ""),
         country: address.country.iso
       }
+    end
+
+    protected
+
+    def region
+      if address.country.iso == "US"
+        address.state.try(:abbr)
+      else
+        address.state.try(:name)
+      end
     end
   end
 end
