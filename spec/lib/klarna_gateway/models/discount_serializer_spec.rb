@@ -35,8 +35,9 @@ describe KlarnaGateway::DiscountItemSerializer do
     let(:promotion) { create(:promotion_with_item_adjustment) }
 
     it "has one discount line" do
-      discount_lines = serialized[:order_lines].count { |l| l[:type] == "discount" }
-      expect(discount_lines).to eq(1)
+      discount_lines = serialized[:order_lines].select { |l| l[:type] == "discount" }
+      expect(discount_lines.count).to eq(1)
+      expect(discount_lines.first[:name]).to match("Discount")
     end
 
     it "does not set line items' discount value" do
