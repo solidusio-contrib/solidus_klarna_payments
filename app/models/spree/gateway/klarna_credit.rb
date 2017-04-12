@@ -19,6 +19,11 @@ module Spree
       preference :color_text_secondary, :string
       preference :radius_border, :string
 
+      # Remove the server setting from Gateway
+      def defined_preferences
+        super - [:server]
+      end
+
       def provider_class
         ActiveMerchant::Billing::KlarnaGateway
       end
