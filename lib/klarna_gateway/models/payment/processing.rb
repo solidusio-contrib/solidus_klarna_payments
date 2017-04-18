@@ -30,8 +30,8 @@ module KlarnaGateway
       def notify!(params)
         response = ActiveMerchant::Billing::Response.new(
           true,
-          "Updated (via notification) order Klarna id: #{params[:klarna][:order_id]}",
-          params[:klarna],
+          "Updated (via notification) order Klarna id: #{params[:order_id]}",
+          params,
           {}
         )
         record_response(response)
