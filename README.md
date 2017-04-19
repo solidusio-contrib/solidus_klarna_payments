@@ -6,6 +6,8 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 
 ![Checkout](docs/checkout.png)
 
+*The example screen shot above shows a sample US Klarna Payments offer. Klarna Payments offers are specific to each market and merchant. Work with Klarna to determine what offers are appropriate for your store.*
+
 ### Features
 
 - Integrates seamlessly as a payment provider
