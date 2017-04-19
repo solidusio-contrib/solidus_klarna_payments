@@ -1,6 +1,7 @@
 require "spree_core"
 require "spree_frontend"
 
+require "klarna_gateway/exceptions"
 require "klarna_gateway/configuration"
 require "klarna_gateway/engine"
 require "klarna_gateway/version"

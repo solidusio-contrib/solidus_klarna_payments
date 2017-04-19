@@ -3,6 +3,8 @@ FactoryGirl.define do
   factory :klarna_credit_payment_method, class: Spree::Gateway::KlarnaCredit do
     name 'Klarna Credit'
     description 'Klarna Credit'
+
+    preferences(api_secret: "DUMMY", api_key: "DUMMY")
   end
 
   factory :klarna_credit_payment, class: Spree::KlarnaCreditPayment do

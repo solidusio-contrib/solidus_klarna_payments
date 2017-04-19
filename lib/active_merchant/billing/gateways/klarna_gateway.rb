@@ -8,6 +8,9 @@ module ActiveMerchant
         @options = options
 
         Klarna.configure do |config|
+          if @options[:api_secret].blank? || @options[:api_key].blank?
+            raise ::KlarnaGateway::InvalidConfiguration, "Missing mandatory API credentials"
+          end
           config.environment = @options[:test_mode] ? 'test' : 'production'
           config.country = @options[:country]
           config.api_key =  @options[:api_key]
