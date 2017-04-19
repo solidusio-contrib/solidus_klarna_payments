@@ -1,9 +1,9 @@
 module KlarnaGateway
   module NotificationsController
     def notification
-      payment_source = Spree::KlarnaCreditPayment.find_by_order_id(params[:klarna][:order_id])
+      payment_source = Spree::KlarnaCreditPayment.find_by_order_id!(params[:order_id])
 
-      case params[:klarna][:event_type]
+      case params[:event_type]
         when "FRAUD_RISK_ACCEPTED"
           payment_source.accept!
         when "FRAUD_RISK_REJECTED", "FRAUD_RISK_STOPPED"
