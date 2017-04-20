@@ -4,13 +4,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'klarna_gateway/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "klarna_gateway"
+  spec.name          = "solidus_klarna_payments"
   spec.version       = KlarnaGateway::VERSION
-  spec.authors       = ["Jose Antonio Pio Gil"]
-  spec.email         = ["jose.pio@bitspire.de"]
+  spec.authors       = ["Jose Antonio Pio Gil", "Pascal Jungblut"]
+  spec.email         = ["jose.pio@bitspire.de", "pascal.jungblut@bitspire.de"]
 
-  spec.summary       = %q{Implemantion of a ActiveMerchant Billing Gateway and Spree Gateway}
-  spec.description   = %q{Implemantion of a ActiveMerchant Billing Gateway and Spree Gateway}
+  spec.summary       = %q{Klarna Payments ActiveMerchant gateway and Solidus payment method}
+  spec.description   = %q{Klarna Payments ActiveMerchant gateway and Solidus payment method}
   spec.homepage      = ""
   spec.license       = "MIT"
 
@@ -45,5 +45,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "solidus_core", ">= 1.3.0.a", "< 2.0"
   spec.add_dependency "solidus_frontend", ">= 1.3.0.a", "< 2.0"
   spec.add_dependency "solidus_backend", ">= 1.3.0.a", "< 2.0"
+  spec.add_dependency "klarna_client", "~> 0.9"
   spec.add_dependency "activemerchant"
 end
