@@ -31,25 +31,24 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 
 Work is planned for compatibility with the 2.x branch of Solidus.
 
-## Installation
+## Installation (beta)
 
-Add this line to your application's Gemfile:
+This gem is currently in **a public beta phase**.  For the time being it will only be installable via git:
 
 ```ruby
-gem 'klarna_gateway'
+gem 'klarna_client', github: 'bitspire/klarna_client'
+gem 'solidus_klarna_payments', require: 'klarna_gateway', github: 'bitspire/solidus_klarna_payments'
 ```
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install klarna_gateway
-
 In your project include the migrations, JavaScript and stylesheets:
 
     $ rails generate klarna_gateway:install
+
+Please note that the version is still 0.9. We want to have the option to make breaking changes during the transition to 1.0.
 
 ## Solidus configuration
 
