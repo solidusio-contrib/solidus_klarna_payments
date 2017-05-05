@@ -4,10 +4,17 @@
     var settings = $.extend({
       authorizationToken: $("#klarna_authorization_token", this),
       form: $("#checkout_form_payment"),
+      klarnaSelected: function (settings) {
+        return settings.paymentChangedElements.filter(":checked").val() === settings.paymentId.toString();
+      },
+      loadDirectly: false,
+      onSubmit: function() {},
+      onAbort: function() {},
       paymentChangedElements: $("input[name=\"order[payments_attributes][][payment_method_id]\"]"),
       paymentId: $(this).data("payment-method-id"),
+      paymentMethodWrapper: $(".form-payment-method-klarna_credit"),
       sessionUrl: Spree.url(Spree.pathFor("/klarna/session")),
-      submitButton: $("form.edit_order :submit")
+      submitButton: $("form.edit_order :submit"),
     }, options);
 
     // Get a session from the backend and load the form
@@ -32,7 +39,7 @@
         });
 
         // Only load the iframe when Klarna is selected
-        if (klarnaSelected()) {
+        if (settings.loadDirectly || settings.klarnaSelected(settings)) {
           loadKlarnaForm();
         }
       }).error(function(response) {
@@ -58,6 +65,7 @@
         if (res.show_form) {
           settings.showForm = res.show_form;
         } else {
+          settings.paymentMethodWrapper.hide();
           window.console && console.log(res);
         }
       });
@@ -83,19 +91,16 @@
       });
     }
 
-    function klarnaSelected() {
-      return settings.paymentChangedElements.filter(":checked").val() === settings.paymentId.toString();
-    }
 
     // Revert Spree"s disableSaveOnClick when authorization is denied
     function enableSaveOnClick() {
-      $("#checkout_form_payment").find(":submit, :image").attr("disabled", false).addClass("primary").addClass("disabled");
+      settings.submitButton.attr("disabled", false).addClass("primary").removeClass("disabled");
     }
 
     // Check whether Klarna is selected and load the form
     settings.paymentChangedElements.on("change", function() {
       // check if Klarna Credit is selected
-      if (klarnaSelected()) {
+      if (settings.klarnaSelected(settings)) {
         loadKlarnaForm();
       }
     });
@@ -103,15 +108,18 @@
     // Hook into submit and authorize the payment first
     settings.form.on("submit", function (e) {
       var form = this;
-      if (klarnaSelected()) {
+      if (settings.klarnaSelected(settings)) {
         e.preventDefault();
+        settings.onSubmit(settings);
         authorize(function (result) {
           if (result.approved) {
             form.submit();
           } else {
+            settings.onAbort(settings);
             enableSaveOnClick();
           }
         }, function(result) {
+          settings.onAbort(settings);
           enableSaveOnClick();
         });
       }

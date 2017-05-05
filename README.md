@@ -102,6 +102,17 @@ $(container).klarnaAuthorize({
   // The form that is submitted on the payment page. The submit event is prevented so
   // the payment can be authorized before progressing any further.
   form: $("#checkout_form_payment"),
+  
+  // Load the Klarna iframe directly after page load, not only when Klarna was selected.
+  loadDirectly: false,
+
+  // Function to perform when the form is being submitted. It is executed before the authorization
+  // is being requested.
+  onSubmit: function(settings) {},
+
+  // Function to perform when the authorization process is aborted, e.g. because there was an
+  // error or the user did not input required information.
+  onAbort: function(settings) {},
 
   // Elements that trigger a check whether Klarna is selected. The iframe is only loaded
   // when Klarna is selected
@@ -111,6 +122,8 @@ $(container).klarnaAuthorize({
   // payment methods in the store.
   paymentId: $(this).data("payment-method-id"),
 
+  // Wraper for the whole payment method. This is being hidden when Klarna returns with `show_form == false`.
+  paymentMethodWrapper: $(".form-payment-method-klarna_credit"),	
   // The session URL of the store. The store needs to create a session from the server
   // side. This should not be changed.
   sessionUrl: Spree.url(Spree.pathFor("/klarna/session")),

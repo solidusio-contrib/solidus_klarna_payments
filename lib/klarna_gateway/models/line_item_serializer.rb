@@ -66,7 +66,7 @@ module KlarnaGateway
     end
 
     def product_url
-      Spree::Core::Engine.routes.url_helpers.product_url(line_item.variant, host: Spree::Store.current.url)
+      Spree::Core::Engine.routes.url_helpers.product_url(line_item.variant, host: Spree::Store.default.url.to_s.chop)
     end
 
     def strategy_for_region(region)

@@ -18,7 +18,7 @@ module KlarnaGateway
       end
 
       def total_amount(line_item)
-        line_item.display_total.cents
+        line_item.display_amount.cents
       end
 
       def total_tax_amount(line_item)

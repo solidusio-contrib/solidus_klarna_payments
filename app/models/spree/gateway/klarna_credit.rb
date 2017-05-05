@@ -66,7 +66,7 @@ module Spree
 
       def capture(amount, order_id, options={})
         order = spree_order(options)
-        serialized_order = ::KlarnaGateway::OrderSerializer.new(order, preferences[:country]).to_hash
+        serialized_order = ::KlarnaGateway::OrderSerializer.new(order, options[:country]).to_hash
         klarna_options = {shipping_info: serialized_order[:shipping_info]}
         provider.capture(amount, order_id, options.merge(klarna_options))
       end
