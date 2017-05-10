@@ -64,11 +64,11 @@ module Spree
         Spree::Payment.find_by(source: source(order_id)).display_amount.cents
       end
 
-      def capture(amount, order_id, options={})
-        order = spree_order(options)
+      def capture(amount, order_id, params={})
+        order = spree_order(params)
         serialized_order = ::KlarnaGateway::OrderSerializer.new(order, options[:country]).to_hash
-        klarna_options = {shipping_info: serialized_order[:shipping_info]}
-        provider.capture(amount, order_id, options.merge(klarna_options))
+        klarna_params = {shipping_info: serialized_order[:shipping_info]}
+        provider.capture(amount, order_id, params.merge(klarna_params))
       end
 
       private
