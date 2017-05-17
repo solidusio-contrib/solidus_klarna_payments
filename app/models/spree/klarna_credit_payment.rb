@@ -11,10 +11,6 @@ module Spree
       false
     end
 
-    def brand
-      :klarna_credit
-    end
-
     def has_payment_profile?
       false
     end
