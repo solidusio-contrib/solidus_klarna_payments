@@ -34,6 +34,7 @@ module KlarnaGateway
       def locale(region)
         case region
         when :de then "de-DE"
+        when :se then "sv-SE"
         else "en-GB"
         end
       end

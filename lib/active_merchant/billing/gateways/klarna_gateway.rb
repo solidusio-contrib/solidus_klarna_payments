@@ -4,6 +4,10 @@ require 'klarna'
 module ActiveMerchant
   module Billing
     class KlarnaGateway < Gateway
+      class << self
+        undef_method :supports?
+      end
+      
       def initialize(options={})
         @options = options
 
@@ -17,11 +21,6 @@ module ActiveMerchant
           config.api_secret = @options[:api_secret]
           config.user_agent = "Klarna Solidus Gateway/#{::KlarnaGateway::VERSION} Solidus/#{::Spree.solidus_version} Rails/#{::Rails.version}"
         end
-      end
-
-      # There is only :klarna_credit
-      def self.supports?(brand)
-        true
       end
 
       def create_session(order)

@@ -4,7 +4,9 @@ FactoryGirl.define do
     name 'Klarna Credit'
     description 'Klarna Credit'
 
-    preferences(api_secret: "DUMMY", api_key: "DUMMY")
+    preferences(
+      api_key: ENV.fetch("KLARNA_API_KEY") { "DUMMY" },
+      api_secret: ENV.fetch("KLARNA_API_SECRET") { "DUMMY" })
   end
 
   factory :klarna_credit_payment, class: Spree::KlarnaCreditPayment do

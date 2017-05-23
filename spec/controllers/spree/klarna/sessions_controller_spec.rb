@@ -1,6 +1,8 @@
 require "spec_helper"
 
 describe Spree::Klarna::SessionsController do
+  include Devise::Test::ControllerHelpers
+
   describe "#create" do
     let(:order) { create(:order_with_line_items, state: "payment") }
     let!(:payment_method) { Spree::Gateway::KlarnaCredit.create(name: 'Klarna Credit') }
