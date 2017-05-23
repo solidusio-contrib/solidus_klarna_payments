@@ -1,4 +1,5 @@
 module KlarnaGateway
+  # TODO: Rename this module from "UK"
   module AmountCalculators::UK
     # The UK store expects tax amounts directly on the line items.
     class OrderCalculator
@@ -35,6 +36,12 @@ module KlarnaGateway
         case region
         when :de then "de-DE"
         when :se then "sv-SE"
+        when :at then "de-AT"
+        when :se then "sv-SE"
+        when :nl then "nl-NL"
+        when :dk then "da-DK"
+        when :no then "nb-NO"
+        when :fi then "fi-FI"
         else "en-GB"
         end
       end

@@ -13,6 +13,7 @@
       paymentChangedElements: $("input[name=\"order[payments_attributes][][payment_method_id]\"]"),
       paymentId: $(this).data("payment-method-id"),
       paymentMethodWrapper: $(".form-payment-method-klarna_credit"),
+      preferredPaymentMethod: $(this).data("preferred-payment-method"),
       sessionUrl: Spree.url(Spree.pathFor("/klarna/session")),
       submitButton: $("form.edit_order :submit"),
     }, options);
@@ -60,7 +61,8 @@
       }
 
       Klarna.Credit.load ({
-        container: "#klarna_container"
+        container: "#klarna_container",
+        preferred_payment_method: settings.preferredPaymentMethod
       }, function(res) {
         if (res.show_form) {
           settings.showForm = res.show_form;

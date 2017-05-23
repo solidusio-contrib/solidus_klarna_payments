@@ -4,6 +4,7 @@ module Spree
       preference :api_key, :string
       preference :api_secret, :string
       preference :country, :string, default: 'us'
+      preference :payment_method, :string
 
       preference :design, :string
       preference :color_details, :string
@@ -18,6 +19,8 @@ module Spree
       preference :color_text, :string
       preference :color_text_secondary, :string
       preference :radius_border, :string
+
+      validates :preferred_payment_method, inclusion: {in: %w( invoice pix base_account deferred_interest fixed_amount ), message: "%{value} is not a valid value."}, allow_blank: true
 
       # Remove the server setting from Gateway
       def defined_preferences

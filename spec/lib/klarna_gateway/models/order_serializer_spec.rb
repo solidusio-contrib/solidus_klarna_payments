@@ -2,6 +2,11 @@ require 'spec_helper'
 
 describe KlarnaGateway::OrderSerializer do
   let(:order) { create(:order_with_line_items, line_items_count: 3) }
+  let(:region) { :us }
+  let!(:country) { create(:country, name: "USA") }
+  let(:zone) { create(:global_zone, default_tax: true) }
+  let!(:tax_rate) { create(:tax_rate, zone: zone) }
+
   let(:overbooked_order) do
     create(:order_with_line_items, line_items_count: 3).tap do |order|
       order.line_items.first.variant.stock_items.first.adjust_count_on_hand 2
@@ -14,12 +19,6 @@ describe KlarnaGateway::OrderSerializer do
   let(:serialized) { serializer.to_hash }
 
   context "in the US" do
-    let(:region) { :us }
-    let!(:us) { create(:country, name: "USA") }
-    let(:us_zone) { create(:global_zone, default_tax: true) }
-    let!(:tax_rate) { create(:tax_rate, zone: us_zone) }
-
-
     it "sets the amount" do
       expect(serialized[:order_amount]).to eq(order.display_total.cents)
     end
@@ -75,9 +74,8 @@ describe KlarnaGateway::OrderSerializer do
 
   context "in the UK with included tax" do
     let(:region) { :uk }
-    let!(:uk) { create(:country, name: "United Kingdom") }
-    let(:uk_zone) { create(:global_zone, default_tax: true) }
-    let!(:tax_rate) { create(:tax_rate, zone: uk_zone, included_in_price: true) }
+    let!(:country) { create(:country, iso: "GB") }
+    let!(:tax_rate) { create(:tax_rate, zone: zone, included_in_price: true) }
 
     it "sets the amount" do
       expect(serialized[:order_amount]).to eq(order.display_total.cents)
@@ -135,9 +133,7 @@ describe KlarnaGateway::OrderSerializer do
 
   context "in Germany" do
     let(:region) { :de }
-    let!(:germany) { create(:country, name: "Deutschland", iso: "de") }
-    let(:de_zone) { create(:global_zone, default_tax: true) }
-    let!(:tax_rate) { create(:tax_rate, zone: de_zone, included_in_price: true) }
+    let!(:tax_rate) { create(:tax_rate, zone: zone, included_in_price: true) }
 
     it "sets the locale" do
       expect(serialized[:locale]).to eq("de-DE")
@@ -151,6 +147,24 @@ describe KlarnaGateway::OrderSerializer do
       it "excludes the address attributes" do
         expect(serialized).to_not include(:billing_address, :shipping_address)
       end
+    end
+  end
+
+  context "in Austria" do
+    let(:region) { :at }
+    let!(:tax_rate) { create(:tax_rate, zone: zone, included_in_price: true) }
+
+    it "sets the locale" do
+      expect(serialized[:locale]).to eq("de-AT")
+    end
+  end
+
+  context "in Sweden" do
+    let(:region) { :se }
+    let!(:tax_rate) { create(:tax_rate, zone: zone, included_in_price: true) }
+
+    it "sets the locale" do
+      expect(serialized[:locale]).to eq("sv-SE")
     end
   end
 end
