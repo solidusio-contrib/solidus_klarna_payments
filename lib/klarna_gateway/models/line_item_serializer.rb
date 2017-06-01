@@ -55,7 +55,7 @@ module KlarnaGateway
     def image_url
       image = line_item.variant.images.first
       return unless image.present?
-      host = ActionController::Base.asset_host || Spree::Store.current.url
+      host = ActionController::Base.asset_host || store.url
       begin
         scheme = "http://" unless host.to_s.match(/^https?:\/\//)
         uri = URI::parse("#{scheme}#{host}#{image.attachment.url}")
@@ -66,7 +66,7 @@ module KlarnaGateway
     end
 
     def product_url
-      Spree::Core::Engine.routes.url_helpers.product_url(line_item.variant, host: Spree::Store.default.url.to_s.chop)
+      Spree::Core::Engine.routes.url_helpers.product_url(line_item.variant, host: store.url.to_s.chop)
     end
 
     def strategy_for_region(region)
@@ -74,6 +74,10 @@ module KlarnaGateway
         when :us then AmountCalculators::US::LineItemCalculator.new
         else AmountCalculators::UK::LineItemCalculator.new
         end
+    end
+
+    def store
+      line_item.order.store
     end
   end
 end
