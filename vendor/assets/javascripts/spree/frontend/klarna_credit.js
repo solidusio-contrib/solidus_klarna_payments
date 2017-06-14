@@ -14,7 +14,7 @@
       paymentId: $(this).data("payment-method-id"),
       paymentMethodWrapper: $(".form-payment-method-klarna_credit"),
       preferredPaymentMethod: $(this).data("preferred-payment-method"),
-      sessionUrl: Spree.url(Spree.pathFor("/klarna/session")),
+      sessionUrl: Spree.url(Spree.pathFor("klarna/session")),
       submitButton: $("form.edit_order :submit"),
     }, options);
 
@@ -50,8 +50,13 @@
     }
 
     function displayError() {
-      $(".klarna_error").show();
+      $(".klarna_error.general_error").show();
       $("#klarna_container").hide();
+    }
+
+    function denied() {
+      $(".klarna_error.denied_error").show();
+      settings.paymentChangedElements.filter("[value=\"" + settings.paymentId + "\"]").attr("disabled", true);
     }
 
     // Loads the Klarna Form
@@ -121,6 +126,9 @@
             enableSaveOnClick();
           }
         }, function(result) {
+          if (result.approved == false) {
+            denied();
+          }
           settings.onAbort(settings);
           enableSaveOnClick();
         });
