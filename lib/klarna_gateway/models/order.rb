@@ -60,5 +60,27 @@ module KlarnaGateway
         )
       end
     end
+
+    def update_klarna_customer
+      # Check if the addresses were changed at all
+      address_ids = %w{ship_address_id bill_address_id}
+      return unless address_ids.any?{|k| previous_changes.key?(k)} 
+
+      addresses = {}
+      if previous_changes.key?("ship_address_id")
+        addresses[:shipping_address] = AddressSerializer.new(ship_address)
+      end
+
+      if previous_changes.key?("bill_address_id")
+        addresses[:billing_address] = AddressSerializer.new(bill_address)
+      end
+
+      authorized_klarna_payments.each do |payment|
+        payment.payment_method.provider.customer_details(
+          payment.source.order_id,
+          addresses
+        )
+      end
+    end
   end
 end

@@ -258,6 +258,27 @@ module ActiveMerchant
         end
       end
 
+      def customer_details(order_id, data)
+        response = Klarna.client.customer_details(
+          order_id,
+          data
+        )
+        if response.success?
+          ActiveMerchant::Billing::Response.new(
+            true,
+            "Updated customer details for order: #{order_id}",
+            response.body || {},
+          )
+        else
+          ActiveMerchant::Billing::Response.new(
+            false,
+            "Cannot update customer details for order: #{order_id}",
+            response.body || {},
+            { error_code: response.error_code }
+          )
+        end
+      end
+
       def get_and_update_source(order_id)
         update_payment_source!(Spree::KlarnaCreditPayment.find_by(order_id: order_id), order_id)
       end
