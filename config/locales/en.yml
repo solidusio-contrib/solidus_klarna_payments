@@ -18,7 +18,6 @@
 #
 # To learn more, please read the Rails Internationalization guide
 # available at http://guides.rubyonrails.org/i18n.html.
-
 en:
   spree:
     extend_period: "Extend Expiring Period"
@@ -42,6 +41,11 @@ en:
     radius_border: Border radius in pixel
     klarna_general_error: "A technical error has occurred. Please try reloading the page or contact the merchant."
     rejected_klarna_payments: Rejected Klarna payments
+    klarna:
+      can_not_test_api_connection: API can not be tested. Credentials are missing
+      valid_api_credentials: Klarna Credentials have been validated. API configuration completed!
+      invalid_api_credentials: Klarna Credentials are not valid
+      specify_credentials: "Please specify %{missing_preferece} to finish your configuration"
   klarna:
     gateway_errors:
       internal_server_error: "There was a technical error while processing the payment. Please try again."
