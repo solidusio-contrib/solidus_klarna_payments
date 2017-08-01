@@ -25,6 +25,7 @@ en:
     refresh: "Refresh"
     release: "Release remaining amount"
     # preferences
+    country: Country
     api_key: Merchant ID
     api_secret: Secret
     design: Design
@@ -40,6 +41,7 @@ en:
     color_text: Text color (hex)
     color_text_secondary: Secondary text color (hex)
     radius_border: Border radius in pixel
+    payment_method: Preferred payment method
     klarna_general_error: "A technical error has occurred. Please try reloading the page or contact the merchant."
     rejected_klarna_payments: Rejected Klarna payments
   klarna:
@@ -51,3 +53,19 @@ en:
       service_unavailable: "There was a technical error while communicating with Klarna. Please contact the support."
       invalid_operation: "There was a technical error while communicating with Klarna. Please contact the support."
       rejected: "Klarna rejected the request. Please select another payment method."
+  activerecord:
+    attributes:
+      spree/gateway/klarna_credit:
+        preferred_country: Country
+        preferred_api_key: Merchant ID
+        preferred_api_secret: Secret
+        preferred_border_radius: Border radius
+    errors:
+      models:
+        spree/gateway/klarna_credit:
+          invalid: "is not in hexadecimal format #RRGGBB (e.g. '#123bca')"
+          attributes:
+            preferred_country:
+              invalid: "is not a valid region (e.g. 'us' or 'de')"
+            preferred_payment_method:
+              inclusion: "must be one of: 'invoice', 'pix', 'base_account', 'deferred_interest' or 'fixed_amount'. Leave empty if unsure."
