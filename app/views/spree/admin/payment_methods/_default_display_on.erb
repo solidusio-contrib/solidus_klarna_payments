@@ -1,0 +1,14 @@
+<script type="text/javascript">
+  $(document).ready(function() {
+    $provider_select = $("#gtwy-type");
+    $display_on_select = $("#payment_method_display_on");
+
+    $provider_select.on("change", function(e) {
+      if (e.val == 'Spree::Gateway::KlarnaCredit') {
+        $display_on_select.select2('val', 'front_end');
+      } else {
+        $display_on_select.select2('val', '');
+      }
+    })
+  });
+</script>
