@@ -1,8 +1,7 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $provider_select = $("#gtwy-type");
-
-    <% if (Spree.respond_to?(:solidus_version) && Gem::Version.new(Spree.solidus_version) < Gem::Version.new('2.1.0')) || !Spree.respond_to?(:solidus_version) %>
+    <% if KlarnaGateway.up_to_solidus?('2.1.0') || KlarnaGateway.is_spree? %>
       $display_on_select = $("#payment_method_display_on");
 
       $provider_select.on("change", function(e) {
@@ -16,8 +15,6 @@
       $admin_checkbox = $("#payment_method_available_to_admin, #gateway_klarna_credit_available_to_admin");
 
       $provider_select.on("change", function(e) {
-        console.log($provider_select);
-        console.log($admin_checkbox.prop('checked'));
         if (e.val == 'Spree::Gateway::KlarnaCredit') {
           $admin_checkbox.prop('checked', false);
         } else {
