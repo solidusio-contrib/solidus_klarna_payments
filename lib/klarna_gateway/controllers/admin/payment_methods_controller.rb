@@ -2,18 +2,18 @@ module KlarnaGateway
   module Admin
     module PaymentMethodsController
       def self.included(base)
-        base.prepend_before_action(:validate_klarna_credentials, only: [:create, :update])
+        base.prepend_before_action(:validate_klarna_credentials, only: [:update])
       end
 
       private
 
       def validate_klarna_credentials
-        if params[:payment_method][:type].match(/Klarna/)
-          if action_name == 'update' && (params[:gateway_klarna_credit][:preferred_api_secret].blank? || params[:gateway_klarna_credit][:preferred_api_key].blank?)
+        if params[:payment_method][:type] == 'Spree::Gateway::KlarnaCredit'
+          if (params[:gateway_klarna_credit][:preferred_api_secret].blank? || params[:gateway_klarna_credit][:preferred_api_key].blank?)
             flash[:error] = Spree.t('klarna.can_not_test_api_connection')
           end
 
-          if action_name == 'update' && params[:gateway_klarna_credit][:preferred_api_secret].present? && params[:gateway_klarna_credit][:preferred_api_key].present?
+          if params[:gateway_klarna_credit][:preferred_api_secret].present? && params[:gateway_klarna_credit][:preferred_api_key].present?
             Klarna.configure do |config|
               config.environment = !Rails.env.production? ? 'test' : 'production'
               config.country = params[:gateway_klarna_credit][:preferred_country]
