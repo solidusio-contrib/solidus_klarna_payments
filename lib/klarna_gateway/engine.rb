@@ -11,6 +11,7 @@ module KlarnaGateway
       if defined?(Spree::Admin)
         Spree::Admin::OrdersController.include(KlarnaGateway::Admin::OrdersController)
         Spree::Admin::PaymentsController.include(KlarnaGateway::Admin::PaymentsController)
+        Spree::Admin::PaymentMethodsController.include(KlarnaGateway::Admin::PaymentMethodsController)
       end
       Spree::CheckoutController.prepend(KlarnaGateway::CheckoutController)
       Spree::Order.include(KlarnaGateway::Order)
