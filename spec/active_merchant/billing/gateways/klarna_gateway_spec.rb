@@ -41,7 +41,7 @@ module ActiveMerchant
         it "update payment status to CANCELLED" do
           allow(api_client).to receive(:cancel).with(any_args).and_return(klarna_empty_success_response)
           allow(api_client).to receive(:get).with(any_args).and_return(klarna_cancelled_response)
-          expect(Klarna).to receive(:client).twice.with(any_args).and_return(api_client)
+          allow(Klarna).to receive(:client).with(any_args).and_return(api_client)
 
           payment.payment_method.provider.cancel(payment.source.order_id).tap do |response|
             expect(response).to be_a(ActiveMerchant::Billing::Response)
@@ -57,13 +57,27 @@ module ActiveMerchant
         it "update payment status to CAPTURED" do
           allow(api_client).to receive(:capture).with(any_args).and_return(klarna_empty_success_response)
           allow(api_client).to receive(:get).with(any_args).and_return(klarna_captured_response)
-          expect(Klarna).to receive(:client).twice.with(any_args).and_return(api_client)
+          allow(Klarna).to receive(:client).with(any_args).and_return(api_client)
 
           payment.payment_method.provider.capture(10, payment.source.order_id, options).tap do |response|
             expect(response).to be_a(ActiveMerchant::Billing::Response)
             payment.source.reload
             expect(payment.source).to be_captured
             expect(payment.source).to_not be_authorized
+          end
+        end
+
+        context "with a partial amount" do
+          it "releases remaining amount" do
+            allow(api_client).to receive(:capture).with(any_args).and_return(klarna_empty_success_response)
+            allow(api_client).to receive(:get).with(any_args).and_return(klarna_captured_response)
+            allow(Klarna).to receive(:client).with(any_args).and_return(api_client)
+            expect(api_client).to receive(:release).with(payment.source.order_id).and_return(klarna_empty_success_response)
+
+            options.merge!({subtotal: 20})
+            payment.payment_method.provider.capture(10, payment.source.order_id, options).tap do |response|
+              expect(response).to be_a(ActiveMerchant::Billing::Response)
+            end
           end
         end
       end

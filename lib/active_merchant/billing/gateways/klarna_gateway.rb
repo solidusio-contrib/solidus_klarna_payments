@@ -79,6 +79,13 @@ module ActiveMerchant
           capture_id = response['Capture-ID']
           payment_source = Spree::KlarnaCreditPayment.find_by(order_id: order_id)
           update_payment_source!(payment_source, order_id, capture_id: capture_id)
+
+          # If we only capture a reduced amount, automatically release the remaining amount.
+          # When sometime in the future multiple captures for one payment are possible, this has to be
+          # removed.
+          if (options.fetch(:subtotal) {0} + options.fetch(:tax){0} + options.fetch(:shipping) {0}).to_i > amount
+            release(order_id)
+          end
           ActiveMerchant::Billing::Response.new(
             true,
             "Captured order with Klarna id: '#{order_id}' Capture id: '#{capture_id}'",
