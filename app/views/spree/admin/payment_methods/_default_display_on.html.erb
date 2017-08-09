@@ -1,7 +1,7 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $provider_select = $("#gtwy-type");
-    <% if KlarnaGateway.up_to_solidus?('2.1.0') || KlarnaGateway.is_spree? %>
+    <% if KlarnaGateway.up_to_solidus?('2.0.2') || KlarnaGateway.is_spree? %>
       $display_on_select = $("#payment_method_display_on");
 
       $provider_select.on("change", function(e) {
