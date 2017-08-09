@@ -1,34 +1,19 @@
 require 'database_cleaner'
 
 RSpec.configure do |config|
-  config.before(:suite) do
-    if config.use_transactional_fixtures?
-      raise(<<-MSG)
-        Delete line `config.use_transactional_fixtures = true` from rails_helper.rb
-        (or set it to false) to prevent uncommitted transactions being used in
-        JavaScript-dependent specs.
-
-        During testing, the app-under-test that the browser driver connects to
-        uses a different database connection to the database connection used by
-        the spec. The app's database connection would not be able to access
-        uncommitted transaction data setup over the spec's database connection.
-      MSG
+  unless config.inclusion_filter.rules.has_key?(:bdd)
+    # TDD exectution
+    config.before :suite do
+      DatabaseCleaner.clean_with :truncation
     end
 
-    if config.exclusion_filter.rules.has_key?(:bdd)
-      DatabaseCleaner.clean_with(:truncation)
+    config.before do
+      DatabaseCleaner.strategy = RSpec.current_example.metadata[:js] ? :truncation : :transaction
+      DatabaseCleaner.start
     end
-  end
 
-  config.before(:each) do |example|
-    DatabaseCleaner.strategy = :transaction
-  end
-
-  config.before(:each) do
-    DatabaseCleaner.start
-  end
-
-  config.append_after(:each) do
-    DatabaseCleaner.clean
+    config.after do
+      DatabaseCleaner.clean
+    end
   end
 end

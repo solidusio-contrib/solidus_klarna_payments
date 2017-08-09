@@ -9,6 +9,7 @@ rescue LoadError
 end
 
 require "pry"
+require "awesome_print"
 
 require 'spree/core/version'
 require 'rails/all'
@@ -30,6 +31,9 @@ require 'factories/klarna_payment_factory'
 require 'support/klarna_api_helper'
 require 'support/site_prism'
 require 'config/database_cleaner'
+require 'config/capybara'
+require 'config/vcr'
+require 'config/stock_items_provision'
 
 require 'solidus_sample'
 
@@ -39,32 +43,4 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include Spree::TestingSupport::ControllerRequests, type: :controller
   config.include_context "Klarna API helper", :klarna_api
-
-  config.before :suite do
-    DatabaseCleaner.clean_with :truncation
-  end
-
-  config.before do
-    DatabaseCleaner.strategy = RSpec.current_example.metadata[:js] ? :truncation : :transaction
-    DatabaseCleaner.start
-  end
-
-  config.after do
-    DatabaseCleaner.clean
-  end
-end
-
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, timeout: 1.minute, phantomjs_options: ['--load-images=no'])
-end
-Capybara.javascript_driver = :poltergeist
-
-VCR.configure do |config|
-  config.cassette_library_dir = "spec/fixtures/vcr_cassettes"
-  config.hook_into :webmock
-  config.configure_rspec_metadata!
-
-  config.filter_sensitive_data('<ENCODED_AUTH_HEADER>') do
-    Base64.strict_encode64("#{ENV.fetch('KLARNA_API_KEY', 'KLARNA_DEFAULT_KEY')}:#{ENV.fetch('KLARNA_API_SECRET', 'KLARNA_DEFAULT_SECRET')}")
-  end
 end

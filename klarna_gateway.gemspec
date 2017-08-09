@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'klarna_gateway/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "solidus_klarna_payments"
+  spec.name          = "klarna_gateway"
   spec.version       = KlarnaGateway::VERSION
   spec.authors       = ["Jose Antonio Pio Gil", "Pascal Jungblut"]
   spec.email         = ["jose.pio@bitspire.de", "pascal.jungblut@bitspire.de"]
@@ -38,19 +38,16 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "vcr", "~> 3.0"
   spec.add_development_dependency "webmock", "~> 2.0"
   spec.add_development_dependency "pry-rails"
+  spec.add_development_dependency "awesome_print"
   spec.add_development_dependency "pry-byebug"
   spec.add_development_dependency "factory_girl", "~> 4"
   spec.add_development_dependency "sqlite3"
   spec.add_development_dependency "database_cleaner"
   spec.add_development_dependency "pg"
-  spec.add_development_dependency "capybara"
-  spec.add_development_dependency "selenium-webdriver"
-  spec.add_development_dependency "chromedriver-helper"
   spec.add_development_dependency "launchy"
-  spec.add_development_dependency "site_prism"
-
-  spec.add_development_dependency "bundler", "~> 1.12"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency 'selenium-webdriver'
+  spec.add_development_dependency "chromedriver-helper"
+  spec.add_development_dependency "listen"
 
   spec.add_dependency "solidus_core", ">= 1.3.0.a", "< 3"
   spec.add_dependency "solidus_api", ">= 1.3.0.a", "< 3"

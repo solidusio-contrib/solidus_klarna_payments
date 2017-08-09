@@ -12,6 +12,16 @@ if File.exist?(dummy_rake_file)
   Rails.application.load_tasks
 end
 
+module KlarnaOutputHelper
+
+  def self.pe(command)
+    ap "Executing: " << command
+    command = "cd spec/dummy && RAILS_ENV=test " << command
+    system command
+  end
+
+end
+
 namespace :klarna_gateway do
   namespace :spec do
     desc 'Generates a dummy app for testing'
@@ -28,19 +38,16 @@ namespace :klarna_gateway do
         Rake::Task['klarna_gateway:spec:create_dummy_app'].invoke
         Dir.chdir("../../")
       end
-
-      system 'cd spec/dummy && \
-        RAILS_ENV=test bundle exec rake db:drop db:create && \
-        RAILS_ENV=test bundle exec rake railties:install:migrations &> /dev/null && \
-        RAILS_ENV=test bundle exec rake db:migrate &> /dev/null && \
-        ADMIN_EMAIL=admin@example.com ADMIN_PASSWORD=test123 RAILS_ENV=test bundle exec rake db:seed spree_sample:load && \
-        cd -'
+      KlarnaOutputHelper.pe "bundle exec rake db:drop db:create"
+      KlarnaOutputHelper.pe "bundle exec rake railties:install:migrations"
+      KlarnaOutputHelper.pe "bundle exec rake db:migrate"
+      KlarnaOutputHelper.pe "ADMIN_EMAIL=admin@example.com ADMIN_PASSWORD=test123 bundle exec rake db:seed"
+      KlarnaOutputHelper.pe "bundle exec rake spree_sample:load"
     end
 
     desc "Run BDD tests"
     task :run do
-      Rake::Task['klarna_gateway:bdd:prepare'].invoke
-
+      # Rake::Task['klarna_gateway:bdd:prepare'].invoke
       Rake::Task["spec"].clear
       begin
         RSpec::Core::RakeTask.new(:spec) do |t|
@@ -61,10 +68,7 @@ namespace :klarna_gateway do
         Rake::Task['klarna_gateway:spec:create_dummy_app'].invoke
         Dir.chdir("../../")
       end
-
-      system 'cd spec/dummy && \
-        RAILS_ENV=test bundle exec rake db:drop db:create db:schema:load &> /dev/null && \
-        cd -'
+      KlarnaOutputHelper.pe "bundle exec rake db:drop db:create db:schema:load"
     end
 
     desc "Run TDD tests"
