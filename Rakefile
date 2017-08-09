@@ -1,6 +1,7 @@
 require "bundler/gem_tasks"
 Bundler::GemHelper.install_tasks
 
+require "awesome_print"
 require "rspec/core/rake_task"
 require 'spree/testing_support/common_rake'
 
