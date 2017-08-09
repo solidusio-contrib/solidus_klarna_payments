@@ -8,9 +8,8 @@ solidus1_3:
     RAILS_VERSION: "~> 4.2.0"
   script:
     - bundle install
-    - bundle exec rake
-    - cd spec/dummy && bin/rails db:environment:set RAILS_ENV=test && cd -
-    - RAILS_ENV=test bundle exec rspec --tag bdd
+    - bundle exec rake klarna_gateway:tdd:run
+    - bundle exec rake klarna_gateway:bdd:run
 
 # solidus1_4:
 #   stage: test
