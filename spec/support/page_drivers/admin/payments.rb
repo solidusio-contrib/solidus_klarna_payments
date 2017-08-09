@@ -10,39 +10,39 @@ module PageDrivers
       element :actions, :xpath, 'td[7]'
 
       def is_check?
-        !payment_method.text.match(/Check/).nil?
+        !payment_method.text.match(/Check/i).nil?
       end
 
       def is_klarna?
-        !payment_method.text.match(/Fraud Status/).nil?
+        !payment_method.text.match(/Fraud Status/i).nil?
       end
 
       def is_klarna_authorized?
-        !payment_method.text.match(/AUTHORIZED/).nil?
+        !payment_method.text.match(/AUTHORIZED/i).nil?
       end
 
       def is_klarna_pending?
-        !payment_method.text.match(/PENDING/).nil?
+        !payment_method.text.match(/PENDING/i).nil?
       end
 
       def is_klarna_captured?
-        !payment_method.text.match(/CAPTURED/).nil?
+        !payment_method.text.match(/CAPTURED/i).nil?
       end
 
       def is_klarna_cancelled?
-        !payment_method.text.match(/CANCELLED/).nil?
+        !payment_method.text.match(/CANCELLED/i).nil?
       end
 
       def is_pending?
-        !payment_state.text.match(/PENDING/).nil?
+        !payment_state.text.match(/PENDING/i).nil?
       end
 
       def is_completed?
-        !payment_state.text.match(/COMPLETED/).nil?
+        !payment_state.text.match(/COMPLETED/i).nil?
       end
 
       def is_void?
-        !payment_state.text.match(/VOID/).nil?
+        !payment_state.text.match(/VOID/i).nil?
       end
 
       def capture!
