@@ -48,6 +48,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'selenium-webdriver'
   spec.add_development_dependency "chromedriver-helper"
   spec.add_development_dependency "listen"
+  spec.add_development_dependency "dotenv"
 
   spec.add_dependency "solidus_core", ">= 1.3.0.a", "< 3"
   spec.add_dependency "solidus_api", ">= 1.3.0.a", "< 3"

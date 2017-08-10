@@ -24,7 +24,7 @@ module PageDrivers
     end
 
     def select_klarna
-      select_payment_method('Klarna Credit').click
+      select_payment_method('Klarna Credit US').click
       wait_for_klarna_credit
 
       klarna_credit do |frame|
