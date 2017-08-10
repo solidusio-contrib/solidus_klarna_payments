@@ -1,4 +1,3 @@
-
 RSpec.configure do |config|
   if config.inclusion_filter.rules.has_key?(:bdd)
     config.before(:suite) do |example|
@@ -15,25 +14,23 @@ RSpec.configure do |config|
         raise "Please specify a KLARNA_{COUNTRY_CODE}_API_KEY=xyz KLARNA_{COUNTRY_CODE}_API_SECRET=XYZ in your environment variables for any of the countries."
       end
 
-      binding.pry
+      Spree::PaymentMethod.where(type: 'Spree::Gateway::KlarnaCredit').destroy_all
 
-      ['US', 'DE', 'UK', 'SE', 'NO', 'FI'].each do |country|
-        api_key = "KLARNA_#{country}_API_KEY"
-        api_secret = "KLARNA_#{country}_API_SECRET"
-        api_name = "Klarna Credit #{country}"
+      api_key = "KLARNA_#{$store_id.upcase}_API_KEY"
+      api_secret = "KLARNA_#{$store_id.upcase}_API_SECRET"
+      api_name = "Klarna Credit #{$store_id.upcase}"
 
-        if ENV.has_key?(api_key) && ENV.has_key?(api_secret) && Spree::PaymentMethod.where(name: api_name).none?
-          Spree::PaymentMethod.create(
-            name: api_name,
-            type: 'Spree::Gateway::KlarnaCredit',
-            preferences: {
-              server: "test",
-              test_mode: true,
-              api_key: ENV[api_key],
-              api_secret: ENV[api_secret],
-              country: country.downcase
-            })
-        end
+      if ENV.has_key?(api_key) && ENV.has_key?(api_secret) && Spree::PaymentMethod.where(name: api_name).none?
+        Spree::PaymentMethod.create(
+          name: api_name,
+          type: 'Spree::Gateway::KlarnaCredit',
+          preferences: {
+            server: "test",
+            test_mode: true,
+            api_key: ENV[api_key],
+            api_secret: ENV[api_secret],
+            country: $store_id.downcase
+          })
       end
 
       if Spree::PaymentMethod.where(name: "Wrong Klarna").none?

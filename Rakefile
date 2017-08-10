@@ -51,7 +51,7 @@ namespace :klarna_gateway do
 
     desc "Run BDD tests"
     task :run do
-      # Rake::Task['klarna_gateway:bdd:prepare'].invoke
+      Rake::Task['klarna_gateway:bdd:prepare'].invoke
       Rake::Task["spec"].clear
       begin
         RSpec::Core::RakeTask.new(:spec) do |t|

@@ -3,7 +3,12 @@ shared_context "ordering with klarna" do
   include RSpec::Matchers
   include Capybara::RSpecMatchers
 
-  def order_product(product_name, email = "test@test.com")
+  def order_product(options)
+    product_name = options.fetch(:product_name, 'Ruby on Rails Bag')
+    email = options.fetch(:email, 'test@test.com')
+    testing_data = options.fetch(:testing_data)
+
+
     on_the_home_page do |page|
       page.load
       expect(page.displayed?).to be(true)
@@ -36,7 +41,7 @@ shared_context "ordering with klarna" do
     on_the_address_page do |page|
       expect(page.displayed?).to be(true)
 
-      page.set_address($data.address)
+      page.set_address(testing_data.address)
       page.continue
     end
 
@@ -49,19 +54,21 @@ shared_context "ordering with klarna" do
     end
   end
 
-  def select_klarna_payment
+  def select_klarna_payment(testing_data)
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
 
-      page.select_klarna
-      page.continue
+      page.select_klarna(testing_data)
+      page.continue(testing_data)
     end
   end
 
-  def pay_with_klarna
-    select_klarna_payment
+  def pay_with_klarna(options)
+    testing_data = options.fetch(:testing_data)
 
-    if $data.local?
+    select_klarna_payment(testing_data)
+
+    if testing_data.local?
       confirm_on_local
     else
       confirm_on_remote
@@ -92,7 +99,7 @@ shared_context "ordering with klarna" do
     on_the_complete_page do |page|
       expect(page.displayed?).to be(true)
 
-      if $data.de?
+      if testing_data.de?
         expect(page.flash_message).to have_content('Ihre Bestellung wurde erfolgreich bearbeitet')
       else
         expect(page.flash_message).to have_content('Your order has been processed successfully')

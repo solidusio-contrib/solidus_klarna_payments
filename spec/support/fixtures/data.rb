@@ -16,16 +16,9 @@ class TestData
       pending_rejected: 'user+pend-reject-05@example.com',
     })
 
-  LocalStore = StoreData.new('us', 'http://localhost:3000')
-  USStore = StoreData.new('us', 'https://klarna-solidus-demo.herokuapp.com')
-  UKStore = StoreData.new('uk', 'https://klarna-solidus-demo-uk.herokuapp.com')
-  DEStore = StoreData.new('de', 'https://klarna-solidus-demo-de.herokuapp.com')
-
-
-
   UKAddress = Address.new(
                 'Testing User',
-                'UKed',
+                'UK person',
                 '222 Oxford st',
                 'London',
                 'United Kingdom',
@@ -36,7 +29,7 @@ class TestData
 
   USAddress = Address.new(
                 'Testing User',
-                'USed',
+                'US person',
                 '1436 Adriel Dr',
                 'Fort Collins',
                 'United States of America',
@@ -47,10 +40,10 @@ class TestData
 
   DEAddress = Address.new(
                 'Testing User',
-                'DEed',
+                'DE person',
                 'Torstrasse 56',
                 'Berlin',
-                'Deutschland',
+                'Germany',
                 'Berlin',
                 '10119',
                 '2076367300',
@@ -61,38 +54,12 @@ class TestData
     @store_id = store_id
   end
 
-  def host
-    store.host
-  end
-
-  def store
-    case @store_id
-      when 'us'
-        USStore
-      when 'uk'
-        UKStore
-      when 'de'
-        DEStore
-      when nil
-        LocalStore
-      else
-        StoreData.new('us', @store_id)
-    end
-  end
-
   def country
-    case @store_id
-      when 'uk', 'de'
-        @store_id
-      else
-        'us'
-    end
+    @store_id
   end
 
   def address
     case @store_id
-      when 'us'
-        USAddress
       when 'uk'
         UKAddress
       when 'de'
@@ -114,7 +81,11 @@ class TestData
     country == 'de'
   end
 
+  def payment_name
+    "Klarna Credit #{@store_id.upcase}"
+  end
+
   def local?
-    store == LocalStore
+    true
   end
 end

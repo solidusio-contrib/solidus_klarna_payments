@@ -23,12 +23,12 @@ module PageDrivers
       payment_methods.find{|e| e.text.match(/#{name}/)}
     end
 
-    def select_klarna
-      select_payment_method('Klarna Credit US').click
+    def select_klarna(store_data)
+      select_payment_method(store_data.payment_name).click
       wait_for_klarna_credit
 
       klarna_credit do |frame|
-        if $data.us?
+        if store_data.us?
           wait_for_klarna_credit
           frame.options.first.click
         end
@@ -47,12 +47,12 @@ module PageDrivers
       select_payment_method('Check').click
     end
 
-    def continue
+    def continue(store_data)
       continue_button.click
 
       wait_for_klarna_credit
 
-      if $data.de?
+      if store_data.de?
         klarna_credit_fullscreen do |frame|
           frame.date_field.set '10.10.1970'
           frame.agreement_field.click

@@ -5,8 +5,8 @@ describe 'Cancalled Klarna Payments', type: 'feature', bdd: true do
   include WorkflowDriver::Process
 
   it "doesn't show klarna warning message with cancelled orders." do
-    order_product('Ruby on Rails Bag')
-    pay_with_klarna
+    order_product(product_name: 'Ruby on Rails Bag', testing_data: @testing_data)
+    pay_with_klarna(testing_data: @testing_data)
 
     on_the_admin_login_page do |page|
       page.load

@@ -1,3 +1,5 @@
+$store_id = ENV['STORE'] || 'us'
+
 require 'spec_helper'
 
 require 'capybara/rspec'
@@ -6,13 +8,12 @@ require 'site_prism'
 
 require 'config/capybara_features'
 require 'config/payment_methods'
+require 'config/store_currencies'
 
 require 'support/drivers'
 require 'support/wait_for_ajax'
 require 'support/shared_contexts/ordering_with_klarna'
 
-# Configure Capybara expected host
-$data = TestData.new(ENV['STORE'])
 
 RSpec.configure do |config|
   config.include Capybara::DSL
@@ -23,6 +24,10 @@ RSpec.configure do |config|
     else
       Spree::Store.default.update_attributes(url: "http://#{Spree::Store.default.url}") unless Spree::Store.default.url && Spree::Store.default.url.match(/http/)
     end
+  end
+
+  config.before(:example) do |example|
+    @testing_data = TestData.new($store_id)
   end
 
   config.before(:each) do |example|
