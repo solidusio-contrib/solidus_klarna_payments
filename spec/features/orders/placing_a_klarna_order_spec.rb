@@ -26,7 +26,7 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
     end
   end
 
-  xit 'can change to a check payment before confirming the payment' do
+  it 'can change to a check payment before confirming the payment' do
     order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
 
     on_the_payment_page do |page|

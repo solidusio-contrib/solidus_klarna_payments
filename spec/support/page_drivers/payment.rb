@@ -7,6 +7,8 @@ module PageDrivers
     element :date_field, "#purchaseApproval-dataCollection-dateOfBirth"
     element :agreement_field, "#purchaseApproval-dataCollection-agreeCheckbox"
     element :continue_button, "button#purchaseApproval-continueButton"
+    element :klarna_credit_logo, "#klarna-logo"
+
   end
 
   class Payment < SitePrism::Page
@@ -15,6 +17,7 @@ module PageDrivers
     elements :payment_methods, "fieldset#payment #payment-method-fields label"
     element :continue_button, "form#checkout_form_payment input.continue"
     element :klarna_error, ".klarna_error"
+    element :klarna_credit_logo, "#klarna-logo"
 
     iframe :klarna_credit, KlarnaCredit, '#klarna-credit-main'
     iframe :klarna_credit_fullscreen, KlarnaCreditFullscreen, '#klarna-credit-fullscreen'
