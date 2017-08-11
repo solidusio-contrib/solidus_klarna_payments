@@ -18,7 +18,7 @@ RSpec.configure do |config|
 
       api_key = "KLARNA_#{$store_id.upcase}_API_KEY"
       api_secret = "KLARNA_#{$store_id.upcase}_API_SECRET"
-      api_name = "Klarna Credit #{$store_id.upcase}"
+      api_name = "Klarna #{$store_id.upcase}"
 
       if ENV.has_key?(api_key) && ENV.has_key?(api_secret) && Spree::PaymentMethod.where(name: api_name).none?
         Spree::PaymentMethod.create(

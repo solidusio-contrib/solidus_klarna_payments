@@ -63,10 +63,9 @@ module PageDrivers
 
       if store_data
         wait_for_klarna_credit
-
         if store_data.de?
           klarna_credit_fullscreen do |frame|
-            frame.date_field.set '10.10.1970'
+            frame.date_field.set store_data.address.date
             frame.agreement_field.click
             frame.continue_button.click
           end

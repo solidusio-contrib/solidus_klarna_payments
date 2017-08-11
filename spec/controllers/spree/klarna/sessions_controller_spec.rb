@@ -5,7 +5,7 @@ describe Spree::Klarna::SessionsController do
 
   describe "#create" do
     let(:order) { create(:order_with_line_items, state: "payment") }
-    let!(:payment_method) { Spree::Gateway::KlarnaCredit.create(name: 'Klarna Credit') }
+    let!(:payment_method) { Spree::Gateway::KlarnaCredit.create(name: 'Klarna') }
 
     before do
       payment_method.preferred_api_key = ENV['KLARNA_API_KEY']

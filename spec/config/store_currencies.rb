@@ -1,3 +1,9 @@
+if Spree::Zone.where(name: 'GlobalZone').none?
+  shipping_method = FactoryGirl.create(:shipping_method)
+else
+  shipping_method = Spree::ShippingMethod.last
+end
+
 case $store_id
   when 'us'
     Spree::Config.currency = 'USD'
@@ -11,4 +17,31 @@ case $store_id
     Spree::Config.currency = 'GBP'
     Spree::Price.update_all(currency: 'GBP')
     Spree::Store.update_all(default_currency: 'GBP')
+
+    shipping_method.calculator.tap do |calculator|
+      calculator.preferences = {:amount=>10.0, :currency=>"GBP"}
+      calculator.save
+    end
+  when 'no'
+    Spree::Config.currency = 'NOK'
+    Spree::Price.update_all(currency: 'NOK')
+    Spree::Store.update_all(default_currency: 'NOK')
+
+    shipping_method.calculator.tap do |calculator|
+      calculator.preferences = {:amount=>10.0, :currency=>"NOK"}
+      calculator.save
+    end
+  when 'se'
+    Spree::Config.currency = 'SEK'
+    Spree::Price.update_all(currency: 'SEK')
+    Spree::Store.update_all(default_currency: 'SEK')
+
+    shipping_method.calculator.tap do |calculator|
+      calculator.preferences = {:amount=>10.0, :currency=>"SEK"}
+      calculator.save
+    end
+  when 'fi'
+    Spree::Config.currency = 'EUR'
+    Spree::Price.update_all(currency: 'EUR')
+    Spree::Store.update_all(default_currency: 'EUR')
 end

@@ -5,8 +5,8 @@ shared_context "ordering with klarna" do
 
   def order_product(options)
     product_name = options.fetch(:product_name, 'Ruby on Rails Bag')
-    email = options.fetch(:email, 'test@test.com')
     testing_data = options.fetch(:testing_data)
+    product_quantity = options.fetch(:product_quantity, 2)
 
 
     on_the_home_page do |page|
@@ -21,7 +21,7 @@ shared_context "ordering with klarna" do
       expect(page.displayed?).to be(true)
 
       expect(page.title).to have_content(product_name)
-      page.add_to_cart(10)
+      page.add_to_cart(product_quantity)
     end
 
     on_the_cart_page do |page|
@@ -35,13 +35,13 @@ shared_context "ordering with klarna" do
     on_the_registration_page do |page|
       expect(page.displayed?).to be(true)
 
-      page.checkout_as_guest(email)
+      page.checkout_as_guest(testing_data.address.email)
     end
 
     on_the_address_page do |page|
       expect(page.displayed?).to be(true)
-
       page.set_address(testing_data.address)
+
       page.continue
     end
 
