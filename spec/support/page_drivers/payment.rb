@@ -26,8 +26,12 @@ module PageDrivers
       payment_methods.find{|e| e.text.match(/#{name}/)}
     end
 
-    def select_klarna(store_data)
-      select_payment_method(store_data.payment_name).click
+    def select_klarna(store_data, &block)
+      select_payment_method(store_data.payment_name).tap do |payment_method|
+        payment_method.click
+        yield payment_method.find('input') if block
+      end
+
       wait_for_klarna_credit
 
       klarna_credit do |frame|
@@ -40,28 +44,34 @@ module PageDrivers
       wait_for_klarna_credit
     end
 
-
-    def select_credit_card
-      select_payment_method('Credit Card').click
+    def select_credit_card(&block)
+      select_payment_method('Credit Card').tap do |payment_method|
+        payment_method.click
+        yield payment_method.find('input') if block
+      end
     end
 
-
-    def select_check
-      select_payment_method('Check').click
+    def select_check(&block)
+      select_payment_method('Check').tap do |payment_method|
+        payment_method.click
+        yield payment_method.find('input') if block
+      end
     end
 
-    def continue(store_data)
+    def continue(store_data=nil)
       continue_button.click
 
-      wait_for_klarna_credit
+      if store_data
+        wait_for_klarna_credit
 
-      if store_data.de?
-        klarna_credit_fullscreen do |frame|
-          frame.date_field.set '10.10.1970'
-          frame.agreement_field.click
-          frame.continue_button.click
+        if store_data.de?
+          klarna_credit_fullscreen do |frame|
+            frame.date_field.set '10.10.1970'
+            frame.agreement_field.click
+            frame.continue_button.click
+          end
+          wait_for_klarna_credit_fullscreen
         end
-        wait_for_klarna_credit_fullscreen
       end
     end
   end

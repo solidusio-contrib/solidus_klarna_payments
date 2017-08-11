@@ -2,6 +2,7 @@ require 'features_helper'
 
 describe 'Rescue from an authorization error', type: 'feature', bdd: true do
   include_context "ordering with klarna"
+  include WorkflowDriver::Process
 
   it 'Buy 10 Ruby on Rails Bag with Klarna' do
     expect(Spree::PaymentMethod).to receive(:find_by).with(any_args).at_least(:once).and_return(Spree::PaymentMethod.find_by_name("Wrong Klarna"))

@@ -2,6 +2,7 @@ require 'features_helper'
 
 describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
   include_context "ordering with klarna"
+  include WorkflowDriver::Process
 
   it 'Buy 10 Ruby on Rails Bag with Klarna' do
     order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
@@ -32,19 +33,27 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
 
-      page.select_klarna(@testing_data)
+      page.select_klarna(@testing_data) do |checkbox|
+        expect(checkbox.checked?).to be(true)
+      end
+
       page.continue(@testing_data)
     end
 
     on_the_confirm_page  do |page|
       expect(page.displayed?).to be(true)
+
       page.change_payment
     end
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
-      page.select_check
-      page.continue(@testing_data)
+
+      page.select_check do |checkbox|
+        expect(checkbox.checked?).to be(true)
+      end
+
+      page.continue
     end
 
     on_the_confirm_page do |page|

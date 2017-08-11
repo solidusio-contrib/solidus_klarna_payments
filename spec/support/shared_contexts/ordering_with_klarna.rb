@@ -68,11 +68,7 @@ shared_context "ordering with klarna" do
 
     select_klarna_payment(testing_data)
 
-    if testing_data.local?
-      confirm_on_local
-    else
-      confirm_on_remote
-    end
+    confirm_on_local
   end
 
   def confirm_on_local
