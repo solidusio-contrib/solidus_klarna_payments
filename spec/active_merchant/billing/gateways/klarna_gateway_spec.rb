@@ -66,20 +66,6 @@ module ActiveMerchant
             expect(payment.source).to_not be_authorized
           end
         end
-
-        context "with a partial amount" do
-          it "releases remaining amount" do
-            allow(api_client).to receive(:capture).with(any_args).and_return(klarna_empty_success_response)
-            allow(api_client).to receive(:get).with(any_args).and_return(klarna_captured_response)
-            allow(Klarna).to receive(:client).with(any_args).and_return(api_client)
-            expect(api_client).to receive(:release).with(payment.source.order_id).and_return(klarna_empty_success_response)
-
-            options.merge!({subtotal: 20})
-            payment.payment_method.provider.capture(10, payment.source.order_id, options).tap do |response|
-              expect(response).to be_a(ActiveMerchant::Billing::Response)
-            end
-          end
-        end
       end
 
       # purchase(amount, payment_source, options={})
