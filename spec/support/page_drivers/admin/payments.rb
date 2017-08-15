@@ -53,6 +53,10 @@ module PageDrivers
         actions.find('[data-action="capture"]').click
       end
 
+      def extend!
+        actions.find('[data-action="extend_period"]').click
+      end
+
       def cancel!
         actions.find('[data-action="cancel"]').click
       end
