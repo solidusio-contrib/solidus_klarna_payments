@@ -18,11 +18,7 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
       page.continue(@testing_data)
 
       page.klarna_credit do |frame|
-        if @testing_data.de?
-          expect(frame).to have_content('Unable to approve application')
-        else
-          expect(frame).to have_content('Unable to approve application')
-        end
+        expect(frame).to have_content('Unable to approve application')
       end
     end
   end
@@ -65,11 +61,7 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
     on_the_complete_page do |page|
       expect(page.displayed?).to be(true)
 
-      if @testing_data.de?
-        expect(page.flash_message).to have_content('Ihre Bestellung wurde erfolgreich bearbeitet')
-      else
-        expect(page.flash_message).to have_content('Your order has been processed successfully')
-      end
+      expect(page.notice).to be_displayed
 
       page.get_order_number
     end

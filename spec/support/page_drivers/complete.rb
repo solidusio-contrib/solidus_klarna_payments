@@ -3,6 +3,7 @@ module PageDrivers
     set_url "/orders{/order_number}"
 
     element :flash_message, '#content .flash'
+    element :success_notice, '#content .flash.notice'
     element :order_number, 'fieldset#order_summary h1'
 
     def get_order_number
