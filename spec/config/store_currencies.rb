@@ -4,6 +4,13 @@ else
   shipping_method = Spree::ShippingMethod.last
 end
 
+if $store_id != 'us'
+  euro_zone = Spree::Zone.find_by!(name: "EU_VAT")
+  tax_rate = Spree::TaxRate.find_by(name: "USt.") ||
+    FactoryGirl.create(:tax_rate, name: "USt.", tax_category: Spree::TaxCategory.first, included_in_price: true, zone: euro_zone)
+  euro_zone.update(default_tax: true)
+end
+
 case $store_id
   when 'us'
     Spree::Config.currency = 'USD'
