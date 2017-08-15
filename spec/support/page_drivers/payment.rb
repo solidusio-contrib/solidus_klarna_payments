@@ -28,6 +28,7 @@ module PageDrivers
     end
 
     def select_klarna(store_data, &block)
+
       select_payment_method(store_data.payment_name).tap do |payment_method|
         payment_method.click
         yield payment_method.find('input') if block
@@ -37,7 +38,8 @@ module PageDrivers
 
       klarna_credit do |frame|
         frame.wait_for_klarna_credit_logo
-        if store_data.us?
+        if store_data.payment_name.include? "US_ADDRESS"
+          wait_for_klarna_credit
           frame.options.first.click
         end
       end
@@ -61,9 +63,8 @@ module PageDrivers
       continue_button.click
 
       if store_data
-        wait_for_klarna_credit
         wait_for_klarna_credit_fullscreen
-        if store_data.de?
+        if store_data.payment_name.include? "DE_ADDRESS"
           klarna_credit_fullscreen do |frame|
             frame.date_field.set store_data.address.date
             frame.agreement_field.click
