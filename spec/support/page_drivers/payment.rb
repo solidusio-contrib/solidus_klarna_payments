@@ -24,7 +24,7 @@ module PageDrivers
     iframe :klarna_credit_fullscreen, KlarnaCreditFullscreen, '#klarna-credit-fullscreen'
 
     def select_payment_method(name)
-      payment_methods.find{|e| e.text.match(/#{name}/)}
+      payment_methods.find{|e| e.text.match(/#{name.split.first}/)}
     end
 
     def select_klarna(store_data, &block)
