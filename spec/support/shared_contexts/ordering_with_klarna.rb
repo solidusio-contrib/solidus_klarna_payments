@@ -7,6 +7,7 @@ shared_context "ordering with klarna" do
     product_name = options.fetch(:product_name, 'Ruby on Rails Bag')
     testing_data = options.fetch(:testing_data)
     product_quantity = options.fetch(:product_quantity, 2)
+    email = options.fetch(:email) { testing_data.address.email }
 
 
     on_the_home_page do |page|
@@ -35,7 +36,7 @@ shared_context "ordering with klarna" do
     on_the_registration_page do |page|
       expect(page.displayed?).to be(true)
 
-      page.checkout_as_guest(testing_data.address.email)
+      page.checkout_as_guest(email)
     end
 
     on_the_address_page do |page|
