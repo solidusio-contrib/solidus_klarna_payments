@@ -4,7 +4,7 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
   include_context "ordering with klarna"
   include WorkflowDriver::Process
 
-  it 'Buy Ruby on Rails Bag with Klarna' do
+  it 'Successfully Purchases a Ruby on Rails Bag with Klarna' do
     order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
     pay_with_klarna(testing_data: @testing_data)
   end
