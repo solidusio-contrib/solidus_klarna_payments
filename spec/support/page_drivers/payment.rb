@@ -1,12 +1,13 @@
 module PageDrivers
   class KlarnaCredit < SitePrism::Page
     elements :options, 'label'
+    element :klarna_credit_logo, "#klarna-logo"
   end
 
   class KlarnaCreditFullscreen < SitePrism::Page
-    element :date_field, "#purchaseApproval-dataCollection-dateOfBirth"
-    element :agreement_field, "#purchaseApproval-dataCollection-agreeCheckbox"
-    element :continue_button, "button#purchaseApproval-continueButton"
+    element :date_field, "#purchase-approval-date-of-birth__input"
+    element :agreement_field, "#purchase-approval-accept-terms-input__label"
+    element :continue_button, "button#purchase-approval-continue-button"
     element :klarna_credit_logo, "#klarna-logo"
 
   end
@@ -35,13 +36,11 @@ module PageDrivers
       wait_for_klarna_credit
 
       klarna_credit do |frame|
+        frame.wait_for_klarna_credit_logo
         if store_data.us?
-          wait_for_klarna_credit
           frame.options.first.click
         end
       end
-
-      wait_for_klarna_credit
     end
 
     def select_credit_card(&block)
@@ -63,6 +62,7 @@ module PageDrivers
 
       if store_data
         wait_for_klarna_credit
+        wait_for_klarna_credit_fullscreen
         if store_data.de?
           klarna_credit_fullscreen do |frame|
             frame.date_field.set store_data.address.date
