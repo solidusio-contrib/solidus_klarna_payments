@@ -41,6 +41,10 @@ module PageDrivers
         !payment_state.text.match(/COMPLETED/i).nil?
       end
 
+      def is_cancelled?
+        !payment_state.text.match(/CANCELLED/i).nil?
+      end
+
       def is_void?
         !payment_state.text.match(/VOID/i).nil?
       end
@@ -63,4 +67,3 @@ module PageDrivers
     end
   end
 end
-
