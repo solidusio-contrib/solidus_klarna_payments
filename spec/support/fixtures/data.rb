@@ -11,6 +11,7 @@ class TestData
       valid: 'user@example.com',
       denied: 'user+denied@example.com',
       no_credit: 'user+red@example.com',
+      no_options_available: 'email+red@test.com',
       signup: 'user+signup_required@example.com',
       pending_accepted: 'user+pend-accept-05@example.com',
       pending_rejected: 'user+pend-reject-05@example.com',
