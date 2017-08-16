@@ -1,6 +1,6 @@
 require 'features_helper'
 
-describe 'Cancalled Klarna Payments', type: 'feature', bdd: true do
+describe 'Cancelled Klarna Payments', type: 'feature', bdd: true do
   include_context "ordering with klarna"
   include WorkflowDriver::Process
 
