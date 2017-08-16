@@ -122,9 +122,8 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
       expect(page.payments.first.is_klarna?).to be(true)
       expect(page.payments.first.is_pending?).to be(true)
       expect(page.payments.first.is_klarna_authorized?).to be(true)
-      binding.pry
+
       page.payments.first.extend!
-      binding.pry
     end
   end
 
