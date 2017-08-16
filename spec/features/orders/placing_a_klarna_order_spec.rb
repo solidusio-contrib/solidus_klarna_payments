@@ -38,7 +38,7 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
 
   it 'Denies the order from a banned user' do
     @testing_data.address.email = TestData::Users.denied
-    order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
+    order_product(product_name: 'Ruby on Rails Bag', testing_data: @testing_data)
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
@@ -95,5 +95,6 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
 
       page.get_order_number
     end
+
   end
 end
