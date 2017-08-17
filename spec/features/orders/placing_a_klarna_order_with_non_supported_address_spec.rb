@@ -19,27 +19,4 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
       end
     end
   end
-
-  # TODO - REFACTOR THIS ASAP - 15/08/2017 - Tinus Wagner
-  # Currently used to try debug why values are persisted in address form
-  # between sessions & tests.
-  it 'clears the session variables from the incompleted purchase' do
-    visit home
-
-    on_the_home_page do |page|
-      Spree::Order.incomplete.delete_all
-      expect(Spree::Order.incomplete.first).to be(empty)
-      Capybara.reset_sessions!
-      browser = Capybara.current_session.driver.browser
-      if browser.respond_to?(:clear_cookies)
-        # Rack::MockSession
-        browser.clear_cookies
-      elsif browser.respond_to?(:manage) and browser.manage.respond_to?(:delete_all_cookies)
-        # Selenium::WebDriver
-        browser.manage.delete_all_cookies
-      else
-        raise "Don't know how to clear cookies. Weird driver?"
-      end
-    end
-  end
 end
