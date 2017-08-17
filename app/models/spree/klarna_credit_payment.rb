@@ -43,6 +43,11 @@ module Spree
       payment.completed? && captured? && !part_captured?
     end
 
+    # See the solidus_multi_capture gem
+    def can_partial_capture?(payment)
+      payment.pending? && (authorized? || part_captured?)
+    end
+
     def accept!
       self.fraud_status = "ACCEPTED"
       save
