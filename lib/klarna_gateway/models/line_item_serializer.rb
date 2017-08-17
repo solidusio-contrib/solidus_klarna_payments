@@ -54,6 +54,7 @@ module KlarnaGateway
 
     def image_url
       image = line_item.variant.images.first
+
       return unless image.present?
       host = ActionController::Base.asset_host || store.url.to_s
       begin
@@ -63,6 +64,11 @@ module KlarnaGateway
         return nil
       end
       uri.to_s
+    end
+
+    def host
+      host = ActionController::Base.asset_host || Spree::Store.current.url
+      host.match(/^http:/) ? host : "http://#{host}"
     end
 
     def product_url

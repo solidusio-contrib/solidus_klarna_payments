@@ -90,7 +90,9 @@ module Spree
     def status_icon
       case self.status
         when "AUTHORIZED"
+          'ready'
         when "PART_CAPTURED"
+          'ready'
         when "CAPTURED"
           'ready'
         else
