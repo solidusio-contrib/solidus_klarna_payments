@@ -27,6 +27,11 @@ shared_context "ordering with klarna" do
 
     on_the_cart_page do |page|
       page.line_items
+      if discount_code
+        page.add_coupon_code(discount_code)
+        expect(page.displayed?).to be(true)
+        expect(page.adjustment).to have_content('Adjustment: Promotion')
+      end
       expect(page.displayed?).to be(true)
 
       expect(page.line_items).to have_content(product_name)
@@ -107,5 +112,3 @@ shared_context "ordering with klarna" do
     end
   end
 end
-
-
