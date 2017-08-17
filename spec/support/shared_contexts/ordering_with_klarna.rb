@@ -9,7 +9,6 @@ shared_context "ordering with klarna" do
     product_quantity = options.fetch(:product_quantity, 2)
     email = options.fetch(:email) { testing_data.address.email }
 
-
     on_the_home_page do |page|
       page.load
       expect(page.displayed?).to be(true)
@@ -27,7 +26,8 @@ shared_context "ordering with klarna" do
 
     on_the_cart_page do |page|
       page.line_items
-      if discount_code
+      if options[:discount_code]
+        discount_code = options.fetch(:discount_code)
         page.add_coupon_code(discount_code)
         expect(page.displayed?).to be(true)
         expect(page.adjustment).to have_content('Adjustment: Promotion')
