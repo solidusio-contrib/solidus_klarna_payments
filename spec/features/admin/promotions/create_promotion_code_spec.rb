@@ -58,20 +58,55 @@ describe 'Ordering with Klarna Payment Method Using Discount', type: 'feature', 
       testing_data: @testing_data,
       discount_code: discount_code
     )
-    pay_with_klarna(testing_data: @testing_data)
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
 
       order = Spree::Order.last
-
       promo_total = order.promo_total.to_f
       item_total = order.item_total.to_f
 
-      new_total = (item_total - promo_total)
       expect(page).to have_content(item_total)
-      expect(page).to have_content(promo_total)
-      expect(page).to have_content(new_total)
+      expect(page).to have_content(promo_total*-1)
+      expect(page).to have_content(order.total)
+    end
+
+    pay_with_klarna(testing_data: @testing_data)
+
+  end
+
+  it 'Discounted Klarna Purchase Is Confirmed in Admin Section' do
+    order = Spree::Order.last
+    on_the_admin_login_page do |page|
+      page.load
+      expect(page.displayed?).to be(true)
+
+      expect(page.title).to have_content('Admin Login')
+      page.login_with(TestData::AdminUser)
+    end
+
+    on_the_admin_orders_page do |page|
+      page.load
+      expect(page.displayed?).to be(true)
+
+      page.select_first_order
+    end
+
+    on_the_admin_order_page.menu.payments.click
+
+    on_the_admin_payments_page do |page|
+      expect(page.displayed?).to be(true)
+
+      expect(page.payments.first.is_klarna?).to be(true)
+      expect(page.payments.first.is_pending?).to be(true)
+      expect(page.payments.first.is_klarna_authorized?).to be(true)
+
+      expect(page).to have_content(order.total)
+      page.payments.first.capture!
+
+      expect(page.payments.first.is_klarna_captured?).to be(true)
+      expect(page.payments.first.is_completed?).to be(true)
+      page.payments.first.identifier.find('a').click
     end
   end
 end
