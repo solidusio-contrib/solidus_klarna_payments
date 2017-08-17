@@ -58,6 +58,7 @@ describe 'Ordering with Klarna Payment Method Using Discount', type: 'feature', 
       testing_data: @testing_data,
       discount_code: discount_code
     )
+    pay_with_klarna(testing_data: @testing_data)
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
@@ -70,9 +71,6 @@ describe 'Ordering with Klarna Payment Method Using Discount', type: 'feature', 
       expect(page).to have_content(promo_total*-1)
       expect(page).to have_content(order.total)
     end
-
-    pay_with_klarna(testing_data: @testing_data)
-
   end
 
   it 'Discounted Klarna Purchase Is Confirmed in Admin Section' do
