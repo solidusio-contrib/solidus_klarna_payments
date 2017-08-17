@@ -12,8 +12,5 @@ module Admin
     element :update_rule_button, "#rule_fields #edit_promotion_4 button[name='button']"
     element :update_rule_button, "#action_fields #edit_promotion_4 button[name='button']"
 
-    def complete_form
-
-    end
   end
 end
