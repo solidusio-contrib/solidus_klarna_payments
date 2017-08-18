@@ -80,11 +80,11 @@ shared_context "ordering with klarna" do
   end
 
   def confirm_on_local
-    expect do
-      on_the_confirm_page do |page|
-        expect(page.displayed?).to be(true)
-        expect(page.continue).to change(Spree::Order.complete, :count).by(1)
-      end
+    on_the_confirm_page do |page|
+      expect(page.displayed?).to be(true)
+
+      wait_for_ajax
+      page.continue
     end
   end
 
