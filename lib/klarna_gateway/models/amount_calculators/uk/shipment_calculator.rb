@@ -12,7 +12,7 @@ module KlarnaGateway
       private
 
       def tax_amount(shipment)
-        (shipment.included_tax_total * 100).to_i
+        shipment.display_amount.cents
       end
 
       def tax_rate(shipment)
