@@ -50,17 +50,12 @@ describe 'Ordering with Klarna Payment Method Using Discount', type: 'feature', 
   end
 
   it 'Klarna Purchase is made using the discount code' do
-    random = rand(Spree::Promotion.last.codes.count)
-    discount_code = Spree::Promotion.last.codes.offset(random).first.value
+    discount_code = Spree::Promotion.last.codes.first.value
 
-    order_product(
-      product_name:  'Ruby on Rails Bag',
-      testing_data: @testing_data,
-      discount_code: discount_code
-    )
+    order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data, discount_code: discount_code)
     pay_with_klarna(testing_data: @testing_data)
 
-    on_the_payment_page do |page|
+    on_the_confirm_page do |page|
       expect(page.displayed?).to be(true)
 
       order = Spree::Order.last
@@ -68,6 +63,7 @@ describe 'Ordering with Klarna Payment Method Using Discount', type: 'feature', 
       item_total = order.item_total.to_f
 
       expect(page).to have_content(item_total)
+      # Multiply by -1 to flip to positive number
       expect(page).to have_content(promo_total*-1)
       expect(page).to have_content(order.total)
     end
