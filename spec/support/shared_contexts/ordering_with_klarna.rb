@@ -83,13 +83,9 @@ shared_context "ordering with klarna" do
     expect do
       on_the_confirm_page do |page|
         expect(page.displayed?).to be(true)
-
-        wait_for_ajax
-        page.continue
+        expect(page.continue).to change(Spree::Order.complete, :count).by(1)
       end
-    end.to change(Spree::Order.complete, :count).by(1)
-
-    Spree::Order.complete.last.number
+    end
   end
 
   def confirm_on_remote

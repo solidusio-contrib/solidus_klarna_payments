@@ -53,7 +53,13 @@ describe 'Ordering with Klarna Payment Method Using Discount', type: 'feature', 
     discount_code = Spree::Promotion.last.codes.first.value
 
     order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data, discount_code: discount_code)
-    pay_with_klarna(testing_data: @testing_data)
+
+    on_the_payment_page do |page|
+      expect(page.displayed?).to be(true)
+
+      page.select_klarna(@testing_data)
+      page.continue(@testing_data)
+    end
 
     on_the_confirm_page do |page|
       expect(page.displayed?).to be(true)
@@ -66,6 +72,11 @@ describe 'Ordering with Klarna Payment Method Using Discount', type: 'feature', 
       # Multiply by -1 to flip to positive number
       expect(page).to have_content(promo_total*-1)
       expect(page).to have_content(order.total)
+      page.continue
+    end
+
+    on_the_complete_page do |page|
+      expect(page.displayed?).to be(true)
     end
   end
 
@@ -96,7 +107,9 @@ describe 'Ordering with Klarna Payment Method Using Discount', type: 'feature', 
       expect(page.payments.first.is_klarna_authorized?).to be(true)
 
       expect(page).to have_content(order.total)
+
       page.payments.first.capture!
+      wait_for_ajax
 
       expect(page.payments.first.is_klarna_captured?).to be(true)
       expect(page.payments.first.is_completed?).to be(true)
