@@ -11,7 +11,7 @@ module KlarnaGateway
         type: "discount",
         quantity: 1,
         # send the name and the promo code
-        name: name.presence || "Discount",
+        name: "Discount",
         reference: "Discount",
         total_amount: (@order.promo_total * 100).to_i,
         unit_price: (@order.promo_total * 100).to_i,
@@ -22,12 +22,13 @@ module KlarnaGateway
 
     private
 
-    def name
-      @order.adjustments.map do |adjustment|
-        if adjustment.promotion_code
-          "#{adjustment.promotion_code.promotion.name} (#{adjustment.promotion_code.value})"
-        end
-      end.compact.to_sentence
-    end
+    # This is not supported by Spree
+    # def name
+    #   @order.adjustments.map do |adjustment|
+    #     if adjustment.promotion_code
+    #       "#{adjustment.promotion_code.promotion.name} (#{adjustment.promotion_code.value})"
+    #     end
+    #   end.compact.to_sentence
+    # end
   end
 end

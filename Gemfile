@@ -1,11 +1,9 @@
 source 'https://rubygems.org'
 
-solidus_version = ENV["SOLIDUS_VERSION"] || "~> 1.3.0"
-rails_version = ENV["RAILS_VERSION"] || "~> 4.2.0"
+spree_version = ENV["SPREE_VERSION"] || "~> 2.3.0"
 
-gem "solidus", solidus_version
-gem "rails", rails_version
+gem "spree", spree_version
 
 gemspec
 
-gem "solidus_auth_devise"
+gem 'spree_auth_devise', github: 'spree/spree_auth_devise', branch: '2-3-stable'

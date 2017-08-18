@@ -15,8 +15,8 @@ require "awesome_print"
 require 'spree/core/version'
 require 'rails/all'
 require 'rspec/rails'
-require 'rspec/autorun'
 require 'klarna_gateway'
+require 'devise'
 
 # Feature specs
 require 'capybara'
@@ -26,6 +26,7 @@ require 'capybara/poltergeist'
 require 'config/payment_methods'
 
 require 'vcr'
+require 'ffaker' # Spree < 3.2 uses old FFaker that internally exposes class Faker. This forces proper loading.
 require 'spree/testing_support/factories'
 require 'spree/testing_support/controller_requests'
 require 'spree/testing_support/authorization_helpers'
@@ -37,12 +38,12 @@ require 'config/capybara'
 require 'config/vcr'
 require 'config/stock_items_provision'
 
-require 'solidus_sample'
+require 'spree_sample'
 
 RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
-
   config.include FactoryGirl::Syntax::Methods
   config.include Spree::TestingSupport::ControllerRequests, type: :controller
+  config.include Devise::TestHelpers, :type => :controller
   config.include_context "Klarna API helper", :klarna_api
 end

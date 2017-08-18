@@ -19,7 +19,7 @@ module ActiveMerchant
           config.country = @options[:country]
           config.api_key =  @options[:api_key]
           config.api_secret = @options[:api_secret]
-          config.user_agent = "Klarna Solidus Gateway/#{::KlarnaGateway::VERSION} Solidus/#{::Spree.solidus_version} Rails/#{::Rails.version}"
+          config.user_agent = "Klarna Spree Gateway/#{::KlarnaGateway::VERSION} Spree/#{::Spree.version} Rails/#{::Rails.version}"
         end
       end
 

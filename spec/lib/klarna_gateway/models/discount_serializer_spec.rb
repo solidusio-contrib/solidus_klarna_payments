@@ -1,8 +1,6 @@
 require 'spec_helper.rb'
-require 'byebug'
 
 describe KlarnaGateway::DiscountItemSerializer do
-  let(:promotion_code) { create(:promotion_code) }
   let(:order) { create(:completed_order_with_promotion, promotion: promotion) }
   subject(:serializer) { KlarnaGateway::OrderSerializer.new(order) }
   let(:serialized) { serializer.to_hash }
@@ -14,14 +12,7 @@ describe KlarnaGateway::DiscountItemSerializer do
   end
 
   context "on the whole order" do
-    let(:promotion) { create(:promotion_with_order_adjustment) }
-
-    it "has one discount line" do
-      order.adjustments.first.update_attributes(promotion_code: promotion_code)
-      discount_lines = serialized[:order_lines].select{ |l| l[:type] == "discount" }
-      expect(discount_lines.count).to eq(1)
-      expect(discount_lines.first[:name]).to match(/Promo \([^)]+\)/)
-    end
+    let(:promotion) { create(:promotion, :with_order_adjustment) }
 
     it "sets correct discount amounts" do
       discount_line = serialized[:order_lines].detect { |l| l[:type] == "discount" }

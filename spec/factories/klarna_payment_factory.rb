@@ -14,6 +14,7 @@ FactoryGirl.define do
   end
 
   factory :klarna_credit_payment, class: Spree::KlarnaCreditPayment do
+    association(:payment_method, factory: :klarna_credit_payment_method)
     user
     sequence(:order_id){|n| "1234-123-#{n}"}
     sequence(:authorization_token){|n| "asldfjasfdlasfaslkdfjaslkdfjhasifudp98q3h4irufhaosidufalsdf#{n}"}
@@ -33,6 +34,26 @@ FactoryGirl.define do
   factory :klarna_payment, class: Spree::Payment do
     association(:payment_method, factory: :klarna_credit_payment_method)
     association(:source, factory: :klarna_credit_payment)
-    association(:order, factory: :rand_store_order)
+    association(:order)
   end
+
+  factory :completed_order_with_promotion, parent: :order_with_line_items, class: "Spree::Order" do
+    transient do
+      promotion nil
+    end
+
+    after(:create) do |order, evaluator|
+      promotion = evaluator.promotion || create(:promotion, code: "test")
+
+      promotion.activate(order: order)
+      order.promotions << promotion
+
+      # Complete the order after the promotion has been activated
+      order.refresh_shipment_rates
+      order.update_column(:completed_at, Time.current)
+      order.update_column(:state, "complete")
+    end
+  end
+
+  factory :credit_card_payment, parent: :payment
 end

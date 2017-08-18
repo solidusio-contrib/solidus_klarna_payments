@@ -41,15 +41,18 @@ module KlarnaGateway
     end
 
     def total_amount
-      line_item.display_final_amount.cents
+      display_final_amount = Spree::Money.new(line_item.final_amount, { currency: line_item.currency })
+      display_final_amount.cents
     end
 
     def total_tax_amount
-      total_amount - line_item.display_pre_tax_amount.cents
+      pre_tax_amount = line_item.discounted_amount - line_item.included_tax_total
+      display_pre_tax_amount = Spree::Money.new(pre_tax_amount, { currency: line_item.currency })
+      total_amount - display_pre_tax_amount.cents
     end
 
     def unit_price
-      line_item.display_price.cents + (total_tax_amount / line_item.quantity).floor
+      line_item.single_money.cents + (total_tax_amount / line_item.quantity).floor
     end
 
     def image_url
@@ -72,7 +75,7 @@ module KlarnaGateway
     end
 
     def product_url
-      Spree::Core::Engine.routes.url_helpers.product_url(line_item.variant, host: store.url.to_s.chop)
+      Spree::Core::Engine.routes.url_helpers.product_url(line_item.variant, host: store.url.to_s.chop) if store.url.present?
     end
 
     def strategy_for_region(region)
@@ -83,7 +86,7 @@ module KlarnaGateway
     end
 
     def store
-      line_item.order.store
+      Spree::Store.current
     end
   end
 end

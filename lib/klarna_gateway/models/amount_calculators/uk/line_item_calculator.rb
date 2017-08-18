@@ -14,7 +14,7 @@ module KlarnaGateway
       private
 
       def unit_price(line_item)
-        line_item.display_price.cents
+        line_item.single_money.cents
       end
 
       def total_amount(line_item)
@@ -22,7 +22,7 @@ module KlarnaGateway
       end
 
       def total_tax_amount(line_item)
-        line_item.display_included_tax_total.cents
+        Spree::Money.new(line_item.included_tax_total, { currency: line_item.currency }).cents
       end
 
       def tax_rate(line_item)
