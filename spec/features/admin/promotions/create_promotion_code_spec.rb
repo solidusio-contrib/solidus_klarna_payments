@@ -23,6 +23,7 @@ describe 'Ordering with Klarna Payment Method Using Discount', type: 'feature', 
     on_the_admin_new_promotion_page do |page|
       page.load
       expect(page.displayed?).to be(true)
+      
       page.complete_form
       page.continue
     end
