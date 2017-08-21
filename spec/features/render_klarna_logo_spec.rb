@@ -24,8 +24,6 @@ describe 'renders Klarna logos on checkout', type: 'feature', bdd: true do
       expect(page.displayed?).to be(true)
       page.select_klarna(@testing_data)
 
-      page.continue(@testing_data)
-
       page.klarna_credit do |frame|
         expect(frame).to have_css('svg._1Qyng')
       end
