@@ -30,8 +30,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do |example|
-    @store_address = $store_id+'_address'
-    @testing_data = TestData.new(@store_address)
+    @testing_data = TestData.new($store_id)
     Capybara.current_driver = :selenium
   end
 
