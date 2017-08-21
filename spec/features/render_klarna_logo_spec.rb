@@ -12,8 +12,6 @@ describe 'renders Klarna logos on checkout', type: 'feature', bdd: true do
 
       page.select_klarna(@testing_data)
       expect(page).to have_selector("img[src$='https://cdn.klarna.com/1.0/shared/image/generic/logo/en_us/basic/white.png?width=80']", visible: true)
-
-      page.continue(@testing_data)
     end
   end
 
