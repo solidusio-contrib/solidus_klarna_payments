@@ -9,7 +9,6 @@ module PageDrivers
     element :agreement_field, "#purchase-approval-accept-terms-input__label"
     element :continue_button, "button#purchase-approval-continue-button"
     element :klarna_credit_logo, "#klarna-logo"
-
   end
 
   class Payment < SitePrism::Page
@@ -24,7 +23,7 @@ module PageDrivers
     iframe :klarna_credit_fullscreen, KlarnaCreditFullscreen, '#klarna-credit-fullscreen'
 
     def select_payment_method(name)
-      payment_methods.find{|e| e.text.match(/#{name.split.first}/)}
+      payment_methods.find{|e| e.text == name }
     end
 
     def select_klarna(store_data, &block)

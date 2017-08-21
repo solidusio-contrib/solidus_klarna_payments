@@ -12,7 +12,7 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
-      page.select_payment_method('Klarna').click
+      page.select_payment_method(@testing_data.payment_name).click
 
       page.klarna_credit do |frame|
         expect(frame).to have_content('Not available for this country')
