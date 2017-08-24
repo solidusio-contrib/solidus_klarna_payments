@@ -41,12 +41,20 @@ module PageDrivers
         !payment_state.text.match(/COMPLETED/i).nil?
       end
 
+      def is_cancelled?
+        !payment_state.text.match(/CANCELLED/i).nil?
+      end
+
       def is_void?
         !payment_state.text.match(/VOID/i).nil?
       end
 
       def capture!
         actions.find('[data-action="capture"]').click
+      end
+
+      def extend!
+        actions.find('[data-action="extend_period"]').click
       end
 
       def cancel!
@@ -63,4 +71,3 @@ module PageDrivers
     end
   end
 end
-

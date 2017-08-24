@@ -4,7 +4,7 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
   include_context "ordering with klarna"
   include WorkflowDriver::Process
 
-  it 'Buy 10 Ruby on Rails Bag with Klarna' do
+  it 'Successfully Purchases a Ruby on Rails Bag with Klarna' do
     order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
     pay_with_klarna(testing_data: @testing_data)
   end
@@ -21,6 +21,18 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
       page.klarna_credit do |frame|
         expect(frame).to have_content('Unable to approve application')
       end
+    end
+  end
+
+  it 'persists cart if page is refreshed before completing purchase' do
+    order_product(product_name: 'Ruby on Rails Bag', testing_data: @testing_data)
+
+    on_the_payment_page do |page|
+      expect(page.displayed?).to be(true)
+      page.evaluate_script("window.location.reload()")
+      expect(page.displayed?).to be(true)
+      page.select_klarna(@testing_data)
+      page.continue(@testing_data)
     end
   end
 
@@ -68,5 +80,6 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
 
       page.get_order_number
     end
+
   end
 end

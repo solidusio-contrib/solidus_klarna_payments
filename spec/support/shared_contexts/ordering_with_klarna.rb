@@ -28,6 +28,13 @@ shared_context "ordering with klarna" do
     on_the_cart_page do |page|
       page.line_items
       expect(page.displayed?).to be(true)
+      if options[:discount_code]
+        discount_code = options.fetch(:discount_code)
+        page.add_coupon_code(discount_code)
+
+        expect(page.displayed?).to be(true)
+        expect(page.adjustment).to have_content('Adjustment: Promotion')
+      end
 
       expect(page.line_items).to have_content(product_name)
       page.continue
@@ -73,16 +80,12 @@ shared_context "ordering with klarna" do
   end
 
   def confirm_on_local
-    expect do
-      on_the_confirm_page do |page|
-        expect(page.displayed?).to be(true)
+    on_the_confirm_page do |page|
+      expect(page.displayed?).to be(true)
 
-        wait_for_ajax
-        page.continue
-      end
-    end.to change(Spree::Order.complete, :count).by(1)
-
-    Spree::Order.complete.last.number
+      wait_for_ajax
+      page.continue
+    end
   end
 
   def confirm_on_remote
@@ -107,5 +110,3 @@ shared_context "ordering with klarna" do
     end
   end
 end
-
-
