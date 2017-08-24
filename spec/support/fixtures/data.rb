@@ -1,6 +1,6 @@
 require 'ostruct'
 StoreData = Struct.new(:country, :host)
-Address = Struct.new(:first_name ,:last_name ,:street_address ,:city ,:country ,:state ,:zip ,:phone, :date, :email)
+Address = Struct.new(:first_name ,:last_name ,:street_address ,:city ,:country ,:country_iso ,:state ,:zip ,:phone, :date, :email)
 
 class TestData
   AdminUser = OpenStruct.new({
@@ -24,26 +24,28 @@ class TestData
       '222 Oxford st',
       'London',
       'United Kingdom',
+      'GB',
       'London, City of',
       'W1C 1DD',
       '2076367700',
       nil,
-      'youremail@email.com'   # Email
+      'ukmail@email.com'   # Email
     )
   end
 
   def us_address
-    return Address.new(
+    Address.new(
       'Testing User',             # Name
       'US person',                # Last Name
       '1436 Adriel Dr',           # Stree
       'Fort Collins',             # City
       'United States of America', # Country
+      'US',                       # Country ISO
       'Colorado',                 # Distric
       '80524',                    # Postal Code
       '4075631020',               # Phone
       nil,                        # Age
-      'youremail@email.com'       # Email
+      'usemail@email.com'       # Email
     )
   end
 
@@ -54,11 +56,12 @@ class TestData
       'Hellersbergstraße 14', # Stree
       'Neuss',                # City
       'Germany',              # Country
+      'DE',                   # Country ISO
       'Nordrhein-Westfalen',  # Distric
       '41460',                # Postal Code
       '01522113356',          # Phone
       '07.07.1960',           # Age
-      'user@example.com'   # Email
+      'deuser@example.com'   # Email
     )
   end
 
@@ -68,12 +71,13 @@ class TestData
       'Approved',             # Last Name
       'Stårgatan 1',          # Stree
       'Ankeborg',             # City
-      'Sweden',              # Country
+      'Sweden',               # Country
+      'SE',                   # Country ISO
       'Jönköpings län',       # Distric
       '12345',                # Postal Code
       '0765260000',           # Phone
       nil,                    # Age
-      'youremail@email.com'   # Email
+      'seemail@email.com'   # Email
     )
   end
 
@@ -83,12 +87,13 @@ class TestData
       'Approved',             # Last Name
       'Sæffleberggate 56',    # Stree
       'Oslo',                 # City
-      'Norway',              # Country
+      'Norway',               # Country
+      'NO',                   # Country ISO
       'Oslo',                 # Distric
       '0563',                 # Postal Code
       '40 123 456',           # Phone
       nil,                    # Age
-      'user@example.com'      # Email
+      'nouser@example.com'      # Email
     )
   end
 
@@ -99,11 +104,28 @@ class TestData
       'Kiväärikatu 10',       # Stree
       'Pori',                 # City
       'Finland',              # Country
+      'FI',                   # Country ISO
       'Satakunta',            # Distric
       '28100',                # Postal Code
       '0401234567',           # Phone
       nil,                    # Age
-      'user@example.com'      # Email
+      'fiuser@example.com'      # Email
+    )
+  end
+
+  def ca_address
+    Address.new(
+      'Testperson-fi',        # Name
+      'Approved',             # Last Name
+      '17007 107 Ave',        # Stree
+      'Edmonton',             # City
+      'Canada',               # Country
+      'CA',                   # Country ISO
+      'Alberta',              # Distric
+      'T6C 1B6',              # Postal Code
+      '780 452 8770',         # Phone
+      nil,                    # Age
+      'causer@example.com'      # Email
     )
   end
 
@@ -127,6 +149,8 @@ class TestData
         no_address
       when 'fi'
         fi_address
+      when 'ca'
+        ca_address
       else
         us_address
     end
@@ -154,6 +178,10 @@ class TestData
 
   def fi?
     country == 'fi'
+  end
+
+  def ca?
+    country == 'ca'
   end
 
   def payment_name
