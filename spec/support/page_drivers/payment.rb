@@ -2,6 +2,7 @@ module PageDrivers
   class KlarnaCredit < SitePrism::Page
     elements :options, 'label'
     element :klarna_credit_logo, "#klarna-logo"
+    element :total_amount, "#combined-account-details-content-total__content"
   end
 
   class KlarnaCreditFullscreen < SitePrism::Page
