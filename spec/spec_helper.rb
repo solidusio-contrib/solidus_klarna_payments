@@ -6,7 +6,7 @@ begin
   require File.expand_path("../dummy/config/environment.rb",  __FILE__)
   ENV["RAILS_ROOT"] ||= File.dirname(__FILE__) + "../../../spec/dummy"
 rescue LoadError
-  puts "Could not load dummy application. Please ensure you have run `bundle exec rake test_app`"
+  puts "Could not load dummy application. Please ensure you have run `bundle exec rake common:test_app`"
 end
 
 require "pry"
