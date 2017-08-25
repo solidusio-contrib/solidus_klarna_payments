@@ -5,7 +5,7 @@ describe 'Ordering with Klarna Payment using differing payment/shipping addresse
   include WorkflowDriver::Process
 
   # Test will fail since this has not been implemented on the Klarna side yet
-  it 'renders error when payment shipping first & last names differ' do
+  xit 'renders error when payment shipping first & last names differ' do
     order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data, differing_delivery_addrs: true)
 
     on_the_payment_page do |page|
