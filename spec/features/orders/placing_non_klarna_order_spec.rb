@@ -12,6 +12,12 @@ describe 'Orders with non-klarna payment method renders legacy checkout', type: 
       page.select_payment_method("Check").click
 
       expect(page).not_to have_selector('iframe')
+      page.continue
+    end
+
+    on_the_complete_page do |page|
+      expect(page.displayed?).to be(true)
+      expect(page.notice).to be_displayed
     end
   end
 end
