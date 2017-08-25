@@ -50,7 +50,7 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
       page.continue(@testing_data)
     end
 
-    on_the_confirm_page  do |page|
+    on_the_confirm_page do |page|
       expect(page.displayed?).to be(true)
 
       page.change_payment
