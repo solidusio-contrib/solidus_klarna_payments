@@ -1,67 +1,12 @@
 before_script:
   - rvm use 2.3
 
-solidus1_3:
+spree_2_3:
   stage: test
   variables:
-    SOLIDUS_VERSION: "~> 1.3.0"
-    RAILS_VERSION: "~> 4.2.0"
+    SPREE_VERSION: "~> 2.3.0"
+    RAILS_VERSION: "~> 4.1.11"
   script:
     - bundle install
     - bundle exec rake klarna_gateway:tdd:run
     - bundle exec rake klarna_gateway:bdd:run
-
-# solidus1_4:
-#   stage: test
-#   variables:
-#     SOLIDUS_VERSION: "~> 1.4.0"
-#     RAILS_VERSION: "~> 4.2.0"
-#   script:
-#     - bundle install
-#     - bundle exec rake
-#     - cd spec/dummy && bin/rails db:environment:set RAILS_ENV=test && cd -
-#     - RAILS_ENV=test bundle exec rspec --tag bdd
-
-# solidus2_0:
-#   stage: test
-#   variables:
-#     SOLIDUS_VERSION: "~> 2.0.2"
-#     RAILS_VERSION: "~> 5.0.0"
-#   script:
-#     - bundle install
-#     - bundle exec rake
-#     - cd spec/dummy && bin/rails db:environment:set RAILS_ENV=test && cd -
-#     - RAILS_ENV=test bundle exec rspec --tag bdd
-
-# solidus2_1:
-#   stage: test
-#   variables:
-#     SOLIDUS_VERSION: "~> 2.1.0"
-#     RAILS_VERSION: "~> 5.0.0"
-#   script:
-#     - bundle install
-#     - bundle exec rake
-#     - cd spec/dummy && bin/rails db:environment:set RAILS_ENV=test && cd -
-#     - RAILS_ENV=test bundle exec rspec --tag bdd
-
-# solidus2_2:
-#   stage: test
-#   variables:
-#     SOLIDUS_VERSION: "~> 2.2.0"
-#     RAILS_VERSION: "~> 5.1.0"
-#   script:
-#     - bundle install
-#     - bundle exec rake
-#     - cd spec/dummy && bin/rails db:environment:set RAILS_ENV=test && cd -
-#     - RAILS_ENV=test bundle exec rspec --tag bdd
-
-# solidus2_3:
-#   stage: test
-#   variables:
-#     SOLIDUS_VERSION: "~> 2.3.0"
-#     RAILS_VERSION: "~> 5.1.0"
-#   script:
-#     - bundle install
-#     - bundle exec rake
-#     - cd spec/dummy && bin/rails db:environment:set RAILS_ENV=test && cd -
-#     - RAILS_ENV=test bundle exec rspec --tag bdd
