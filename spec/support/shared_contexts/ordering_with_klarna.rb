@@ -9,7 +9,6 @@ shared_context "ordering with klarna" do
     product_quantity = options.fetch(:product_quantity, 2)
     email = options.fetch(:email) { testing_data.address.email }
 
-
     on_the_home_page do |page|
       page.load
       expect(page.displayed?).to be(true)
@@ -48,7 +47,11 @@ shared_context "ordering with klarna" do
 
     on_the_address_page do |page|
       expect(page.displayed?).to be(true)
-      page.set_address(testing_data.address)
+      if options[:differing_delivery_addrs]
+        page.set_differing_addresses(testing_data.address)
+      else
+        page.set_address(testing_data.address)
+      end
 
       page.continue
     end

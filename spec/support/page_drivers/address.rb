@@ -11,6 +11,7 @@ module PageDrivers
   end
 
   class ShippingForm < SitePrism::Section
+    element :shipping_toggle, 'input#order_use_billing'
     element :first_name, 'input#order_ship_address_attributes_firstname'
     element :last_name, 'input#order_ship_address_attributes_lastname'
     element :address, 'input#order_ship_address_attributes_address1'
@@ -72,9 +73,46 @@ module PageDrivers
       end
     end
 
+    def set_differing_addresses(data)
+      country = Spree::Country.find_by_iso(data[:country_iso])
+
+      while billing_fields.country.value.to_i != country.id do
+        billing_fields.country.find(:option, data[:country]).select_option
+      end
+
+      billing_fields.first_name.set(data[:first_name])
+      billing_fields.last_name.set(data[:last_name])
+      billing_fields.address.set(data[:street_address])
+      billing_fields.city.set(data[:city])
+      billing_fields.zipcode.set(data[:zip])
+      billing_fields.phone.set(data[:phone])
+
+      state = country.states.find_by_name(data[:state])
+      while billing_fields.state.value.to_i != state.id do
+        billing_fields.state.find(:option, data[:state]).select_option
+      end
+
+
+      shipping_fields.shipping_toggle.click
+      while shipping_fields.country.value.to_i != country.id do
+        shipping_fields.country.find(:option, data[:country]).select_option
+      end
+
+      shipping_fields.first_name.set(data[:first_name].reverse)
+      shipping_fields.last_name.set(data[:last_name].reverse)
+      shipping_fields.address.set(data[:street_address])
+      shipping_fields.city.set(data[:city])
+      shipping_fields.zipcode.set(data[:zip])
+      shipping_fields.phone.set(data[:phone])
+
+      state = country.states.find_by_name(data[:state])
+      while shipping_fields.state.value.to_i != state.id do
+        shipping_fields.state.find(:option, data[:state]).select_option
+      end
+    end
+
     def continue
       continue_button.click
     end
   end
 end
-
