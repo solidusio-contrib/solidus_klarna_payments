@@ -160,8 +160,13 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
       expect(page.payments.first.is_klarna_captured?).to be(true)
       expect(page.payments.first.is_completed?).to be(true)
 
+      expect(page).not_to have_content('REFUNDS')
+      expect(page).not_to have_content('Return processing')
+
       page.payments.first.refund!
     end
+
+    order_amount = Spree::Order.last.total.to_s
 
     on_the_admin_order_payments_refunds_page do |page|
       expect(page.displayed?).to be(true)
@@ -171,8 +176,10 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
 
     on_the_admin_payments_page do |page|
       expect(page.displayed?).to be(true)
+      refund_amount = Spree::Refund.last.amount.to_s
       expect(page).to have_content('REFUNDS')
       expect(page).to have_content('Return processing')
+      expect(order_amount).to eq(refund_amount)
     end
   end
 
