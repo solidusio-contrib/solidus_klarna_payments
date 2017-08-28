@@ -163,7 +163,7 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
       page.payments.first.refund!
     end
 
-    on_the_admin_refunds_page do |page|
+    on_the_admin_order_payments_refunds_page do |page|
       expect(page.displayed?).to be(true)
       page.select_reason!
       page.continue
