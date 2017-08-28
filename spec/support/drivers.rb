@@ -23,5 +23,6 @@ require 'support/page_drivers/admin/customer.rb'
 require 'support/page_drivers/admin/promotion.rb'
 require 'support/page_drivers/admin/promotions.rb'
 require 'support/page_drivers/admin/new_promotion.rb'
+require 'support/page_drivers/admin/refunds.rb'
 
 require 'support/workflow_driver/process.rb'

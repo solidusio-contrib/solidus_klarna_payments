@@ -8,6 +8,7 @@ module PageDrivers
       element :transaction_id, :xpath, 'td[5]'
       element :payment_state, :xpath, 'td[6]'
       element :actions, :xpath, 'td[7]'
+      element :refund, 'td.actions a.fa.fa-reply.icon_link'
 
       def is_check?
         !payment_method.text.match(/Check/i).nil?
@@ -59,6 +60,10 @@ module PageDrivers
 
       def cancel!
         actions.find('[data-action="cancel"]').click
+      end
+
+      def refund!
+        actions.find('td.actions a.fa.fa-reply.icon_link').click
       end
     end
 

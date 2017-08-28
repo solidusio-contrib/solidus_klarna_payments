@@ -10,6 +10,7 @@ require 'support/pages/checkout/payment_page'
 require 'support/pages/checkout/confirm_page'
 require 'support/pages/admin/order_page'
 require 'support/pages/admin/order_payments_page'
+require 'support/pages/admin/payment_refunds_page'
 require 'support/pages/admin/promotion_page'
 
 RSpec.shared_context "page objects" do
@@ -23,6 +24,7 @@ RSpec.shared_context "page objects" do
   let(:login_page) { LoginPage.new }
   let(:order_page) { Admin::OrderPage.new }
   let(:order_payments_page) { Admin::OrderPaymentsPage.new }
+  let(:payment_refunds_page) {Admin::PaymentRefundsPage.new}
   let(:promotion_page) {Admin::PromotionPage.new}
   let(:promotions_page) {Admin::PromotionsPage.new}
 end
