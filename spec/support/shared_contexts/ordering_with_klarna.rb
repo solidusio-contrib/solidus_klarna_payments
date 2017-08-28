@@ -12,7 +12,6 @@ shared_context "ordering with klarna" do
     on_the_home_page do |page|
       page.load
       expect(page.displayed?).to be(true)
-
       page.choose(product_name)
     end
 
@@ -36,6 +35,7 @@ shared_context "ordering with klarna" do
       end
 
       expect(page.line_items).to have_content(product_name)
+      expect(page.line_items).to have_link(product_name, href: "/products/#{product_name.parameterize}")
       page.continue
     end
 
