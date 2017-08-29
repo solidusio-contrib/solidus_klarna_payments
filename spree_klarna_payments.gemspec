@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'klarna_gateway/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "spree_klarna_gateway"
+  spec.name          = "spree_klarna_payments"
   spec.version       = KlarnaGateway::VERSION
   spec.authors       = ["Jose Antonio Pio Gil", "Pascal Jungblut"]
   spec.email         = ["jose.pio@bitspire.de", "pascal.jungblut@bitspire.de"]
