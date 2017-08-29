@@ -54,6 +54,8 @@ module PageDrivers
       when :shipping
         country = Spree::Country.find_by_iso(data[:country_iso])
 
+        shipping_fields.shipping_toggle.click
+
         while shipping_fields.country.value.to_i != country.id do
           shipping_fields.country.find(:option, data[:country]).select_option
         end
@@ -70,44 +72,6 @@ module PageDrivers
         while shipping_fields.state.value.to_i != state.id do
           shipping_fields.state.find(:option, data[:state]).select_option
         end
-      end
-    end
-
-    def set_differing_addresses(data)
-      country = Spree::Country.find_by_iso(data[:country_iso])
-
-      while billing_fields.country.value.to_i != country.id do
-        billing_fields.country.find(:option, data[:country]).select_option
-      end
-
-      billing_fields.first_name.set(data[:first_name])
-      billing_fields.last_name.set(data[:last_name])
-      billing_fields.address.set(data[:street_address])
-      billing_fields.city.set(data[:city])
-      billing_fields.zipcode.set(data[:zip])
-      billing_fields.phone.set(data[:phone])
-
-      state = country.states.find_by_name(data[:state])
-      while billing_fields.state.value.to_i != state.id do
-        billing_fields.state.find(:option, data[:state]).select_option
-      end
-
-
-      shipping_fields.shipping_toggle.click
-      while shipping_fields.country.value.to_i != country.id do
-        shipping_fields.country.find(:option, data[:country]).select_option
-      end
-
-      shipping_fields.first_name.set(data[:first_name].reverse)
-      shipping_fields.last_name.set(data[:last_name].reverse)
-      shipping_fields.address.set(data[:street_address])
-      shipping_fields.city.set(data[:city])
-      shipping_fields.zipcode.set(data[:zip])
-      shipping_fields.phone.set(data[:phone])
-
-      state = country.states.find_by_name(data[:state])
-      while shipping_fields.state.value.to_i != state.id do
-        shipping_fields.state.find(:option, data[:state]).select_option
       end
     end
 

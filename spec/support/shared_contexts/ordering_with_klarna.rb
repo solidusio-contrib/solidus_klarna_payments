@@ -47,10 +47,14 @@ shared_context "ordering with klarna" do
 
     on_the_address_page do |page|
       expect(page.displayed?).to be(true)
+      page.set_address(testing_data.address)
+
       if options[:differing_delivery_addrs]
-        page.set_differing_addresses(testing_data.address)
-      else
-        page.set_address(testing_data.address)
+        testing_data.address.tap do |x|
+          x.first_name = testing_data.address.first_name.reverse
+          x.last_name = testing_data.address.last_name.reverse
+        end
+        page.set_address(testing_data.address, :shipping)
       end
 
       page.continue
