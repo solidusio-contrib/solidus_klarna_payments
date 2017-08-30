@@ -5,9 +5,14 @@ module PageDrivers
       element :date, :xpath, 'td[2]'
       element :amount, :xpath, 'td[3]'
       element :payment_method, :xpath, 'td[4]'
-      element :transaction_id, :xpath, 'td[5]'
-      element :payment_state, :xpath, 'td[6]'
-      element :actions, :xpath, 'td[7]'
+
+      if KlarnaGateway.up_to_spree?('2.3.99')
+        element :payment_state, :xpath, 'td[5]'
+        element :actions, :xpath, 'td[6]'
+      else
+        element :payment_state, :xpath, 'td[6]'
+        element :actions, :xpath, 'td[7]'
+      end
 
       def is_check?
         !payment_method.text.match(/Check/i).nil?
@@ -76,11 +81,16 @@ module PageDrivers
 
     class Payments < Base
       set_url '/admin/orders/{number}/payments'
+      sections :payments, PaymentItem, 'table#payments.index tbody tr[data-hook="payments_row"]'
 
-      sections :payments, PaymentItem, '[data-hook="payment_list"] tbody tr[data-hook="payments_row"]'
-      section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
-      element :new_payment_button, '#content-header .header-actions #new_payment_section a'
-      elements :refunds, 'tr[data-hook="refunds_row"]'
+
+      if KlarnaGateway.is_solidus?
+        section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
+        element :new_payment_button, '#content-header .header-actions #new_payment_section a'
+      else
+        section :menu, PageDrivers::Admin::OrderMenu, 'aside#sidebar nav.menu ul'
+        element :new_payment_button, '#content-header .page-actions #new_payment_section a'
+      end
     end
   end
 end

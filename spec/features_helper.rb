@@ -23,11 +23,6 @@ RSpec.configure do |config|
     store = $store_id.downcase.to_sym
     config.filter_run_excluding only: lambda {|v| !Array(v).include?(store) }
     config.filter_run_excluding except: lambda {|v| Array(v).include?(store) }
-    if KlarnaGateway.up_to_solidus?('1.5.0')
-      Spree::Store.current.update_attributes(url: "http://#{Spree::Store.current.url}") unless Spree::Store.current.url && Spree::Store.current.url.match(/http/)
-    else
-      Spree::Store.default.update_attributes(url: "http://#{Spree::Store.default.url}") unless Spree::Store.default.url && Spree::Store.default.url.match(/http/)
-    end
   end
 
   config.before(:each) do |example|

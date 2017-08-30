@@ -128,7 +128,7 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
       page.payments.first.cancel!
 
       expect(page.payments.first.is_klarna_cancelled?).to be(true)
-      expect(page.payments.first.is_void?).to be(true)
+      expect(page.payments.first.is_void?).to be(true) unless KlarnaGateway.up_to_spree?('2.3.99')
       page.payments.first.identifier.find('a').click
     end
 
@@ -137,9 +137,9 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
     on_the_admin_logs_page do |page|
       expect(page.displayed?).to be(true)
 
-      expect(page.log_entries.count).to eq(2)
+      expect(page.log_entries.count).to eq(KlarnaGateway.up_to_spree?('2.3.99')? 1 : 2)
       expect(page.log_entries.first.message.text).to have_content('Placed order')
-      expect(page.log_entries.second.message.text).to have_content('Cancelled order')
+      expect(page.log_entries.second.message.text).to have_content('Cancelled order') unless KlarnaGateway.up_to_spree?('2.3.99')
     end
   end
 

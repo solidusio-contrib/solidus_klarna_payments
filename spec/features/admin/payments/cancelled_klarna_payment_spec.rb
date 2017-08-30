@@ -43,8 +43,10 @@ describe 'Cancelled Klarna Payments', type: 'feature', bdd: true do
       expect(page.payments.first.is_klarna_authorized?).to be(true)
       page.payments.first.cancel!
       expect(page.payments.first.is_klarna_cancelled?).to be(true)
-      expect(page.payments.first.is_void?).to be(true)
 
+      unless KlarnaGateway.up_to_spree?('2.3.99')
+        expect(page.payments.first.is_void?).to be(true)
+      end
       page.new_payment_button.click
     end
 

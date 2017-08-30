@@ -84,19 +84,6 @@ shared_context "ordering with klarna" do
     testing_data = options.fetch(:testing_data)
 
     select_klarna_payment(testing_data)
-
-    confirm_on_local
-  end
-
-  def confirm_on_local
-    Capybara.using_wait_time(CapybaraExtraWaitTime) do
-      on_the_confirm_page do |page|
-        expect(page.displayed?).to be(true)
-
-        wait_for_ajax
-        page.continue
-      end
-    end
   end
 
   def confirm_on_remote

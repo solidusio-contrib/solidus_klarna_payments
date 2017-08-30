@@ -21,7 +21,7 @@ RSpec.configure do |config|
       api_name = "Klarna #{$store_id.upcase}"
 
       if ENV.has_key?(api_key) && ENV.has_key?(api_secret) && Spree::PaymentMethod.where(name: api_name).none?
-        Spree::PaymentMethod.create(
+        payment_method = Spree::PaymentMethod.create(
           name: api_name,
           type: 'Spree::Gateway::KlarnaCredit',
           preferences: {
@@ -31,6 +31,39 @@ RSpec.configure do |config|
             api_secret: ENV[api_secret],
             country: $store_id.downcase
           })
+
+        if KlarnaGateway.is_spree?
+          payment_method.update_attributes(environment: 'test')
+        end
+      end
+
+      if Spree::PaymentMethod.where(name: "Wrong Klarna").none?
+        payment_method = Spree::PaymentMethod.create(
+          name: "Wrong Klarna",
+          type: 'Spree::Gateway::KlarnaCredit',
+          preferences: {
+            server: "test",
+            test_mode: true,
+            api_key: 'wrong_key',
+            api_secret: 'and_wrong_secret',
+            country: "us"
+          })
+
+        if KlarnaGateway.is_spree?
+          payment_method.update_attributes(environment: 'test')
+        end
+      end
+
+      if Spree::PaymentMethod.where(name: "Check").none?
+        Spree::PaymentMethod.create(
+          name: "Check",
+          type: 'Spree::PaymentMethod::Check',
+          description: "Pay by check.",
+          active: true)
+      end
+
+      if KlarnaGateway.is_spree?
+        Spree::PaymentMethod.where(name: "Check").first.update_attributes(environment: 'test')
       end
     end
   end

@@ -5,15 +5,24 @@ module PageDrivers
 
       element :promotion_name_field, "input[name='promotion[name]']"
       element :promotion_desc_field, "textarea[name='promotion[description]']"
-      element :promotion_code_field, "input[name='promotion_builder[base_code]']"
-      element :number_of_codes_field, "input[name='promotion_builder[number_of_codes]']"
       element :create_button, "[data-hook='buttons'] button"
+
+      if KlarnaGateway.up_to_spree?('2.3.99')
+        element :promotion_code_field, "input[name='promotion[code]']"
+      else
+        element :number_of_codes_field, "input[name='promotion_builder[number_of_codes]']"
+        element :promotion_code_field, "input[name='promotion_builder[base_code]']"
+      end
+
 
       def complete_form
         promotion_name_field.set('test')
         promotion_desc_field.set('test')
         promotion_code_field.set('test')
-        number_of_codes_field.set('10')
+
+        unless KlarnaGateway.up_to_spree?('2.3.99')
+          number_of_codes_field.set('10')
+        end
       end
 
       def continue
