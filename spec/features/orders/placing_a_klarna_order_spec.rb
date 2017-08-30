@@ -4,6 +4,15 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
   include_context "ordering with klarna"
   include WorkflowDriver::Process
 
+<<<<<<< HEAD
+=======
+  it 'Successfully Purchases a Ruby on Rails Bag with Klarna' do
+    order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
+    pay_with_klarna(testing_data: @testing_data)
+    Capybara.current_session.driver.quit
+  end
+
+>>>>>>> adding session quits since the capybara session seems to not clear itself anymore between tests...
   # This is only implemented for US
   it 'Denies the order from a banned user', only: :us do
     order_product(product_name:  'Ruby on Rails Bag', email: TestData::Users.denied, testing_data: @testing_data)
@@ -18,6 +27,11 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
         expect(frame).to have_content('Unable to approve application')
       end
     end
+<<<<<<< HEAD
+=======
+    Capybara.current_session.driver.quit
+  end
+>>>>>>> adding session quits since the capybara session seems to not clear itself anymore between tests...
 
     Capybara.current_session.driver.quit
   end
