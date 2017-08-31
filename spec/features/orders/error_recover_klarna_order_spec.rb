@@ -14,7 +14,10 @@ describe 'Rescue from an authorization error', type: 'feature', bdd: true do
 
       expect(page.klarna_error.text).to match /A technical error has occurred./
     end
+<<<<<<< HEAD
 
+=======
+>>>>>>> adding session quits after each test since we seem to have a driver issue compromising tests
     Capybara.current_session.driver.quit
   end
 end

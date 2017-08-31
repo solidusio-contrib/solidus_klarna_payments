@@ -13,6 +13,7 @@ describe 'Orders with non-klarna payment method renders legacy checkout', type: 
 
       expect(page).not_to have_selector('iframe')
     end
+    Capybara.current_session.driver.quit
   end
 
   it 'Should not render the klarna iframe if Credit Card is payment method' do
@@ -24,5 +25,6 @@ describe 'Orders with non-klarna payment method renders legacy checkout', type: 
 
       expect(page).not_to have_selector('iframe')
     end
+    Capybara.current_session.driver.quit
   end
 end
