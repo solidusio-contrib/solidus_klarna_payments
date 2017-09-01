@@ -14,5 +14,7 @@ describe 'Rescue from an authorization error', type: 'feature', bdd: true do
 
       expect(page.klarna_error.text).to match /A technical error has occurred./
     end
+
+    Capybara.current_session.driver.quit
   end
 end
