@@ -11,6 +11,7 @@ module PageDrivers
   end
 
   class ShippingForm < SitePrism::Section
+    element :shipping_toggle, 'input#order_use_billing'
     element :first_name, 'input#order_ship_address_attributes_firstname'
     element :last_name, 'input#order_ship_address_attributes_lastname'
     element :address, 'input#order_ship_address_attributes_address1'
@@ -53,6 +54,8 @@ module PageDrivers
       when :shipping
         country = Spree::Country.find_by_iso(data[:country_iso])
 
+        shipping_fields.shipping_toggle.click
+
         while shipping_fields.country.value.to_i != country.id do
           shipping_fields.country.find(:option, data[:country]).select_option
         end
@@ -77,4 +80,3 @@ module PageDrivers
     end
   end
 end
-
