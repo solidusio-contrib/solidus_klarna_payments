@@ -4,7 +4,7 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
   include_context "ordering with klarna"
   include WorkflowDriver::Process
 
-  it 'gateway should be unavailable when shipping to a non-supported country' do
+  xit 'gateway should be unavailable when shipping to a non-supported country' do
     product_name = 'Ruby on Rails Mug'
     product_quantity = 2
 
@@ -71,8 +71,6 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
 
       page.continue
     end
-
-    Capybara.current_session.driver.quit
   end
 end
 

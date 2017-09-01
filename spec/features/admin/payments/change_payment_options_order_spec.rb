@@ -16,5 +16,7 @@ describe 'Altering order of payment options in checkout', type: 'feature', bdd: 
       expect(page.displayed?).to be(true)
       expect(page.payment_methods.first).to have_content('Klarna')
     end
+
+    Capybara.current_session.driver.quit
   end
 end

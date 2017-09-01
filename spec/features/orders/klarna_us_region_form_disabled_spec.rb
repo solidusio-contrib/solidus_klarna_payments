@@ -16,8 +16,10 @@ describe 'Disables Klarna payment options if the form is toggled false (US Speci
       # Todo 16/08/2017 Tinus Wagner
       # Perhaps the if statement can be moved to a tag?
       page.klarna_credit do |frame|
-        expect(frame).to have_content('Option not available') if @testing_data.country == "us_address"
+        expect(frame).to have_content('Option not available') if @testing_data.us?
       end
     end
+
+    Capybara.current_session.driver.quit
   end
 end
