@@ -1,7 +1,11 @@
 module PageDrivers
   module Admin
     class PaymentMenu < SitePrism::Section
-      element :logs, 'a[icon="archive"]'
+      if ENV["SOLIDUS_VERSION"] == "~> 1.4.0"
+        element :logs, :xpath,'//*[@id="content-header"]/ul/li/a'
+      else
+        element :logs, 'a[icon="archive"]'
+      end
     end
 
     class Payment < SitePrism::Page
@@ -11,4 +15,3 @@ module PageDrivers
     end
   end
 end
-
