@@ -60,6 +60,10 @@ module PageDrivers
       def cancel!
         actions.find('[data-action="cancel"]').click
       end
+
+      def refund!
+        actions.find('a.fa.fa-reply.icon_link').click
+      end
     end
 
     class Payments < SitePrism::Page
