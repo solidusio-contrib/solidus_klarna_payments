@@ -28,6 +28,8 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 
 - Solidus 1.3.x
 - Solidus 1.4.x
+- Solidus 2.0.x
+- Solidus 2.1.x
 
 Work is planned for compatibility with the 2.x branch of Solidus.
 
@@ -102,7 +104,7 @@ $(container).klarnaAuthorize({
   // The form that is submitted on the payment page. The submit event is prevented so
   // the payment can be authorized before progressing any further.
   form: $("#checkout_form_payment"),
-  
+
   // Load the Klarna iframe directly after page load, not only when Klarna was selected.
   loadDirectly: false,
 
@@ -123,7 +125,7 @@ $(container).klarnaAuthorize({
   paymentId: $(this).data("payment-method-id"),
 
   // Wraper for the whole payment method. This is being hidden when Klarna returns with `show_form == false`.
-  paymentMethodWrapper: $(".form-payment-method-klarna_credit"),	
+  paymentMethodWrapper: $(".form-payment-method-klarna_credit"),
   // The session URL of the store. The store needs to create a session from the server
   // side. This should not be changed.
   sessionUrl: Spree.url(Spree.pathFor("/klarna/session")),
