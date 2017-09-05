@@ -11,7 +11,7 @@ module PageDrivers
     class Payment < Base
       set_url '/admin/orders/{number}/payments/{payment_id}'
 
-      if KlarnaGateway.up_to_spree?('2.3.99')
+      if KlarnaGateway.is_spree?
         section :payment_menu, PaymentMenu, '#content-header ul.inline-menu'
       else
         section :payment_menu, PaymentMenu, '#content-header ul.header-actions'

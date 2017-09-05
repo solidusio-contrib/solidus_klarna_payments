@@ -4,9 +4,8 @@ describe 'Altering order of payment options in checkout', type: 'feature', bdd: 
   include_context "ordering with klarna"
   include WorkflowDriver::Process
 
-  unless KlarnaGateway.up_to_spree?('2.3.99')
+  unless KlarnaGateway.up_to_spree?('2.4.99')
     it 'Changes the order of payment options - Puts Klarna first' do
-      binding.pry
         gateway = Spree::PaymentMethod.where("name LIKE :prefix", prefix: "#{Klarna}%").first
         gateway.position = 1
         gateway.save

@@ -8,10 +8,11 @@ shared_context "ordering with klarna" do
     testing_data = options.fetch(:testing_data)
     product_quantity = options.fetch(:product_quantity, 2)
     email = options.fetch(:email) { testing_data.address.email }
+    discount_code = options.fetch(:discount_code, nil)
 
     on_the_home_page do |page|
       page.load
-
+      page.update_hosts
 
       expect(page.displayed?).to be(true)
       page.choose(product_name)
@@ -28,8 +29,8 @@ shared_context "ordering with klarna" do
     on_the_cart_page do |page|
       page.line_items
       expect(page.displayed?).to be(true)
-      if options[:discount_code]
-        discount_code = options.fetch(:discount_code)
+
+      if discount_code
         page.add_coupon_code(discount_code)
 
         expect(page.displayed?).to be(true)

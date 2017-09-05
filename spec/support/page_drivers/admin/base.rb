@@ -10,6 +10,8 @@ module PageDrivers
         Capybara.current_session.driver.browser.execute_script(script, element.native)
         element
       end
+
+      element :logout_button, '[data-hook="admin_login_navigation_bar"] ul#login-nav li[data-hook="user-logout-link"] a'
     end
   end
 end

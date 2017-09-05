@@ -22,7 +22,12 @@ module PageDrivers
       end
 
       def complete_rule_form
-        rule_amount_field.set('10.0')
+        if all("input[id*='preferred_amount']").count == 1
+          rule_amount_field.set('10.0')
+        else
+          all("input[id*='preferred_amount']").first.set('0.0')
+          all("input[id*='preferred_amount']")[1].set('100.0')
+        end
       end
 
       def complete_promotion_form

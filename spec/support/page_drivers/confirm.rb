@@ -33,6 +33,7 @@ module PageDrivers
       else
         Spree::Store.default.update_attributes(url: "http://#{Capybara.current_session.server.host}:#{Capybara.current_session.server.port}")
       end
+
       continue_button.click
     end
   end
