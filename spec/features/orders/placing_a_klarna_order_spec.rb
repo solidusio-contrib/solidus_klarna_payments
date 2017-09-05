@@ -4,14 +4,10 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
   include_context "ordering with klarna"
   include WorkflowDriver::Process
 
-  it 'Successfully Purchases a Ruby on Rails Bag with Klarna' do
-    order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
-    pay_with_klarna(testing_data: @testing_data)
-  end
-
   # This is only implemented for US
   it 'Denies the order from a banned user', only: :us do
     order_product(product_name:  'Ruby on Rails Bag', email: TestData::Users.denied, testing_data: @testing_data)
+
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
 
@@ -22,17 +18,20 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
         expect(frame).to have_content('Unable to approve application')
       end
     end
+
+    Capybara.current_session.driver.quit
   end
 
-  it 'persists cart if page is refreshed before completing purchase' do
-    order_product(product_name: 'Ruby on Rails Bag', testing_data: @testing_data)
-
+  # This is not implimented in Klarna yet
+  xit 'completes a klarna purchase once user has completed signup via klarna iframe' do
+    order_product(product_name: 'Ruby on Rails Bag', email: TestData::Users.signup, testing_data: @testing_data)
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
-      page.evaluate_script("window.location.reload()")
-      expect(page.displayed?).to be(true)
+
       page.select_klarna(@testing_data)
-      page.continue(@testing_data)
+      page.klarna_credit do |frame|
+        expect(frame).to have_content('Register')
+      end
     end
   end
 
@@ -51,7 +50,7 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
       page.continue(@testing_data)
     end
 
-    on_the_confirm_page  do |page|
+    on_the_confirm_page do |page|
       expect(page.displayed?).to be(true)
 
       page.change_payment
@@ -80,6 +79,5 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
 
       page.get_order_number
     end
-
   end
 end

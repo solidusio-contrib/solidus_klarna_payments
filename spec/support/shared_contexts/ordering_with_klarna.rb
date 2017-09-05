@@ -9,11 +9,9 @@ shared_context "ordering with klarna" do
     product_quantity = options.fetch(:product_quantity, 2)
     email = options.fetch(:email) { testing_data.address.email }
 
-
     on_the_home_page do |page|
       page.load
       expect(page.displayed?).to be(true)
-
       page.choose(product_name)
     end
 
@@ -37,6 +35,7 @@ shared_context "ordering with klarna" do
       end
 
       expect(page.line_items).to have_content(product_name)
+      expect(page.line_items).to have_link(product_name, href: "/products/#{product_name.parameterize}")
       page.continue
     end
 
@@ -49,6 +48,14 @@ shared_context "ordering with klarna" do
     on_the_address_page do |page|
       expect(page.displayed?).to be(true)
       page.set_address(testing_data.address)
+
+      if options[:differing_delivery_addrs]
+        testing_data.address.tap do |x|
+          x.first_name = testing_data.address.first_name.reverse
+          x.last_name = testing_data.address.last_name.reverse
+        end
+        page.set_address(testing_data.address, :shipping)
+      end
 
       page.continue
     end
