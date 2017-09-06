@@ -1,0 +1,54 @@
+<style type="text/css">
+  .header {
+    background-color: #0074C8;
+    color: white;
+    padding: 1px;
+  }
+
+  .klarna_payment_method {
+    padding: 0;
+  }
+
+  .small {
+    font-size: 60%;
+  }
+</style>
+<td class="klarna_payment_method align-center">
+  <% if payment.is_klarna? %>
+      <div class="klarna_payment" id="<%= payment.id %>" data-source="source_<%= payment.source.id %>">
+        <div class="klarna_payment_info header">
+          <img src="https://cdn.klarna.com/1.0/shared/image/generic/logo/en_us/basic/white.png?width=29" height="10px">
+        </div>
+
+        <span class="small">
+          Fraud Status:
+        </span>
+        <br/>
+        <span class="state <%= payment.source.fraud_status_icon %>">
+          <%= payment.source.fraud_status %>
+        </span>
+
+        <span class="small">
+          Status:
+        </span>
+        <br/>
+        <span class="state <%= payment.source.status_icon %>">
+          <%= payment.source.status %>
+        </span>
+
+        <% if payment.source.accepted? %>
+          <span class="small">
+            Expires at:
+          </span>
+          <br/>
+          <%= I18n.l(payment.source.expires_at, format: '%Y-%m-%d') if payment.source.expires_at?%>
+        <% elsif payment.source.error? %>
+          <span title="<%= payment.source.error_messages %>">
+            Error (<%= icon('fa fa-expand')%>)
+          </span>
+        <% end %>
+      </div>
+  <% else %>
+    <%= payment_method_name(payment) %>
+  <% end %>
+</td>

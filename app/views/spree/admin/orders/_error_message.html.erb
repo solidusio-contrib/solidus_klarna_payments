@@ -1,0 +1,6 @@
+<% if @order.available_klarna_payments? %>
+  <div class="errorExplanation align-center">
+    <span class="fa fa-exclamation-circle"></span>
+      Updates to this order will not be reflected in Klarna
+  </div>
+<% end %>

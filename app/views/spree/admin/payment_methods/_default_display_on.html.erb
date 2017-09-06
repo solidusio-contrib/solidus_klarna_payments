@@ -1,0 +1,26 @@
+<script type="text/javascript">
+  $(document).ready(function() {
+    $provider_select = $("#gtwy-type");
+    <% if KlarnaGateway.up_to_solidus?('2.0.2') || KlarnaGateway.is_spree? %>
+      $display_on_select = $("#payment_method_display_on");
+
+      $provider_select.on("change", function(e) {
+        if (e.val == 'Spree::Gateway::KlarnaCredit') {
+          $display_on_select.select2('val', 'front_end');
+        } else {
+          $display_on_select.select2('val', '');
+        }
+      })
+    <% else %>
+      $admin_checkbox = $("#payment_method_available_to_admin, #gateway_klarna_credit_available_to_admin");
+
+      $provider_select.on("change", function(e) {
+        if (e.val == 'Spree::Gateway::KlarnaCredit') {
+          $admin_checkbox.prop('checked', false);
+        } else {
+          $admin_checkbox.prop('checked', true);
+        }
+      })
+    <% end %>
+  });
+</script>

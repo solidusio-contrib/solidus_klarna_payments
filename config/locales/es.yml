@@ -1,0 +1,6 @@
+es:
+  spree:
+    extend_period: "Extender periodo de caducidad"
+    refresh: "Recargar"
+    release: "Liberar monto restante"
+
