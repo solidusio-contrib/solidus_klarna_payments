@@ -1,0 +1,77 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+en:
+  spree:
+    extend_period: "Extend Expiring Period"
+    refresh: "Refresh"
+    release: "Release remaining amount"
+    # preferences
+    country: Country
+    api_key: Merchant ID
+    api_secret: Secret
+    design: Design
+    color_details: Details color (hex)
+    color_button: Button color (hex)
+    color_button_text: Button text color (hex)
+    color_checkbox: Checkbox color (hex)
+    color_checkbox_checkmark: Checkbox checkmark color (hex)
+    color_header: Header color (hex)
+    color_link: Link color (hex)
+    color_border: Border color (hex)
+    color_border_selected: Selected border color (hex)
+    color_text: Text color (hex)
+    color_text_secondary: Secondary text color (hex)
+    radius_border: Border radius in pixel
+    payment_method: Preferred payment method
+    klarna_general_error: "A technical error has occurred. Please try reloading the page or contact the merchant."
+    rejected_klarna_payments: Rejected Klarna payments
+    klarna:
+      can_not_test_api_connection: API can not be tested. Credentials are missing
+      valid_api_credentials: Klarna Credentials have been validated. API configuration completed!
+      invalid_api_credentials: Klarna Credentials are not valid
+      specify_credentials: "Please specify %{missing_preferece} to finish your configuration"
+      general_error: "A technical error has occurred. Please try reloading the page or contact the merchant."
+      denied_error: "Unable to approve your application for Klarna Credit."
+  klarna:
+    gateway_errors:
+      internal_server_error: "There was a technical error while processing the payment. Please try again."
+      http_error: "There was a technical error while processing the payment. Please try again."
+      bad_value: "There was a technical error while communicating with Klarna. Please contact the support."
+      bad_request: "There was a technical error while communicating with Klarna. Please contact the support."
+      service_unavailable: "There was a technical error while communicating with Klarna. Please contact the support."
+      invalid_operation: "There was a technical error while communicating with Klarna. Please contact the support."
+      rejected: "Klarna rejected the request. Please select another payment method."
+  activerecord:
+    attributes:
+      spree/gateway/klarna_credit:
+        preferred_country: Country
+        preferred_api_key: Merchant ID
+        preferred_api_secret: Secret
+        preferred_border_radius: Border radius
+    errors:
+      models:
+        spree/gateway/klarna_credit:
+          invalid: "is not in hexadecimal format #RRGGBB (e.g. '#123bca')"
+          attributes:
+            preferred_country:
+              invalid: "is not a valid region (e.g. 'us' or 'de')"
+            preferred_payment_method:
+              inclusion: "must be one of: 'invoice', 'pix', 'base_account', 'deferred_interest' or 'fixed_amount'. Leave empty if unsure."

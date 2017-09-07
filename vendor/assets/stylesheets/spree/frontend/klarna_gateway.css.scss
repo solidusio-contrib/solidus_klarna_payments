@@ -1,0 +1,32 @@
+.klarna_credit_box {
+  border: 1px solid #0074C8;
+
+  .header {
+    background-color: #0074C8;
+    color: white;
+    padding: 10px 20px;
+
+    h3 {
+      float: left;
+      margin-right: 20px;
+    }
+  }
+
+  #klarna_container {
+    text-align: center;
+    padding: 20px;
+  }
+  .klarna_error {
+    display: none;
+    margin: 15px;
+  }
+
+  @media only screen and (max-width: 767px) {
+    #klarna_container {
+      padding: 5px;
+    }
+    .klarna_credit_box {
+      margin: -10px;
+    }
+  }
+}
