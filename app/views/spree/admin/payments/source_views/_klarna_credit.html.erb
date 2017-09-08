@@ -1,0 +1,249 @@
+<% if @klarna_order.present? %>
+  <%
+    expires_at = DateTime.parse(@klarna_order["expires_at"])
+  %>
+
+  <fieldset class="no-border-bottom">
+    <% if payment.source.authorized? && !payment.source.expired? %>
+      <legend align="center">
+        <span >Expires in:</span>
+        <h6><%= distance_of_time_in_words(DateTime.now, expires_at) %></h6>
+      </legend>
+    <% elsif payment.source.authorized? && payment.source.expired? %>
+      <legend align="center">
+        <span >Expired at:</span>
+        <span class="date"><%= pretty_time(expires_at) %></span>
+      </legend>
+    <% end %>
+
+      <div class="align-center">
+        <%= link_to_with_icon 'refresh',
+              "Update",
+              fire_admin_order_payment_path(@order, payment, e: 'refresh'),
+                method: :put,
+                class: 'button'
+        %>
+
+      <% if payment.can_capture?(payment)  %>
+        <%= link_to_with_icon 'check',
+              "Capture",
+              fire_admin_order_payment_path(@order, payment, e: 'capture'),
+                method: :put,
+                class: 'button',
+                data: { confirm: Spree.t(:are_you_sure) }
+        %>
+      <% end %>
+
+      <% if payment.can_extend_period?(payment)  %>
+        <%= link_to_with_icon 'arrows-h',
+              "Extend Period",
+              fire_admin_order_payment_path(@order, payment, e: 'extend_period'),
+                method: :put,
+                class: 'button',
+                data: { confirm: Spree.t(:are_you_sure) }
+        %>
+      <% end %>
+
+      <% if payment.can_cancel?(payment) %>
+        <%= link_to_with_icon 'trash-o',
+              "Cancel",
+              fire_admin_order_payment_path(@order, payment, e: 'cancel'),
+                method: :put,
+                class: 'button',
+                data: { confirm: Spree.t(:are_you_sure) }
+        %>
+      <% end %>
+
+      <% if payment.can_release?(payment) %>
+        <%= link_to_with_icon 'money',
+              "Release remaining",
+              fire_admin_order_payment_path(@order, payment, e: 'release'),
+                method: :put,
+                class: 'button',
+                data: { confirm: Spree.t(:are_you_sure) }
+        %>
+      <% end %>
+      </div>
+  </fieldset>
+
+  <% if @klarna_order["order_lines"] %>
+    <fieldset class="no-border-bottom">
+      <legend align="center">
+        <span >Order Lines</span>
+      </legend>
+      <table>
+        <thead>
+          <tr>
+            <th>Quantity</th>
+            <th>Name</th>
+            <th>Reference</th>
+            <th>Total Amount</th>
+            <th>Total Discount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @klarna_order["order_lines"].each do |item| %>
+            <tr>
+              <td class="align-center"><%= item["quantity"] %></td>
+              <td class="align-center"><%= item["name"] %></td>
+              <td class="align-center"><%= item["reference"] %></td>
+              <td class="align-center"><%= cents_to_display_money(item["total_amount"], @klarna_order['purchase_currency']) %></td>
+              <td class="align-center"><%= cents_to_display_money(item["total_discount"] || 0, @klarna_order['purchase_currency']) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      <table>
+    </fieldset>
+  <% end %>
+
+  <fieldset class="no-border-bottom">
+    <legend align="center">
+      <span >Info</span>
+    </legend>
+    <table>
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Klarna Reference</td>
+          <td class="align-center"><%= @klarna_order["klarna_reference"]%> </td>
+        </tr>
+        <tr>
+          <td>Order ID</td>
+          <td class="align-center"><%= @klarna_order["order_id"]%> </td>
+        </tr>
+        <tr>
+          <td>Status</td>
+          <td class="align-center"><span class="state <%= payment.source.status_icon %>"></span><%= @klarna_order["status"]%> </td>
+        </tr>
+        <tr>
+          <td>Fraud Status</td>
+          <td class="align-center"><span class="state <%= payment.source.fraud_status_icon %>"></span>  <%= @klarna_order["fraud_status"]%> </td>
+        </tr>
+        <tr>
+          <td>Order Amount</td>
+          <td class="align-center">
+            <%= cents_to_display_money(@klarna_order["order_amount"], @klarna_order["purchase_currency"]) %> </td>
+        </tr>
+        <tr>
+          <td>Original Order Amount</td>
+          <td class="align-center"><%= cents_to_display_money(@klarna_order["original_order_amount"], @klarna_order['purchase_currency'])%> </td>
+        </tr>
+        <tr>
+          <td>Captured Amount</td>
+          <td class="align-center"><%= cents_to_display_money(@klarna_order["captured_amount"], @klarna_order['purchase_currency'])%> </td>
+        </tr>
+        <tr>
+          <td>Refunded Amount</td>
+          <td class="align-center"><%= cents_to_display_money(@klarna_order["refunded_amount"], @klarna_order['purchase_currency'])%> </td>
+        </tr>
+        <tr>
+          <td>Remaining Authorized Amount</td>
+          <td class="align-center"><%= cents_to_display_money(@klarna_order["remaining_authorized_amount"], @klarna_order['purchase_currency'])%> </td>
+        </tr>
+        <tr>
+          <td>Purchase Currency</td>
+          <td class="align-center"><%= @klarna_order["purchase_currency"]%> </td>
+        </tr>
+        <tr>
+          <td>Locale</td>
+          <td class="align-center"><%= @klarna_order["locale"]%> </td>
+        </tr>
+        <tr>
+          <td>Created At</td>
+          <td class="align-center"><%= pretty_time DateTime.parse(@klarna_order["created_at"])  %> </td>
+        </tr>
+        <tr>
+          <td>Expires At</td>
+          <td class="align-center"><%= pretty_time DateTime.parse(@klarna_order["expires_at"]) %> </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </fieldset>
+
+  <% if @klarna_order["captures"] %>
+    <fieldset class="no-border-bottom">
+      <legend align="center">
+        <span >Captures</span>
+      </legend>
+      <% @klarna_order["captures"].each do |capture| %>
+        <table>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Capture ID</td>
+              <td class="align-center"><%= capture['capture_id'] %></td>
+            </tr>
+            <tr>
+              <td>Klarna Reference</td>
+              <td class="align-center"><%= capture['klarna_reference'] %></td>
+            </tr>
+            <tr>
+              <td>Captured Amount</td>
+              <td class="align-center"><%= cents_to_display_money(capture["captured_amount"], @klarna_order['purchase_currency']) %></td>
+            </tr>
+            <tr>
+              <td>Captured At</td>
+              <td class="align-center"><%= pretty_time DateTime.parse(capture['captured_at']) %></td>
+            </tr>
+            <tr>
+              <td>Description</td>
+              <td class="align-center"><%= capture['description'] %></td>
+            </tr>
+            <tr>
+              <td>Refunded Amount</td>
+              <td class="align-center"><%= cents_to_display_money(capture['refunded_amount'], @klarna_order['purchase_currency']) %></td>
+            </tr>
+          </tbody>
+        </table>
+      <% end %>
+    </fieldset>
+  <% end %>
+
+  <% if @klarna_order["refunds"] %>
+    <fieldset class="no-border-bottom">
+      <legend align="center">
+        <span >Refunds</span>
+      </legend>
+      <% @klarna_order["refunds"].each do |refund| %>
+        <table>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Refunded Amount</td>
+              <td class="align-center"><%= cents_to_display_money(refund["refunded_amount"], @klarna_order['purchase_currency']) %></td>
+            </tr>
+            <tr>
+              <td>Refunded At</td>
+              <td class="align-center"><%= pretty_time DateTime.parse(refund['refunded_at']) %></td>
+            </tr>
+            <tr>
+              <td>Description</td>
+              <td class="align-center"><%= refund['description'] %></td>
+            </tr>
+          </tbody>
+        </table>
+      <% end %>
+    </fieldset>
+  <% end %>
+
+<% else %>
+  <div>
+    <p>Invalid Klarna Payment</p>
+  </div>
+<% end %>

@@ -1,0 +1,58 @@
+<%= render :partial => 'spree/admin/shared/order_tabs', locals: { current: 'Payments' }%>
+
+<% content_for :page_title do %>
+  <i class="fa fa-arrow-right"></i>
+  <%= Spree::Payment.model_name.human %>
+  <i class="fa fa-arrow-right"></i>
+  <%= Spree::LogEntry.model_name.human(count: :other) %>
+<% end %>
+
+<% content_for :page_actions do %>
+  <li><%= button_link_to Spree.t(:logs), spree.admin_order_payment_log_entries_url(@order, @payment), :icon => 'archive' %></li>
+  <li><%= button_link_to Spree.t(:back_to_payment), spree.admin_order_payment_url(@order, @payment), :icon => 'arrow-left' %></li>
+<% end %>
+
+<div id="listing_log_entries">
+  <% @log_entries.each do |entry| %>
+    <table class='index'>
+        <thead>
+          <tr class="log_entry <%= entry.parsed_details.success? ? 'success' : 'fail' %>">
+            <td colspan='2'>
+              <h4><i class='fa fa-lg fa-<%= entry.parsed_details.success? ? 'check' : 'ban' %>'></i> <%= pretty_time(entry.created_at) %></h4>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Message</td>
+            <td>
+              <%= entry.parsed_details.message %>
+            </td>
+          </tr>
+          <% if entry.parsed_details.fraud_review? %>
+            <tr>
+              <td>Fraud Review</td>
+              <td>
+                <%= entry.parsed_details.fraud_review? %>
+              </td>
+            </tr>
+          <% end %>
+
+          <% if entry.parsed_details.error_code.present? %>
+            <tr>
+              <td>Error Code</td>
+              <td>
+                <%= entry.parsed_details.error_code %>
+              </td>
+            </tr>
+          <% end %>
+            <tr>
+              <td>Params</td>
+              <td>
+                <pre class="language-json" style=" white-space: pre-wrap;"><%= entry.parsed_details.params.empty? ? '-' : JSON.pretty_generate(entry.parsed_details.params) %></pre>
+              </td>
+            </tr>
+        </tbody>
+    </table>
+  <% end %>
+</div>
