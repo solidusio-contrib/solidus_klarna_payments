@@ -31,7 +31,7 @@ addons:
 script:
   - RAILS_ENV=test SOLIDUS_VERSION=$SOLIDUS_VERSION RAILS_VERSION=$RAILS_VERSION STORE=$STORE bundle update
   - RAILS_ENV=test SOLIDUS_VERSION=$SOLIDUS_VERSION RAILS_VERSION=$RAILS_VERSION STORE=$STORE bundle exec rake klarna_gateway:bdd:prepare
-  - RAILS_ENV=test STORE=$STORE bundle exec rake klarna_gateway:bdd:run
+  - RAILS_ENV=test SOLIDUS_VERSION=$SOLIDUS_VERSION RAILS_VERSION=$RAILS_VERSION STORE=$STORE bundle exec rake klarna_gateway:bdd:run
 
 notifications:
   slack:
