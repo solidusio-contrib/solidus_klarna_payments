@@ -7,13 +7,14 @@ describe 'renders Klarna logos on checkout', type: 'feature', bdd: true do
   it 'renders the main img logo from the CDN after klarna is selected' do
     order_product(product_name: 'Ruby on Rails Bag', testing_data: @testing_data)
 
-    on_the_payment_page do |page|
-      expect(page.displayed?).to be(true)
+    Capybara.using_wait_time(60) do
+      on_the_payment_page do |page|
+        expect(page.displayed?).to be(true)
+        page.select_klarna(@testing_data)
+        expect(page).to have_selector("img[src$='https://cdn.klarna.com/1.0/shared/image/generic/logo/en_us/basic/white.png?width=80']", visible: true)
 
-      page.select_klarna(@testing_data)
-      expect(page).to have_selector("img[src$='https://cdn.klarna.com/1.0/shared/image/generic/logo/en_us/basic/white.png?width=80']", visible: true)
-
-      page.continue(@testing_data)
+        page.continue(@testing_data)
+      end
     end
 
     Capybara.current_session.driver.quit
@@ -22,15 +23,17 @@ describe 'renders Klarna logos on checkout', type: 'feature', bdd: true do
   it 'renders the footer svg logo from the CDN after klarna is selected' do
     order_product(product_name: 'Ruby on Rails Bag', testing_data: @testing_data)
 
-    on_the_payment_page do |page|
-      expect(page.displayed?).to be(true)
-      page.select_klarna(@testing_data)
+    Capybara.using_wait_time(60) do
+      on_the_payment_page do |page|
+        expect(page.displayed?).to be(true)
+        page.select_klarna(@testing_data)
 
-      page.klarna_credit do |frame|
-        expect(frame).to have_css('svg._1Qyng')
+        page.klarna_credit do |frame|
+          expect(frame).to have_css('svg._1Qyng')
+        end
+
+        page.continue(@testing_data)
       end
-
-      page.continue(@testing_data)
     end
 
     Capybara.current_session.driver.quit

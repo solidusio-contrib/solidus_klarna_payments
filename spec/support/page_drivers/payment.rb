@@ -28,19 +28,21 @@ module PageDrivers
     end
 
     def select_klarna(store_data, &block)
-      select_payment_method(store_data.payment_name).tap do |payment_method|
-        payment_method.click
-        yield payment_method.find('input') if block
-      end
+      Capybara.using_wait_time(60) do
+        select_payment_method(store_data.payment_name).tap do |payment_method|
+          payment_method.click
+          yield payment_method.find('input') if block
+        end
 
-      wait_for_klarna_credit
+        wait_for_klarna_credit
 
-      klarna_credit do |frame|
-        frame.wait_for_klarna_credit_logo
+        klarna_credit do |frame|
+          frame.wait_for_klarna_credit_logo
 
-        if store_data.payment_name.include? "US"
-          wait_for_klarna_credit
-          frame.options.first.click
+          if store_data.payment_name.include? "US"
+            wait_for_klarna_credit
+            frame.options.first.click
+          end
         end
       end
     end
@@ -60,17 +62,19 @@ module PageDrivers
     end
 
     def continue(store_data=nil)
-      continue_button.click
+      Capybara.using_wait_time(60) do
+        continue_button.click
 
-      if store_data
-        wait_for_klarna_credit_fullscreen
-        if store_data.payment_name.include? "DE"
-          klarna_credit_fullscreen do |frame|
-            frame.date_field.set store_data.address.date
-            frame.agreement_field.click
-            frame.continue_button.click
-          end
+        if store_data
           wait_for_klarna_credit_fullscreen
+          if store_data.payment_name.include? "DE"
+            klarna_credit_fullscreen do |frame|
+              frame.date_field.set store_data.address.date
+              frame.agreement_field.click
+              frame.continue_button.click
+            end
+            wait_for_klarna_credit_fullscreen
+          end
         end
       end
     end

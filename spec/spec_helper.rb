@@ -1,3 +1,4 @@
+$store_id = ENV['STORE'] || 'us'
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 ENV['RAILS_ENV'] = 'test'
 
@@ -22,6 +23,7 @@ require 'capybara'
 require 'capybara/rspec'
 require 'capybara/rails'
 require 'capybara/poltergeist'
+require 'config/payment_methods'
 
 require 'vcr'
 require 'spree/testing_support/factories'

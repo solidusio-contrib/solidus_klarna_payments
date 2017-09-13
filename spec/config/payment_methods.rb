@@ -48,3 +48,14 @@ RSpec.configure do |config|
     end
   end
 end
+
+unless Spree::RefundReason.any?
+  Spree::RefundReason.create(name: 'default')
+end
+
+def current_store_keys
+  {
+    key: ENV["KLARNA_#{$store_id.upcase}_API_KEY"],
+    secret: ENV["KLARNA_#{$store_id.upcase}_API_SECRET"]
+  }.with_indifferent_access
+end
