@@ -32,19 +32,6 @@ RSpec.configure do |config|
             country: $store_id.downcase
           })
       end
-
-      if Spree::PaymentMethod.where(name: "Wrong Klarna").none?
-        Spree::PaymentMethod.create(
-          name: "Wrong Klarna",
-          type: 'Spree::Gateway::KlarnaCredit',
-          preferences: {
-            server: "test",
-            test_mode: true,
-            api_key: 'wrong_key',
-            api_secret: 'and_wrong_secret',
-            country: "us"
-          })
-      end
     end
   end
 end
@@ -55,6 +42,7 @@ end
 
 def current_store_keys
   {
+    name: "Klarna #{$store_id.upcase}",
     key: ENV["KLARNA_#{$store_id.upcase}_API_KEY"],
     secret: ENV["KLARNA_#{$store_id.upcase}_API_SECRET"]
   }.with_indifferent_access

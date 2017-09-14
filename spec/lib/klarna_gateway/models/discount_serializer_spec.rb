@@ -10,6 +10,7 @@ describe KlarnaGateway::DiscountItemSerializer do
   before do
     order.update_totals
     order.persist_totals
+    allow_any_instance_of(Spree::Shipment).to receive(:shipping_method).and_return(Spree::ShippingMethod.last)
   end
 
   context "on the whole order" do

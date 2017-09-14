@@ -4,8 +4,9 @@ else
   shipping_method = Spree::ShippingMethod.last
 end
 
-if $store_id != 'us'
-  euro_zone = Spree::Zone.find_by!(name: "EU_VAT")
+
+if RSpec.configuration.inclusion_filter.rules.has_key?(:bdd) && $store_id != 'us'
+  euro_zone = Spree::Zone.find_by(name: "EU_VAT") || Spree::Zone.find_by(name: "GlobalZone")
   tax_rate = Spree::TaxRate.find_by(name: "USt.") ||
     FactoryGirl.create(:tax_rate, name: "USt.", tax_category: Spree::TaxCategory.first, included_in_price: true, zone: euro_zone)
   euro_zone.update(default_tax: true)

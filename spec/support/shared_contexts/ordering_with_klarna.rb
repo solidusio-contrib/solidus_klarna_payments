@@ -87,11 +87,13 @@ shared_context "ordering with klarna" do
   end
 
   def confirm_on_local
-    on_the_confirm_page do |page|
-      expect(page.displayed?).to be(true)
+    Capybara.using_wait_time(CapybaraExtraWaitTime) do
+      on_the_confirm_page do |page|
+        expect(page.displayed?).to be(true)
 
-      wait_for_ajax
-      page.continue
+        wait_for_ajax
+        page.continue
+      end
     end
   end
 

@@ -13,25 +13,27 @@ before_script:
 
 env:
   matrix:
-  - SOLIDUS_VERSION='~> 1.3.0' && RAILS_VERSION='~> 4.2.0' && STORE='us'
-  - SOLIDUS_VERSION='~> 1.3.0' && RAILS_VERSION='~> 4.2.0' && STORE='de'
-  - SOLIDUS_VERSION='~> 1.3.0' && RAILS_VERSION='~> 4.2.0' && STORE='uk'
-  - SOLIDUS_VERSION='~> 1.4.0' && RAILS_VERSION='~> 4.2.0' && STORE='us'
-  - SOLIDUS_VERSION='~> 1.4.0' && RAILS_VERSION='~> 4.2.0' && STORE='de'
-  - SOLIDUS_VERSION='~> 1.4.0' && RAILS_VERSION='~> 4.2.0' && STORE='uk'
-  - SOLIDUS_VERSION='~> 2.0.2' && RAILS_VERSION='~> 5.0.0' && STORE='us'
-  - SOLIDUS_VERSION='~> 2.0.2' && RAILS_VERSION='~> 5.0.0' && STORE='de'
-  - SOLIDUS_VERSION='~> 2.0.2' && RAILS_VERSION='~> 5.0.0' && STORE='uk'
-  - SOLIDUS_VERSION='~> 2.1.0' && RAILS_VERSION='~> 5.0.0' && STORE='us'
-  - SOLIDUS_VERSION='~> 2.1.0' && RAILS_VERSION='~> 5.0.0' && STORE='de'
-  - SOLIDUS_VERSION='~> 2.1.0' && RAILS_VERSION='~> 5.0.0' && STORE='uk'
+  - RAILS_ENV=test SOLIDUS_VERSION='~> 1.3.0' && RAILS_VERSION='~> 4.2.0' && STORE='us'
+  - RAILS_ENV=test SOLIDUS_VERSION='~> 1.3.0' && RAILS_VERSION='~> 4.2.0' && STORE='de'
+  - RAILS_ENV=test SOLIDUS_VERSION='~> 1.3.0' && RAILS_VERSION='~> 4.2.0' && STORE='uk'
+  - RAILS_ENV=test SOLIDUS_VERSION='~> 1.4.0' && RAILS_VERSION='~> 4.2.0' && STORE='us'
+  - RAILS_ENV=test SOLIDUS_VERSION='~> 1.4.0' && RAILS_VERSION='~> 4.2.0' && STORE='de'
+  - RAILS_ENV=test SOLIDUS_VERSION='~> 1.4.0' && RAILS_VERSION='~> 4.2.0' && STORE='uk'
+  - RAILS_ENV=test SOLIDUS_VERSION='~> 2.0.2' && RAILS_VERSION='~> 5.0.0' && STORE='us'
+  - RAILS_ENV=test SOLIDUS_VERSION='~> 2.0.2' && RAILS_VERSION='~> 5.0.0' && STORE='de'
+  - RAILS_ENV=test SOLIDUS_VERSION='~> 2.0.2' && RAILS_VERSION='~> 5.0.0' && STORE='uk'
+  - RAILS_ENV=test SOLIDUS_VERSION='~> 2.1.0' && RAILS_VERSION='~> 5.0.0' && STORE='us'
+  - RAILS_ENV=test SOLIDUS_VERSION='~> 2.1.0' && RAILS_VERSION='~> 5.0.0' && STORE='de'
+  - RAILS_ENV=test SOLIDUS_VERSION='~> 2.1.0' && RAILS_VERSION='~> 5.0.0' && STORE='uk'
 
 addons:
   chrome: stable
 script:
-  - RAILS_ENV=test SOLIDUS_VERSION=$SOLIDUS_VERSION RAILS_VERSION=$RAILS_VERSION STORE=$STORE bundle update
-  - RAILS_ENV=test SOLIDUS_VERSION=$SOLIDUS_VERSION RAILS_VERSION=$RAILS_VERSION STORE=$STORE bundle exec rake klarna_gateway:bdd:prepare
-  - RAILS_ENV=test SOLIDUS_VERSION=$SOLIDUS_VERSION RAILS_VERSION=$RAILS_VERSION STORE=$STORE bundle exec rake klarna_gateway:bdd:run
+  - bundle update
+  - bundle exec rake klarna_gateway:tdd:prepare
+  - bundle exec rspec spec --tag "~bdd"
+  - bundle exec rake klarna_gateway:bdd:prepare
+  - bundle exec rspec spec --tag bdd
 
 notifications:
   slack:

@@ -7,7 +7,7 @@ describe 'renders Klarna logos on checkout', type: 'feature', bdd: true do
   it 'renders the main img logo from the CDN after klarna is selected' do
     order_product(product_name: 'Ruby on Rails Bag', testing_data: @testing_data)
 
-    Capybara.using_wait_time(60) do
+    Capybara.using_wait_time(CapybaraExtraWaitTime) do
       on_the_payment_page do |page|
         expect(page.displayed?).to be(true)
         page.select_klarna(@testing_data)
@@ -23,7 +23,7 @@ describe 'renders Klarna logos on checkout', type: 'feature', bdd: true do
   it 'renders the footer svg logo from the CDN after klarna is selected' do
     order_product(product_name: 'Ruby on Rails Bag', testing_data: @testing_data)
 
-    Capybara.using_wait_time(60) do
+    Capybara.using_wait_time(CapybaraExtraWaitTime) do
       on_the_payment_page do |page|
         expect(page.displayed?).to be(true)
         page.select_klarna(@testing_data)

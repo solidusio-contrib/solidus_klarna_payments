@@ -28,7 +28,7 @@ module PageDrivers
     end
 
     def select_klarna(store_data, &block)
-      Capybara.using_wait_time(60) do
+      Capybara.using_wait_time(CapybaraExtraWaitTime) do
         select_payment_method(store_data.payment_name).tap do |payment_method|
           payment_method.click
           yield payment_method.find('input') if block
@@ -62,7 +62,7 @@ module PageDrivers
     end
 
     def continue(store_data=nil)
-      Capybara.using_wait_time(60) do
+      Capybara.using_wait_time(CapybaraExtraWaitTime) do
         continue_button.click
 
         if store_data
