@@ -1,6 +1,6 @@
 module PageDrivers
   module Admin
-    class Login < SitePrism::Page
+    class Login < Base
       set_url '/admin/login'
 
       element :title, '#existing-customer h6'

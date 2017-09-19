@@ -1,5 +1,5 @@
 module PageDrivers
-  class Product < SitePrism::Page
+  class Product < Base
     set_url "/products/{slug}"
 
     element :title, "h1.product-title"

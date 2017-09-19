@@ -5,7 +5,7 @@ module PageDrivers
     element :payment, :xpath, 'li[3]'
   end
 
-  class Confirm < SitePrism::Page
+  class Confirm < Base
     set_url "/checkout/confirm"
 
     section :checkout_steps, CheckoutSteps, 'ol#checkout-step-confirm'
@@ -27,6 +27,7 @@ module PageDrivers
     end
 
     def continue
+      scroll_to(continue_button)
       continue_button.click
     end
   end

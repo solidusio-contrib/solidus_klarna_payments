@@ -12,7 +12,7 @@ module PageDrivers
     element :klarna_credit_logo, "#klarna-logo"
   end
 
-  class Payment < SitePrism::Page
+  class Payment < Base
     set_url "/checkout/payment"
 
     elements :payment_methods, "fieldset#payment #payment-method-fields label"
@@ -30,6 +30,7 @@ module PageDrivers
     def select_klarna(store_data, &block)
       Capybara.using_wait_time(CapybaraExtraWaitTime) do
         select_payment_method(store_data.payment_name).tap do |payment_method|
+          scroll_to(payment_method)
           payment_method.click
           yield payment_method.find('input') if block
         end
@@ -63,6 +64,7 @@ module PageDrivers
 
     def continue(store_data=nil)
       Capybara.using_wait_time(CapybaraExtraWaitTime) do
+        scroll_to(continue_button)
         continue_button.click
 
         if store_data

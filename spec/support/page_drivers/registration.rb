@@ -4,7 +4,7 @@ module PageDrivers
     element :continue_button, "input.button"
   end
 
-  class Registration < SitePrism::Page
+  class Registration < Base
     set_url "/checkout/registration"
 
     section :guest_user, GuestUser, '#guest_checkout'

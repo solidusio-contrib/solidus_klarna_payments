@@ -11,6 +11,8 @@ shared_context "ordering with klarna" do
 
     on_the_home_page do |page|
       page.load
+
+
       expect(page.displayed?).to be(true)
       page.choose(product_name)
     end

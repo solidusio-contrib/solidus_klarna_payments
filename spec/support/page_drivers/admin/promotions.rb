@@ -1,6 +1,6 @@
 module PageDrivers
   module Admin
-    class Promotions < SitePrism::Page
+    class Promotions < Base
       set_url '/admin/promotions'
 
       element :new_promotion_button, '#content-header .header-actions a'

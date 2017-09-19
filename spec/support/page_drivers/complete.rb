@@ -1,5 +1,5 @@
 module PageDrivers
-  class Complete < SitePrism::Page
+  class Complete < Base
     set_url "/orders{/order_number}"
 
     element :flash_message, '#content .flash'
