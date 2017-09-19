@@ -37,23 +37,6 @@ RSpec.configure do |config|
         end
       end
 
-      if Spree::PaymentMethod.where(name: "Wrong Klarna").none?
-        payment_method = Spree::PaymentMethod.create(
-          name: "Wrong Klarna",
-          type: 'Spree::Gateway::KlarnaCredit',
-          preferences: {
-            server: "test",
-            test_mode: true,
-            api_key: 'wrong_key',
-            api_secret: 'and_wrong_secret',
-            country: "us"
-          })
-
-        if KlarnaGateway.is_spree?
-          payment_method.update_attributes(environment: 'test')
-        end
-      end
-
       if Spree::PaymentMethod.where(name: "Check").none?
         Spree::PaymentMethod.create(
           name: "Check",
