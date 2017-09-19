@@ -20,7 +20,7 @@ module KlarnaOutputHelper
 
   def self.pe(command)
     ap "Executing: " << command
-    command = "cd spec/dummy && RAILS_ENV=test " << command
+    command = "cd spec/dummy && RAILS_ENV=test " << command  << " > /dev/null 2>&1"
     system command
   end
 
@@ -51,8 +51,8 @@ namespace :klarna_gateway do
 
     desc "Run BDD tests"
     task :run do
-      Rake::Task['klarna_gateway:bdd:prepare'].invoke
       Rake::Task["spec"].clear
+
       begin
         RSpec::Core::RakeTask.new(:spec) do |t|
           t.rspec_opts = "--tag bdd"
@@ -77,8 +77,6 @@ namespace :klarna_gateway do
 
     desc "Run TDD tests"
     task :run do
-      Rake::Task['klarna_gateway:tdd:prepare'].invoke
-
       Rake::Task["spec"].clear
       begin
         RSpec::Core::RakeTask.new(:spec) do |t|

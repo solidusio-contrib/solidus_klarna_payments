@@ -1,5 +1,4 @@
 $store_id = ENV['STORE'] || 'us'
-
 require 'spec_helper'
 
 require 'capybara/rspec'

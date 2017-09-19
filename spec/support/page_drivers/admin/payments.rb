@@ -50,19 +50,27 @@ module PageDrivers
       end
 
       def capture!
-        actions.find('[data-action="capture"]').click
+        Capybara.using_wait_time(CapybaraExtraWaitTime) do
+          actions.find('[data-action="capture"]').click
+        end
       end
 
       def extend!
-        actions.find('[data-action="extend_period"]').click
+        Capybara.using_wait_time(CapybaraExtraWaitTime) do
+          actions.find('[data-action="extend_period"]').click
+        end
       end
 
       def cancel!
-        actions.find('[data-action="cancel"]').click
+        Capybara.using_wait_time(CapybaraExtraWaitTime) do
+          actions.find('[data-action="cancel"]').click
+        end
       end
 
       def refund!
-        actions.find('a.fa.fa-reply.icon_link').click
+        Capybara.using_wait_time(CapybaraExtraWaitTime) do
+          actions.find('a.fa.fa-reply.icon_link').click
+        end
       end
     end
 
@@ -72,6 +80,7 @@ module PageDrivers
       sections :payments, PaymentItem, '[data-hook="payment_list"] tbody tr[data-hook="payments_row"]'
       section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
       element :new_payment_button, '#content-header .header-actions #new_payment_section a'
+      elements :refunds, 'tr[data-hook="refunds_row"]'
     end
   end
 end

@@ -55,8 +55,8 @@ describe Spree::Admin::PaymentMethodsController do
       end
 
       it "updates with valid credentials" do
-        attributes[:gateway_klarna_credit][:preferred_api_key] = ENV.fetch('KLARNA_API_KEY')
-        attributes[:gateway_klarna_credit][:preferred_api_secret] = ENV.fetch('KLARNA_API_SECRET')
+        attributes[:gateway_klarna_credit][:preferred_api_key] = current_store_keys['key']
+        attributes[:gateway_klarna_credit][:preferred_api_secret] = current_store_keys['secret']
 
         VCR.use_cassette('payment methods controller update with valid credentials') do
           spree_put(:update, attributes)

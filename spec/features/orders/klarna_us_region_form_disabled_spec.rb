@@ -10,12 +10,14 @@ describe 'Disables Klarna payment options if the form is toggled false (US Speci
     order_product(product_name: 'Ruby on Rails Bag', testing_data: @testing_data)
 
     on_the_payment_page do |page|
-      expect(page.displayed?).to be(true)
-      page.choose('Klarna US')
-      wait_for_ajax
+      Capybara.using_wait_time(CapybaraExtraWaitTime) do
+        expect(page.displayed?).to be(true)
+        page.choose('Klarna US')
+        wait_for_ajax
 
-      page.klarna_credit do |frame|
-        expect(frame).to have_content('Option not available') if @testing_data.us?
+        page.klarna_credit do |frame|
+          expect(frame).to have_content('Option not available') if @testing_data.us?
+        end
       end
     end
 

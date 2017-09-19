@@ -37,6 +37,8 @@ describe KlarnaGateway::OrderSerializer do
     end
 
     it "has multiple lines of shipping fees" do
+      create(:shipping_method)
+      allow_any_instance_of(Spree::Shipment).to receive(:shipping_method).and_return(Spree::ShippingMethod.last)
       serialized = KlarnaGateway::OrderSerializer.new(overbooked_order, region).to_hash
       shipping_lines = serialized[:order_lines].count { |l| l[:type] == "shipping_fee" }
       expect(shipping_lines).to eq(overbooked_order.shipments.count)
