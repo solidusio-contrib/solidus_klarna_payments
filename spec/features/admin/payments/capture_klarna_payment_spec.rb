@@ -8,6 +8,11 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
     order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
     pay_with_klarna(testing_data: @testing_data)
 
+    on_the_complete_page do |page|
+      expect(page.displayed?).to be(true)
+      page.get_order_number
+    end
+
     on_the_admin_login_page do |page|
       page.load
       expect(page.displayed?).to be(true)
@@ -38,7 +43,6 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
       page.payments.first.identifier.find('a').click
     end
 
-
     on_the_admin_payment_page.payment_menu.logs.click
 
     on_the_admin_logs_page do |page|
@@ -53,6 +57,11 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
   it 'Displays the Klarna Order ID in the Backend' do
     order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
     pay_with_klarna(testing_data: @testing_data)
+
+    on_the_complete_page do |page|
+      expect(page.displayed?).to be(true)
+      page.get_order_number
+    end
 
     on_the_admin_login_page do |page|
       page.load
@@ -102,6 +111,11 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
     order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
     pay_with_klarna(testing_data: @testing_data)
 
+    on_the_complete_page do |page|
+      expect(page.displayed?).to be(true)
+      page.get_order_number
+    end
+
     on_the_admin_login_page do |page|
       page.load
       expect(page.displayed?).to be(true)
@@ -149,6 +163,11 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
     order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
     pay_with_klarna(testing_data: @testing_data)
 
+    on_the_complete_page do |page|
+      expect(page.displayed?).to be(true)
+      page.get_order_number
+    end
+
     on_the_admin_login_page do |page|
       page.load
       expect(page.displayed?).to be(true)
@@ -179,6 +198,11 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
   it 'Refunds a Klarna Payment' do
     order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
     pay_with_klarna(testing_data: @testing_data)
+
+    on_the_complete_page do |page|
+      expect(page.displayed?).to be(true)
+      page.get_order_number
+    end
 
     on_the_admin_login_page do |page|
       page.load

@@ -71,18 +71,24 @@ describe 'Ordering with Klarna Payment Method Using Discount', type: 'feature', 
         page.continue(@testing_data)
       end
 
-      on_the_confirm_page do |page|
-        expect(page.displayed?).to be(true)
+      unless KlarnaGateway.up_to_spree?('2.4.99')
+        on_the_confirm_page do |page|
+          expect(page.displayed?).to be(true)
 
+          order = Spree::Order.last
+          promo_total = order.promo_total.to_f
+          item_total = order.item_total.to_f
+
+          expect(page).to have_content(item_total)
+          # Multiply by -1 to flip to positive number
+          expect(page).to have_content(promo_total*-1)
+          expect(page).to have_content(order.total)
+          page.continue
+        end
+      else
         order = Spree::Order.last
         promo_total = order.promo_total.to_f
         item_total = order.item_total.to_f
-
-        expect(page).to have_content(item_total)
-        # Multiply by -1 to flip to positive number
-        expect(page).to have_content(promo_total*-1)
-        expect(page).to have_content(order.total)
-        page.continue
       end
 
       on_the_complete_page do |page|

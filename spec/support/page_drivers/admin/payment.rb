@@ -3,6 +3,8 @@ module PageDrivers
     class PaymentMenu < SitePrism::Section
       if KlarnaGateway.up_to_solidus?("1.3.99")
         element :logs, 'a[icon="archive"]'
+      elsif KlarnaGateway.is_spree?
+        element :logs, 'a.fa-archive'
       else
         element :logs, :xpath,'//*[@id="content-header"]/ul/li/a'
       end

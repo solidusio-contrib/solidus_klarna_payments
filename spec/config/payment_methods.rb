@@ -47,14 +47,16 @@ RSpec.configure do |config|
 
       if KlarnaGateway.is_spree?
         Spree::PaymentMethod.where(name: "Check").first.update_attributes(environment: 'test')
+
+      end
+
+      if Spree.const_get("RefundReason")
+        Spree::RefundReason.create(name: 'default') unless Spree::RefundReason.any?
       end
     end
   end
 end
 
-unless Spree::RefundReason.any?
-  Spree::RefundReason.create(name: 'default')
-end
 
 def current_store_keys
   {

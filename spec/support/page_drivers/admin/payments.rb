@@ -91,6 +91,8 @@ module PageDrivers
         section :menu, PageDrivers::Admin::OrderMenu, 'aside#sidebar nav.menu ul'
         element :new_payment_button, '#content-header .page-actions #new_payment_section a'
       end
+
+      elements :refunds, 'tr[data-hook="refunds_row"]'
     end
   end
 end

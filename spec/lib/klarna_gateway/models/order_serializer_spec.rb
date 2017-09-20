@@ -4,7 +4,7 @@ describe KlarnaGateway::OrderSerializer do
   let(:order) { create(:order_with_line_items, line_items_count: 3) }
   let(:region) { :us }
   let!(:country) { create(:country, name: "USA") }
-  let(:zone) { create(:global_zone, default_tax: true) }
+  let(:zone) { Spree::Zone.find_by_default_tax(true) || create(:global_zone, default_tax: true) }
   let!(:tax_rate) { create(:tax_rate, zone: zone) }
 
   let(:overbooked_order) do
@@ -81,7 +81,7 @@ describe KlarnaGateway::OrderSerializer do
 
   context "in the UK with included tax" do
     let(:region) { :uk }
-    let!(:country) { create(:country, iso: "GB") }
+    let!(:country) { create(:country) }
     let!(:tax_rate) { create(:tax_rate, zone: zone, included_in_price: true) }
     let!(:uk) { create(:country, name: "United Kingdom") }
     let(:uk_zone) { Spree::Zone.find_by_name('GlobalZone') || create(:global_zone, default_tax: true) }

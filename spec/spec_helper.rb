@@ -33,6 +33,7 @@ require 'spree/testing_support/authorization_helpers'
 require 'factories/klarna_payment_factory'
 require 'support/klarna_api_helper'
 require 'support/site_prism'
+require 'support/testing_countries'
 require 'config/database_cleaner'
 require 'config/capybara'
 require 'config/vcr'
@@ -43,7 +44,14 @@ require 'spree_sample'
 RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.include FactoryGirl::Syntax::Methods
+  config.include TestingCountries
   config.include Spree::TestingSupport::ControllerRequests, type: :controller
   config.include Devise::TestHelpers, :type => :controller
   config.include_context "Klarna API helper", :klarna_api
+
+  unless config.inclusion_filter.rules.has_key?(:bdd)
+    config.before(:each) do |example|
+      populate_countr($store_id)
+    end
+  end
 end
