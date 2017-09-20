@@ -74,7 +74,7 @@ module PageDrivers
       end
     end
 
-    class Payments < SitePrism::Page
+    class Payments < Base
       set_url '/admin/orders/{number}/payments'
 
       sections :payments, PaymentItem, '[data-hook="payment_list"] tbody tr[data-hook="payments_row"]'

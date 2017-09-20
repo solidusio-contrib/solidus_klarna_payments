@@ -1,6 +1,6 @@
 module PageDrivers
   module Admin
-    class NewPayment < SitePrism::Page
+    class NewPayment < Base
       set_url '/admin/orders/{number}/payments/new'
 
       elements :payment_methods, '[data-hook="admin_payment_form_fields"] .field [data-hook="payment_method_field"]'

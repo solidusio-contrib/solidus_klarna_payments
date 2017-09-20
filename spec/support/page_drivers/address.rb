@@ -22,7 +22,7 @@ module PageDrivers
     element :state, '#order_ship_address_attributes_state_id'
   end
 
-  class Address < SitePrism::Page
+  class Address < Base
     set_url "/checkout"
 
     element :continue_button, 'form#checkout_form_address input.continue'
@@ -76,6 +76,7 @@ module PageDrivers
     end
 
     def continue
+      scroll_to(continue_button)
       continue_button.click
     end
   end

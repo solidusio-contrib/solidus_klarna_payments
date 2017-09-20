@@ -12,10 +12,12 @@ require 'config/store_currencies'
 require 'support/drivers'
 require 'support/wait_for_ajax'
 require 'support/shared_contexts/ordering_with_klarna'
+require 'support/responsive_helpers'
 
 
 RSpec.configure do |config|
   config.include Capybara::DSL
+  config.include ResponsiveHelpers
 
   if config.inclusion_filter.rules.has_key?(:bdd)
     store = $store_id.downcase.to_sym
@@ -31,6 +33,7 @@ RSpec.configure do |config|
   config.before(:each) do |example|
     @testing_data = TestData.new($store_id)
     Capybara.current_driver = :selenium_chrome
+    resize_window_desktop_store
   end
 
   config.append_after(:each) do |example|

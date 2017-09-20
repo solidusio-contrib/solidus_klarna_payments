@@ -1,5 +1,6 @@
 require 'support/fixtures/data.rb'
 
+require 'support/page_drivers/base.rb'
 require 'support/page_drivers/home.rb'
 require 'support/page_drivers/address.rb'
 require 'support/page_drivers/cart.rb'

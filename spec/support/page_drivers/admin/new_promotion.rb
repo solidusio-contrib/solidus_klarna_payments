@@ -1,6 +1,6 @@
 module PageDrivers
   module Admin
-    class NewPromotion < SitePrism::Page
+    class NewPromotion < Base
       set_url '/admin/promotions/new'
 
       element :promotion_name_field, "input[name='promotion[name]']"

@@ -8,7 +8,7 @@ module PageDrivers
       end
     end
 
-    class Payment < SitePrism::Page
+    class Payment < Base
       set_url '/admin/orders/{number}/payments/{payment_id}'
 
       section :payment_menu, PaymentMenu, '#content-header ul.header-actions'

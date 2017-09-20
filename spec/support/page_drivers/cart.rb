@@ -1,5 +1,5 @@
 module PageDrivers
-  class Cart < SitePrism::Page
+  class Cart < Base
     set_url "/cart"
 
     element :line_items, "#line_items"

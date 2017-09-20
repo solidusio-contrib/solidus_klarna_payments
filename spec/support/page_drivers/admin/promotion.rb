@@ -1,6 +1,6 @@
 module PageDrivers
   module Admin
-    class Promotion < SitePrism::Page
+    class Promotion < Base
       set_url '/admin/promotions/{id}/edit'
 
       element :add_rule_button, 'form#new_product_rule_form button'

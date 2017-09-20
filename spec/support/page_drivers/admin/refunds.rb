@@ -1,6 +1,6 @@
 module PageDrivers
   module Admin
-    class OrderPaymentsRefunds < SitePrism::Page
+    class OrderPaymentsRefunds < Base
       set_url '/admin/orders/{number}/payments/{payment_id}/refunds/new'
 
       element :reason_field, '#refund_refund_reason_id'
