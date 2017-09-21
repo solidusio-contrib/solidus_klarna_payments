@@ -50,7 +50,7 @@ RSpec.configure do |config|
 
       end
 
-      if Spree.const_get("RefundReason")
+      if Spree.const_defined?("RefundReason")
         Spree::RefundReason.create(name: 'default') unless Spree::RefundReason.any?
       end
     end

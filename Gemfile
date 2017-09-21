@@ -7,4 +7,6 @@ gem "spree", spree_version
 
 gemspec
 
-gem 'spree_auth_devise', github: 'spree/spree_auth_devise', branch: spree_auth_devise_version
+if spree_auth_devise_version != "none"
+  gem 'spree_auth_devise', github: 'spree/spree_auth_devise', branch: spree_auth_devise_version
+end

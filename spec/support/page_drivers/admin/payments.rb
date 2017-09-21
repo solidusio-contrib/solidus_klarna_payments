@@ -74,7 +74,7 @@ module PageDrivers
 
       def refund!
         Capybara.using_wait_time(CapybaraExtraWaitTime) do
-          actions.find('a.fa.fa-reply.icon_link').click
+          actions.find('a.fa-reply').click
         end
       end
     end

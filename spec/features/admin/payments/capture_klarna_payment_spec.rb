@@ -89,7 +89,10 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
       expect(page.payments.first.is_klarna?).to be(true)
       expect(page.payments.first.is_pending?).to be(true)
       expect(page.payments.first.is_klarna_authorized?).to be(true)
-      expect(page.payments.first).to have_content(klarna_order_id)
+
+      unless KlarnaGateway.up_to_spree?('2.3.99')
+        expect(page.payments.first).to have_content(klarna_order_id)
+      end
 
       page.payments.first.capture!
       expect(page.payments.first.is_klarna_captured?).to be(true)
@@ -195,61 +198,64 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
     end
   end
 
-  it 'Refunds a Klarna Payment' do
-    order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
-    pay_with_klarna(testing_data: @testing_data)
+  unless KlarnaGateway.up_to_spree?('2.3.99')
+    it 'Refunds a Klarna Payment' do
+      order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
+      pay_with_klarna(testing_data: @testing_data)
 
-    on_the_complete_page do |page|
-      expect(page.displayed?).to be(true)
-      page.get_order_number
-    end
+      on_the_complete_page do |page|
+        expect(page.displayed?).to be(true)
+        page.get_order_number
+      end
 
-    on_the_admin_login_page do |page|
-      page.load
-      expect(page.displayed?).to be(true)
+      on_the_admin_login_page do |page|
+        page.load
+        expect(page.displayed?).to be(true)
 
-      expect(page.title).to have_content('Admin Login')
-      page.login_with(TestData::AdminUser)
-    end
+        expect(page.title).to have_content('Admin Login')
+        page.login_with(TestData::AdminUser)
+      end
 
-    on_the_admin_orders_page do |page|
-      page.load
-      expect(page.displayed?).to be(true)
-      page.select_first_order
-    end
+      on_the_admin_orders_page do |page|
+        page.load
+        expect(page.displayed?).to be(true)
+        page.select_first_order
+      end
 
-    on_the_admin_order_page.menu.payments.click
+      on_the_admin_order_page.menu.payments.click
 
-    on_the_admin_payments_page do |page|
-      expect(page.displayed?).to be(true)
+      on_the_admin_payments_page do |page|
+        expect(page.displayed?).to be(true)
 
-      expect(page.payments.first.is_klarna?).to be(true)
-      expect(page.payments.first.is_pending?).to be(true)
-      expect(page.payments.first.is_klarna_authorized?).to be(true)
+        expect(page.payments.first.is_klarna?).to be(true)
+        expect(page.payments.first.is_pending?).to be(true)
+        expect(page.payments.first.is_klarna_authorized?).to be(true)
 
-      page.payments.first.capture!
-      expect(page.payments.first.is_klarna_captured?).to be(true)
-      expect(page.payments.first.is_completed?).to be(true)
+        page.payments.first.capture!
+        expect(page.payments.first.is_klarna_captured?).to be(true)
+        expect(page.payments.first.is_completed?).to be(true)
 
-      expect(page).not_to have_content(/REFUNDS/i)
+        expect(page).not_to have_content(/REFUNDS/i)
 
-      page.payments.first.refund!
-    end
+        page.payments.first.refund!
+      end
 
-    order_amount = Spree::Order.last.total.to_s
+      order_amount = Spree::Order.last.total.to_s
 
-    on_the_admin_order_payments_refunds_page do |page|
-      expect(page.displayed?).to be(true)
-      page.select_reason!
-      page.continue
-    end
+      on_the_admin_order_payments_refunds_page do |page|
+        expect(page.displayed?).to be(true)
+        page.select_reason!
 
-    on_the_admin_payments_page do |page|
-      expect(page.displayed?).to be(true)
-      refund_amount = Spree::Refund.last.amount.to_s
-      expect(page).to have_content(/REFUNDS/i)
-      expect(page.refunds.count).to eq(1)
-      expect(order_amount).to eq(refund_amount)
+        page.continue
+      end
+
+      on_the_admin_payments_page do |page|
+        expect(page.displayed?).to be(true)
+        refund_amount = Spree::Refund.last.amount.to_s
+        expect(page).to have_content(/REFUNDS/i)
+        expect(page.refunds.count).to eq(1)
+        expect(order_amount).to eq(refund_amount)
+      end
     end
   end
 

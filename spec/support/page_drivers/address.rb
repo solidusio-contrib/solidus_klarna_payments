@@ -46,10 +46,10 @@ module PageDrivers
         billing_fields.zipcode.set(data[:zip])
         billing_fields.phone.set(data[:phone])
 
-        state = country.states.find_by_name(data[:state])
-
-        while billing_fields.state.value.to_i != state.id do
-          billing_fields.state.find(:option, data[:state]).select_option
+        if state = country.states.find_by_name(data[:state])
+          while billing_fields.state.value.to_i != state.id do
+            billing_fields.state.find(:option, data[:state]).select_option
+          end
         end
       when :shipping
         country = Spree::Country.find_by_iso(data[:country_iso])
@@ -67,10 +67,10 @@ module PageDrivers
         shipping_fields.zipcode.set(data[:zip])
         shipping_fields.phone.set(data[:phone])
 
-        state = country.states.find_by_name(data[:state])
-
-        while shipping_fields.state.value.to_i != state.id do
-          shipping_fields.state.find(:option, data[:state]).select_option
+        if state = country.states.find_by_name(data[:state])
+          while shipping_fields.state.value.to_i != state.id do
+            shipping_fields.state.find(:option, data[:state]).select_option
+          end
         end
       end
     end
