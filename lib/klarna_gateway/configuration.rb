@@ -33,6 +33,8 @@ module KlarnaGateway
 
   class Configuration
     attr_accessor :confirmation_url
+    attr_accessor :image_host
+    attr_accessor :product_url
   end
 
   class ConfigurationMissing < StandardError; end
