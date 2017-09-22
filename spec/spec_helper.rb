@@ -15,7 +15,6 @@ require "awesome_print"
 require 'spree/core/version'
 require 'rails/all'
 require 'rspec/rails'
-require 'rspec/autorun'
 require 'klarna_gateway'
 
 # Feature specs
