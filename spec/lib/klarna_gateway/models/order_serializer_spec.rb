@@ -3,7 +3,7 @@ require 'spec_helper'
 describe KlarnaGateway::OrderSerializer do
   let(:order) { create(:order_with_line_items, line_items_count: 3) }
   let(:region) { :us }
-  let!(:country) { create(:country, name: "USA") }
+  let!(:country) { Spree::Country.find_by_name("USA") || create(:country, name: "USA") }
   let(:zone) { Spree::Zone.find_by_default_tax(true) || create(:global_zone, default_tax: true) }
   let!(:tax_rate) { create(:tax_rate, zone: zone) }
 
@@ -20,7 +20,7 @@ describe KlarnaGateway::OrderSerializer do
 
   context "in the US" do
     let(:region) { :us }
-    let!(:us) { create(:country, name: "USA") }
+    let!(:us) { Spree::Country.find_by_name("USA") || create(:country, name: "USA") }
     let(:us_zone) { Spree::Zone.find_by_name('GlobalZone') || create(:global_zone, default_tax: true) }
     let!(:tax_rate) { create(:tax_rate, zone: us_zone) }
 
@@ -83,7 +83,7 @@ describe KlarnaGateway::OrderSerializer do
     let(:region) { :uk }
     let!(:country) { create(:country) }
     let!(:tax_rate) { create(:tax_rate, zone: zone, included_in_price: true) }
-    let!(:uk) { create(:country, name: "United Kingdom") }
+    let!(:uk) { Spree::Country.find_by_name("United Kingdom") ||  create(:country, name: "United Kingdom") }
     let(:uk_zone) { Spree::Zone.find_by_name('GlobalZone') || create(:global_zone, default_tax: true) }
     let!(:tax_rate) { create(:tax_rate, zone: uk_zone, included_in_price: true) }
 
@@ -144,7 +144,7 @@ describe KlarnaGateway::OrderSerializer do
   context "in Germany" do
     let(:region) { :de }
     let!(:tax_rate) { create(:tax_rate, zone: zone, included_in_price: true) }
-    let!(:germany) { create(:country, name: "Deutschland", iso: "de") }
+    let!(:germany) { Spree::Country.find_by_name("Deutschland") || create(:country, name: "Deutschland", iso: "de") }
     let(:de_zone) { Spree::Zone.find_by_name('GlobalZone') || create(:global_zone, default_tax: true) }
     let!(:tax_rate) { create(:tax_rate, zone: de_zone, included_in_price: true) }
 

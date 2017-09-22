@@ -30,11 +30,12 @@ shared_context "ordering with klarna" do
       page.line_items
       expect(page.displayed?).to be(true)
 
-      if discount_code
+      if discount_code && page.has_coupon_field?
         page.add_coupon_code(discount_code)
 
         expect(page.displayed?).to be(true)
         expect(page.adjustment).to have_content('Adjustment: Promotion')
+        discount_code = nil
       end
 
       expect(page.line_items).to have_content(product_name)

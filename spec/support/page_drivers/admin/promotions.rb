@@ -3,10 +3,12 @@ module PageDrivers
     class Promotions < Base
       set_url '/admin/promotions'
 
-      if KlarnaGateway.is_spree?
-        element :new_promotion_button, '#content-header ul.inline-menu a'
-      else
+      if KlarnaGateway.is_solidus?
         element :new_promotion_button, '#content-header .header-actions a'
+      elsif KlarnaGateway.up_to_spree?('2.4.99')
+        element :new_promotion_button, '#content-header .page-actions a'
+      else
+        element :new_promotion_button, '.content-header .page-actions a'
       end
 
       def new_promotion

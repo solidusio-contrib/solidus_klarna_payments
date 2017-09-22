@@ -7,7 +7,7 @@ module PageDrivers
       element :promotion_desc_field, "textarea[name='promotion[description]']"
       element :create_button, "[data-hook='buttons'] button"
 
-      if KlarnaGateway.up_to_spree?('2.4.99')
+      if KlarnaGateway.is_spree?
         element :promotion_code_field, "input[name='promotion[code]']"
       else
         element :number_of_codes_field, "input[name='promotion_builder[number_of_codes]']"
@@ -20,7 +20,7 @@ module PageDrivers
         promotion_desc_field.set('test')
         promotion_code_field.set('test')
 
-        unless KlarnaGateway.up_to_spree?('2.4.99')
+        if KlarnaGateway.is_solidus?
           number_of_codes_field.set('10')
         end
       end

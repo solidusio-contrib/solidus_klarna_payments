@@ -25,10 +25,14 @@ module PageDrivers
   class Address < Base
     set_url "/checkout"
 
-    element :continue_button, 'form#checkout_form_address input.continue'
+    if KlarnaGateway.is_spree? && !KlarnaGateway.up_to_spree?('2.4.99')
+      element :continue_button, 'form#checkout_form_address input.btn'
+    else
+      element :continue_button, 'form#checkout_form_address input.continue'
+    end
 
-    section :billing_fields, BillingForm, 'fieldset#billing'
-    section :shipping_fields, ShippingForm, 'fieldset#shipping'
+    section :billing_fields, BillingForm, '#billing'
+    section :shipping_fields, ShippingForm, '#shipping'
 
     def set_address(data, address= :billing)
       case address

@@ -9,4 +9,6 @@ gemspec
 
 if spree_auth_devise_version != "none"
   gem 'spree_auth_devise', github: 'spree/spree_auth_devise', branch: spree_auth_devise_version
+else
+  gem 'spree_auth_devise'
 end

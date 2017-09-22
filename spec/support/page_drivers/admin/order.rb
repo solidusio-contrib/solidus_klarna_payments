@@ -6,7 +6,7 @@ module PageDrivers
       if KlarnaGateway.is_solidus?
         section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
       else
-        section :menu, PageDrivers::Admin::OrderMenu, 'aside#sidebar nav.menu ul'
+        section :menu, PageDrivers::Admin::OrderMenu, 'aside#sidebar ul'
       end
     end
   end

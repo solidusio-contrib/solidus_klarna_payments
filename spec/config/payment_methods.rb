@@ -32,7 +32,7 @@ RSpec.configure do |config|
             country: $store_id.downcase
           })
 
-        if KlarnaGateway.is_spree?
+        if KlarnaGateway.is_spree? && payment_method.respond_to?(:environment)
           payment_method.update_attributes(environment: 'test')
         end
       end
@@ -45,7 +45,7 @@ RSpec.configure do |config|
           active: true)
       end
 
-      if KlarnaGateway.is_spree?
+      if KlarnaGateway.is_spree? && payment_method.respond_to?(:environment)
         Spree::PaymentMethod.where(name: "Check").first.update_attributes(environment: 'test')
 
       end

@@ -21,6 +21,13 @@ RSpec.configure do |config|
 
   if config.inclusion_filter.rules.has_key?(:bdd)
     store = $store_id.downcase.to_sym
+
+    if KlarnaGateway.is_solidus?
+      config.filter_run_excluding framework: :spree
+    else
+      config.filter_run_excluding framework: :solidus
+    end
+
     config.filter_run_excluding only: lambda {|v| !Array(v).include?(store) }
     config.filter_run_excluding except: lambda {|v| Array(v).include?(store) }
   end

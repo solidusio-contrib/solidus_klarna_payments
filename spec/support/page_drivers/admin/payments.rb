@@ -74,22 +74,29 @@ module PageDrivers
 
       def refund!
         Capybara.using_wait_time(CapybaraExtraWaitTime) do
-          actions.find('a.fa-reply').click
+          if KlarnaGateway.is_solidus? || KlarnaGateway.up_to_spree?('2.4.99')
+            actions.find('a.fa-reply').click
+          else
+            actions.find('a.action-refund').click
+          end
         end
       end
     end
 
     class Payments < Base
       set_url '/admin/orders/{number}/payments'
-      sections :payments, PaymentItem, 'table#payments.index tbody tr[data-hook="payments_row"]'
+      sections :payments, PaymentItem, 'table#payments tbody tr[data-hook="payments_row"]'
 
 
       if KlarnaGateway.is_solidus?
         section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
         element :new_payment_button, '#content-header .header-actions #new_payment_section a'
-      else
-        section :menu, PageDrivers::Admin::OrderMenu, 'aside#sidebar nav.menu ul'
+      elsif KlarnaGateway.up_to_spree?('2.4.99')
+        section :menu, PageDrivers::Admin::OrderMenu, 'aside#sidebar ul'
         element :new_payment_button, '#content-header .page-actions #new_payment_section a'
+      else
+        section :menu, PageDrivers::Admin::OrderMenu, 'aside#sidebar ul'
+        element :new_payment_button, '.content-header .page-actions #new_payment_section a'
       end
 
       elements :refunds, 'tr[data-hook="refunds_row"]'
