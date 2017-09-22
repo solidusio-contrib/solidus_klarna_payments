@@ -78,6 +78,7 @@ describe KlarnaGateway::LineItemSerializer do
         example.run
         KlarnaGateway.configuration.image_host = before
       end
+
       before do
         line_item.variant.images << create(:image)
       end
