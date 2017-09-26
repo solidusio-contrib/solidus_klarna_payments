@@ -120,4 +120,52 @@ shared_context "ordering with klarna" do
       page.get_order_number
     end
   end
+
+  def order_with_different_address(address, product_name, product_quantity)
+    on_the_home_page do |page|
+      page.load
+      expect(page.displayed?).to be(true)
+
+      page.choose(product_name)
+    end
+
+    on_the_product_page do |page|
+      page.wait_for_title
+      expect(page.displayed?).to be(true)
+
+      expect(page.title).to have_content(product_name)
+      page.add_to_cart(product_quantity)
+    end
+
+    on_the_cart_page do |page|
+      page.line_items
+      expect(page.displayed?).to be(true)
+
+      expect(page.line_items).to have_content(product_name)
+
+      page.continue
+    end
+
+    on_the_registration_page do |page|
+      expect(page.displayed?).to be(true)
+
+      page.checkout_as_guest(address.email)
+    end
+
+    on_the_address_page do |page|
+      expect(page.displayed?).to be(true)
+      page.set_address(address)
+
+      page.continue
+    end
+
+    on_the_delivery_page do |page|
+      expect(page.displayed?).to be(true)
+      page.stock_contents.each do |stocks|
+        expect(stocks).to have_content(product_name)
+      end
+      page.continue
+    end
+  end
+
 end

@@ -115,7 +115,7 @@ class TestData
 
   def ca_address
     Address.new(
-      'Testperson-fi',        # Name
+      'Testperson-ca',        # Name
       'Approved',             # Last Name
       '17007 107 Ave',        # Stree
       'Edmonton',             # City
