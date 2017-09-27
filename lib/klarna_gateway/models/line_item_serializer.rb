@@ -56,8 +56,7 @@ module KlarnaGateway
       image = line_item.variant.images.first
       host = image_host
 
-      return unless host
-      return unless image.present?
+      return unless image.present? && host
 
       begin
         scheme = "http://" unless host.to_s.match(/^https?:\/\//)
@@ -81,7 +80,7 @@ module KlarnaGateway
       case host_conf
       when nil then nil
       when String then host_conf
-      when Proc then host_conf.call(@line_item)
+      when Proc then host_conf.call(line_item)
       end
     end
 

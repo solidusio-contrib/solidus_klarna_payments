@@ -52,7 +52,7 @@ describe KlarnaGateway::LineItemSerializer do
         end
       end
 
-      context "with a Prodc configured" do
+      context "with a Proc configured" do
         let(:product_url) { Proc.new{|line_item| "http://example.com/product/#{line_item.variant.id}"} }
 
         it "returns the result as a string" do
@@ -72,7 +72,7 @@ describe KlarnaGateway::LineItemSerializer do
 
     describe "image_url" do
       around do |example|
-        before = KlarnaGateway.configuration.product_url
+        before = KlarnaGateway.configuration.image_host
         KlarnaGateway.configuration.image_host = image_host
         example.run
         KlarnaGateway.configuration.image_host = before
@@ -90,6 +90,13 @@ describe KlarnaGateway::LineItemSerializer do
       context "with a string as image_host" do
         let(:image_host) { "example.com" }
         it { is_expected.to start_with("http://example.com/") }
+      end
+
+      context "with a Proc configured" do
+        let(:image_host) { Proc.new{|line_item| "http://example.com"} }
+
+        it { is_expected.to be_a(String) }
+        it { is_expected.to eq("http://example.com#{line_item.variant.images.first.attachment.url}") }
       end
     end
   end
