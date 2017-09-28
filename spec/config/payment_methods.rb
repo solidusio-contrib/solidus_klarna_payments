@@ -21,7 +21,7 @@ RSpec.configure do |config|
       api_name = "Klarna #{$store_id.upcase}"
 
       if ENV.has_key?(api_key) && ENV.has_key?(api_secret) && Spree::PaymentMethod.where(name: api_name).none?
-        Spree::PaymentMethod.create(
+        payment_method = Spree::PaymentMethod.create(
           name: api_name,
           type: 'Spree::Gateway::KlarnaCredit',
           preferences: {
@@ -31,14 +31,32 @@ RSpec.configure do |config|
             api_secret: ENV[api_secret],
             country: $store_id.downcase
           })
+
+        if KlarnaGateway.is_spree? && payment_method.respond_to?(:environment)
+          payment_method.update_attributes(environment: 'test')
+        end
+      end
+
+      if Spree::PaymentMethod.where(name: "Check").none?
+        Spree::PaymentMethod.create(
+          name: "Check",
+          type: 'Spree::PaymentMethod::Check',
+          description: "Pay by check.",
+          active: true)
+      end
+
+      if KlarnaGateway.is_spree? && payment_method.respond_to?(:environment)
+        Spree::PaymentMethod.where(name: "Check").first.update_attributes(environment: 'test')
+
+      end
+
+      if Spree.const_defined?("RefundReason")
+        Spree::RefundReason.create(name: 'default') unless Spree::RefundReason.any?
       end
     end
   end
 end
 
-unless Spree::RefundReason.any?
-  Spree::RefundReason.create(name: 'default')
-end
 
 def current_store_keys
   {

@@ -38,7 +38,7 @@
             </tr>
           <% end %>
 
-          <% if entry.parsed_details.error_code.present? %>
+          <% if entry.parsed_details.respond_to?(:error_code) && entry.parsed_details.error_code.present? %>
             <tr>
               <td>Error Code</td>
               <td>
