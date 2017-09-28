@@ -1,58 +1,14 @@
 require 'features_helper'
 
-describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_klarna: true do
+describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_klarna: true, only: :us do
   include_context "ordering with klarna"
   include WorkflowDriver::Process
 
-  xit 'gateway should be unavailable when shipping to a non-supported country' do
-    product_name = 'Ruby on Rails Mug'
-    product_quantity = 2
+  let(:product_name) { 'Ruby on Rails Tote' }
+  let(:product_quantity) { 2 }
 
-    on_the_home_page do |page|
-      page.load
-      page.update_hosts
-      expect(page.displayed?).to be(true)
-
-      page.choose(product_name)
-    end
-
-    on_the_product_page do |page|
-      page.wait_for_title
-      expect(page.displayed?).to be(true)
-
-      expect(page.title).to have_content(product_name)
-      page.add_to_cart(product_quantity)
-    end
-
-    on_the_cart_page do |page|
-      page.line_items
-      expect(page.displayed?).to be(true)
-
-      expect(page.line_items).to have_content(product_name)
-
-      page.continue
-    end
-
-    on_the_registration_page do |page|
-      expect(page.displayed?).to be(true)
-
-      page.checkout_as_guest(@testing_data.ca_address.email)
-    end
-
-    on_the_address_page do |page|
-      expect(page.displayed?).to be(true)
-      page.set_address(@testing_data.ca_address)
-
-      page.continue
-    end
-
-    on_the_delivery_page do |page|
-      expect(page.displayed?).to be(true)
-      page.stock_contents.each do |stocks|
-        expect(stocks).to have_content(product_name)
-      end
-      page.continue
-    end
+  it 'Gateway should be unavailable when shipping to a non-supported country (Canada)' do
+    order_with_different_address(@testing_data.ca_address, product_name, product_quantity)
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
@@ -62,15 +18,83 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
         expect(frame).to have_content('Not available for this country')
       end
 
-      page.select_payment_method('Check').click
-
-      page.continue
-    end
-
-    on_the_confirm_page do |page|
-      expect(page.displayed?).to be(true)
-
-      page.continue
+      Capybara.current_session.driver.quit
     end
   end
+
+  it 'Gateway should be unavailable when shipping to a non-supported country (Germany)' do
+    order_with_different_address(@testing_data.de_address, product_name, product_quantity)
+
+    on_the_payment_page do |page|
+      expect(page.displayed?).to be(true)
+      page.select_payment_method(@testing_data.payment_name).click
+
+      page.klarna_credit do |frame|
+        expect(frame).to have_content('Zahlungsart nicht verfügbar in diesem Land')
+      end
+
+      Capybara.current_session.driver.quit
+    end
+  end
+
+  it 'Gateway should be unavailable when shipping to a non-supported country (UK)' do
+    order_with_different_address(@testing_data.uk_address, product_name, product_quantity)
+
+    on_the_payment_page do |page|
+      expect(page.displayed?).to be(true)
+      page.select_payment_method(@testing_data.payment_name).click
+
+      page.klarna_credit do |frame|
+        expect(frame).to have_content('Not available for this country')
+      end
+
+      Capybara.current_session.driver.quit
+    end
+  end
+
+  it 'Gateway should be unavailable when shipping to a non-supported country (Norway)' do
+    order_with_different_address(@testing_data.no_address, product_name, product_quantity)
+
+    on_the_payment_page do |page|
+      expect(page.displayed?).to be(true)
+      page.select_payment_method(@testing_data.payment_name).click
+
+      page.klarna_credit do |frame|
+        expect(frame).to have_content('Ikke tilgjengelig i dette landet')
+      end
+
+      Capybara.current_session.driver.quit
+    end
+  end
+
+  it 'Gateway should be unavailable when shipping to a non-supported country (Sweden)' do
+    order_with_different_address(@testing_data.se_address, product_name, product_quantity)
+
+    on_the_payment_page do |page|
+      expect(page.displayed?).to be(true)
+      page.select_payment_method(@testing_data.payment_name).click
+
+      page.klarna_credit do |frame|
+        expect(frame).to have_content('Betalsätt ej tillgängligt för det här landet')
+      end
+
+      Capybara.current_session.driver.quit
+    end
+  end
+
+  it 'gateway should be unavailable when shipping to a non-supported country (Finland)' do
+    order_with_different_address(@testing_data.fi_address, product_name, product_quantity)
+
+    on_the_payment_page do |page|
+      expect(page.displayed?).to be(true)
+      page.select_payment_method(@testing_data.payment_name).click
+
+      page.klarna_credit do |frame|
+        expect(frame).to have_content('Maksutapa ei ole saatavilla tässä maassa')
+      end
+
+      Capybara.current_session.driver.quit
+    end
+  end
+
 end

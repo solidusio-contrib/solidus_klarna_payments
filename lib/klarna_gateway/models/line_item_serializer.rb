@@ -57,9 +57,10 @@ module KlarnaGateway
 
     def image_url
       image = line_item.variant.images.first
+      host = image_host
 
-      return unless image.present?
-      host = ActionController::Base.asset_host || store.url.to_s
+      return unless image.present? && host
+
       begin
         scheme = "http://" unless host.to_s.match(/^https?:\/\//)
         uri = URI::parse("#{scheme}#{host.sub(/\/$/, '')}#{image.attachment.url}")
@@ -85,8 +86,23 @@ module KlarnaGateway
         end
     end
 
-    def store
-      Spree::Store.current
+    def image_host
+      host_conf = KlarnaGateway.configuration.image_host
+
+      case host_conf
+      when nil then nil
+      when String then host_conf
+      when Proc then host_conf.call(line_item)
+      end
+    end
+
+    def product_url
+      product_conf = KlarnaGateway.configuration.product_url
+
+      case product_conf
+      when Proc then product_conf.call(line_item)
+      else nil
+      end
     end
   end
 end
