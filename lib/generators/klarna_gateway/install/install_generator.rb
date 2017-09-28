@@ -15,6 +15,9 @@ module KlarnaGateway
 
       def add_javascripts
         inject_into_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require spree/frontend/klarna_credit\n", before: /\/\/*= ?require_tree \./, verbose: true
+
+        gsub_file 'vendor/assets/javascripts/spree/frontend/all.js', /\/\/= require spree\/frontend\/klarna_gateway\s$/, ''
+        gsub_file 'vendor/assets/javascripts/spree/backend/all.js', /\/\/= require spree\/backend\/klarna_gateway\s$/, ''
       end
 
       def add_initializer

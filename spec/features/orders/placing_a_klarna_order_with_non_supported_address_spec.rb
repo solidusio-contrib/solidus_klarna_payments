@@ -10,6 +10,7 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
 
     on_the_home_page do |page|
       page.load
+      page.update_hosts
       expect(page.displayed?).to be(true)
 
       page.choose(product_name)

@@ -8,10 +8,11 @@ shared_context "ordering with klarna" do
     testing_data = options.fetch(:testing_data)
     product_quantity = options.fetch(:product_quantity, 2)
     email = options.fetch(:email) { testing_data.address.email }
+    discount_code = options.fetch(:discount_code, nil)
 
     on_the_home_page do |page|
       page.load
-
+      page.update_hosts
 
       expect(page.displayed?).to be(true)
       page.choose(product_name)
@@ -28,12 +29,13 @@ shared_context "ordering with klarna" do
     on_the_cart_page do |page|
       page.line_items
       expect(page.displayed?).to be(true)
-      if options[:discount_code]
-        discount_code = options.fetch(:discount_code)
+
+      if discount_code && page.has_coupon_field?
         page.add_coupon_code(discount_code)
 
         expect(page.displayed?).to be(true)
         expect(page.adjustment).to have_content('Adjustment: Promotion')
+        discount_code = nil
       end
 
       expect(page.line_items).to have_content(product_name)
@@ -84,19 +86,6 @@ shared_context "ordering with klarna" do
     testing_data = options.fetch(:testing_data)
 
     select_klarna_payment(testing_data)
-
-    confirm_on_local
-  end
-
-  def confirm_on_local
-    Capybara.using_wait_time(CapybaraExtraWaitTime) do
-      on_the_confirm_page do |page|
-        expect(page.displayed?).to be(true)
-
-        wait_for_ajax
-        page.continue
-      end
-    end
   end
 
   def confirm_on_remote

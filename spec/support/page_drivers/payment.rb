@@ -15,10 +15,17 @@ module PageDrivers
   class Payment < Base
     set_url "/checkout/payment"
 
-    elements :payment_methods, "fieldset#payment #payment-method-fields label"
-    element :continue_button, "form#checkout_form_payment input.continue"
+    elements :payment_methods, "#payment #payment-method-fields label"
     element :klarna_error, ".klarna_error"
     element :klarna_credit_logo, "#klarna-logo"
+    element :order_coupon_code, "#payment #order_coupon_code"
+    element :summary, '[data-hook="order_summary"]'
+
+    if KlarnaGateway.is_spree? && !KlarnaGateway.up_to_spree?('2.4.99')
+      element :continue_button, 'form#checkout_form_payment input.btn'
+    else
+      element :continue_button, 'form#checkout_form_payment input.continue'
+    end
 
     iframe :klarna_credit, KlarnaCredit, '#klarna-credit-main'
     iframe :klarna_credit_fullscreen, KlarnaCreditFullscreen, '#klarna-credit-fullscreen'
@@ -79,6 +86,14 @@ module PageDrivers
           end
         end
       end
+    end
+
+    def has_coupon_code_field?
+      order_coupon_code.set("") rescue nil
+    end
+
+    def is_coupon_applied?
+      summary.text.match(/Promotion/)
     end
   end
 end
