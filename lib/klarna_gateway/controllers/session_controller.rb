@@ -68,9 +68,5 @@ module KlarnaGateway
     def klarna_payment_method_id
       params[:klarna_payment_method_id] || current_order.payments.where(source_type: 'Spree::KlarnaCreditPayment').last.payment_method_id
     end
-
-    def current_store
-      Spree::Store.current
-    end
   end
 end

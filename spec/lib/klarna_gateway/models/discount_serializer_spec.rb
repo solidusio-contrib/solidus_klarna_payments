@@ -17,7 +17,7 @@ describe KlarnaGateway::DiscountItemSerializer do
     it "sets correct discount amounts" do
       discount_line = serialized[:order_lines].detect { |l| l[:type] == "discount" }
       expect(discount_line[:quantity]).to eq(1)
-      expect(discount_line[:reference]).to eq("MYCODE and MYCODE")
+      expect(discount_line[:reference]).to eq("MYCODE and MYCODE".downcase)
       expect(discount_line[:total_amount]).to eq((order.promo_total * 100).to_i)
       expect(discount_line[:tax_rate]).to eq(0)
     end
@@ -42,7 +42,7 @@ describe KlarnaGateway::DiscountItemSerializer do
     it "sets correct discount amounts" do
       discount_line = serialized[:order_lines].detect { |l| l[:type] == "discount" }
       expect(discount_line[:quantity]).to eq(1)
-      expect(discount_line[:reference]).to eq("MYCODE and MYCODE")
+      expect(discount_line[:reference]).to eq("MYCODE and MYCODE".downcase)
       expect(discount_line[:total_amount]).to eq((order.promo_total * 100).to_i)
       expect(discount_line[:total_amount]).to be < 0
       expect(discount_line[:tax_rate]).to eq(0)

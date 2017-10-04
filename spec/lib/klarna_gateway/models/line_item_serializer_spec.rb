@@ -10,8 +10,8 @@ describe KlarnaGateway::LineItemSerializer do
   context "in the UK" do
     let(:calculator) { KlarnaGateway::AmountCalculators::UK::LineItemCalculator.new }
     let(:region) { :us }
-    let!(:uk) { Spree::Country.find_by_name("United Kingdom") || create(:country, name: "United Kingdom") }
-    let(:uk_zone) { Spree::Zone.find_by_name('GlobalZone') || create(:global_zone, default_tax: true) }
+    let!(:uk) { create(:country, name: "United Kingdom") }
+    let(:uk_zone) { create(:zone, countries: [uk], default_tax: true) }
     let!(:tax_rate) { create(:tax_rate, zone: uk_zone, included_in_price: true) }
 
     it "sets the tax amount" do

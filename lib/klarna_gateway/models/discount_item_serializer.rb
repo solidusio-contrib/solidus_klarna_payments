@@ -27,7 +27,13 @@ module KlarnaGateway
     end
 
     def reference
-      @order.promotions.map(&:code).to_sentence
+      if @order.promotions.first.respond_to?(:codes)
+        @order.promotions.flat_map(&:codes).map(&:value).to_sentence
+      else
+        @order.promotions.map(&:code).to_sentence
+      end
     end
   end
 end
+
+

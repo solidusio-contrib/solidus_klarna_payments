@@ -41,6 +41,15 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
       order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
       pay_with_klarna(testing_data: @testing_data)
 
+      if KlarnaGateway.is_solidus?
+        on_the_confirm_page do |page|
+          expect(page.displayed?).to be(true)
+
+          wait_for_ajax
+          page.continue
+        end
+      end
+
       on_the_complete_page do |page|
         expect(page.displayed?).to be(true)
         page.get_order_number

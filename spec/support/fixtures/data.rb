@@ -156,6 +156,33 @@ class TestData
     end
   end
 
+  def currency
+    @address ||= case @store_id
+      when 'uk'
+        'GBP'
+      when 'de'
+        'EUR'
+      when 'se'
+        'SEK'
+      when 'no'
+        'NOK'
+      when 'fi'
+        'EUR'
+      when 'ca'
+        'CAD'
+      else
+        'USD'
+    end
+  end
+
+  def spree_country
+    if uk?
+      Spree::Country.find_by_iso('GB')
+    else
+      Spree::Country.find_by_iso(@store_id.upcase)
+    end
+  end
+
   def us?
     country == 'us'
   end
