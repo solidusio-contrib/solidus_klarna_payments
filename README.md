@@ -31,7 +31,7 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 - Solidus 2.0.x
 - Solidus 2.1.x
 
-Work is planned for compatibility with the 2.x branch of Solidus.
+We are currently working on the compatibility with the 2.x branch of Solidus.
 
 ## Installation (beta)
 
