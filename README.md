@@ -18,10 +18,10 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 
 ### Limitations
 
-- *Multiple* captures for one authorization are currently *not* supported because of Solidus' process when capturing payments. This might change in future versions of Solidus and this gem respectively. However, it is possible to use the Klarna Merchant Portal to do that.
-- Changing customer data after they completed the order is not synced to the Klarna API. So please be aware that you have to change the information in the Klarna Merchant Portal if needed.
+- Auto capturing payments requires prior Klarna approval.
+- *Multiple* captures for one authorization are currently *not* supported because of Solidus's process when capturing payments. This might change in future versions of Solidus and this gem respectively. However, it is possible to use the Klarna Merchant Portal to do that.
 - A customer is able to choose multiple payment options for an order.  If an order does have multiple payment options, you should capture the most recent payment choice first, which be listed at the bottom of the list of payments.
-- It’s important to cancel Klarna payments if the customer paid with another payment method in the end after receiving a successful Klarna authorization, we can not send `release_remaining_amount` to Klarna  in this case and the users credit limit would still be blocked.
+- It’s important to cancel Klarna payments if the customer paid with another payment method in the end after receiving a successful Klarna authorization, we can not send `release_remaining_amount` to Klarna in this case and the users credit limit would still be blocked.
 
 
 ### Supported Solidus Versions
