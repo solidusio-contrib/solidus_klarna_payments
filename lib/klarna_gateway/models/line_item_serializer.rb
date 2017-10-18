@@ -70,15 +70,6 @@ module KlarnaGateway
       uri.to_s
     end
 
-    def host
-      host = ActionController::Base.asset_host || Spree::Store.current.url
-      host.match(/^http:/) ? host : "http://#{host}"
-    end
-
-    def product_url
-      Spree::Core::Engine.routes.url_helpers.product_url(line_item.variant, host: store.url.to_s.chop) if store.url.present?
-    end
-
     def strategy_for_region(region)
       case region.downcase.to_sym
         when :us then AmountCalculators::US::LineItemCalculator.new
