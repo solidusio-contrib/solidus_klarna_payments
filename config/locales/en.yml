@@ -46,7 +46,7 @@ en:
     klarna:
       can_not_test_api_connection: API can not be tested. Credentials are missing
       valid_api_credentials: Klarna Credentials have been validated. API configuration completed!
-      invalid_api_credentials: Klarna Credentials are not valid
+      invalid_api_credentials: Klarna configuration data is invalid
       specify_credentials: "Please specify %{missing_preferece} to finish your configuration"
       general_error: "A technical error has occurred. Please try reloading the page or contact the merchant."
       denied_error: "Unable to approve your application for Klarna Credit."
