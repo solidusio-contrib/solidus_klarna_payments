@@ -16,7 +16,19 @@
 <script type="text/javascript" id="klarna-credit-lib-x">
 /* <![CDATA[ */
 KlarnaGateway.loadSdk(this, document, function() {
-  jQuery(".klarna_credit_box").klarnaAuthorize();
+  jQuery(".klarna_credit_box").klarnaAuthorize({
+    onSubmit:function(settings) {
+      // Update the order when a coupon was applied in this step
+      if ($('#coupon_status').length > 0) {
+        Spree.ajax({
+          method: "POST",
+          url: settings.sessionUrl,
+          data: {klarna_payment_method_id: settings.paymentId},
+          async: false
+        })
+      }
+    }
+  });
 });
  /* ]]> */
 </script>

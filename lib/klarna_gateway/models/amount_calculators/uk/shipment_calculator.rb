@@ -26,7 +26,7 @@ module KlarnaGateway
       end
 
       def unit_price(shipment)
-        (shipment.amount * 100).to_i
+        shipment.display_amount.cents
       end
     end
   end

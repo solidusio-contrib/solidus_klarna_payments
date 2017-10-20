@@ -1,8 +1,7 @@
 module PageDrivers
   class Home < Base
     set_url "/"
-    elements :products, '[data-hook="homepage_products"] ul#products li'
-
+    elements :products, '#content #products [data-hook="products_list_item"]'
 
     def choose(name)
       products.find{|e| e.text.match(name)}.click

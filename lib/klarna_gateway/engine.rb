@@ -17,7 +17,6 @@ module KlarnaGateway
       Spree::Order.include(KlarnaGateway::Order)
       Spree::Order.register_update_hook(:update_klarna_shipments)
       Spree::Order.register_update_hook(:update_klarna_customer)
-      Spree::Refund.include(KlarnaGateway::Refund)
       Spree::Payment.include(KlarnaGateway::Payment::Processing)
       Spree::Payment.include(KlarnaGateway::Payment::Scope)
     end

@@ -13,11 +13,11 @@ module KlarnaGateway
       payment_source.payments.first.notify!(params)
 
       payment_source.order.touch
-      render text: "ok"
+      render plain: "ok"
     end
 
     def push
-      render text: "ok"
+      render plain: "ok"
     end
   end
 end

@@ -11,8 +11,8 @@ module KlarnaGateway
         type: "discount",
         quantity: 1,
         # send the name and the promo code
-        name: name.presence || "Discount",
-        reference: "Discount",
+        name: name,
+        reference: reference,
         total_amount: (@order.promo_total * 100).to_i,
         unit_price: (@order.promo_total * 100).to_i,
         tax_rate: 0,
@@ -23,11 +23,11 @@ module KlarnaGateway
     private
 
     def name
-      @order.adjustments.map do |adjustment|
-        if adjustment.promotion_code
-          "#{adjustment.promotion_code.promotion.name} (#{adjustment.promotion_code.value})"
-        end
-      end.compact.to_sentence
+      @order.promotions.map(&:name).to_sentence
+    end
+
+    def reference
+      @order.promotions.map(&:code).to_sentence
     end
   end
 end

@@ -1,12 +1,11 @@
 require "spec_helper"
 
 describe Spree::Klarna::CallbacksController do
-  include Devise::Test::ControllerHelpers
 
   describe "#notification" do
     let(:order) { create(:order_with_line_items, state: "complete") }
-    let(:payment_source) { Spree::KlarnaCreditPayment.create(order_id: order_id, spree_order_id: order.id, fraud_status: "PENDING") }
-    let!(:payment) { Spree::Payment.create(source: payment_source, order: order) }
+    let(:payment_source) { create(:klarna_credit_payment, order_id: order_id, spree_order_id: order.id, fraud_status: "PENDING") }
+    let!(:payment) { create(:klarna_payment, source: payment_source, order: order, payment_method: payment_source.payment_method) }
     let(:order_id) { "MY_ORDER_ID" }
     let(:params) { {order_id: payment_source.order_id, event_type: event_type} }
 

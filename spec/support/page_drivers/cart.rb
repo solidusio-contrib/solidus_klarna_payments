@@ -16,5 +16,9 @@ module PageDrivers
       coupon_field.set(code)
       update_button.click
     end
+
+    def has_coupon_field?
+      coupon_field.set("") rescue nil
+    end
   end
 end

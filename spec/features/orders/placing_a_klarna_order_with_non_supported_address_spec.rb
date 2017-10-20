@@ -51,7 +51,7 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
       page.select_payment_method(@testing_data.payment_name).click
 
       page.klarna_credit do |frame|
-        expect(frame).to have_content('Not available for this country')      
+        expect(frame).to have_content('Not available for this country')
       end
 
       Capybara.current_session.driver.quit
@@ -69,7 +69,7 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
       page.select_payment_method(@testing_data.payment_name).click
 
       page.klarna_credit do |frame|
-        expect(frame).to have_content('Ikke tilgjengelig i dette landet')      
+        expect(frame).to have_content('Ikke tilgjengelig i dette landet')
       end
 
       Capybara.current_session.driver.quit
@@ -87,7 +87,7 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
       page.select_payment_method(@testing_data.payment_name).click
 
       page.klarna_credit do |frame|
-        expect(frame).to have_content('Betalsätt ej tillgängligt för det här landet')    
+        expect(frame).to have_content('Betalsätt ej tillgängligt för det här landet')
       end
 
       Capybara.current_session.driver.quit
@@ -105,7 +105,7 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
       page.select_payment_method(@testing_data.payment_name).click
 
       page.klarna_credit do |frame|
-        expect(frame).to have_content('Maksutapa ei ole saatavilla tässä maassa')      
+        expect(frame).to have_content('Maksutapa ei ole saatavilla tässä maassa')
       end
 
       Capybara.current_session.driver.quit
