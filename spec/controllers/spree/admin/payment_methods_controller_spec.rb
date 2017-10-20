@@ -50,7 +50,7 @@ describe Spree::Admin::PaymentMethodsController do
           spree_put(:update, attributes)
         end
 
-        expect(flash[:error]).to match(/not valid/)
+        expect(flash[:error]).to match(/invalid/)
         expect(flash[:success]).to match(/successfully updated/)
       end
 
