@@ -19,7 +19,7 @@ module KlarnaGateway
               config.country = params[:gateway_klarna_credit][:preferred_country]
               config.api_key =  params[:gateway_klarna_credit][:preferred_api_key]
               config.api_secret = params[:gateway_klarna_credit][:preferred_api_secret]
-              config.user_agent = "Klarna Solidus Gateway/#{::KlarnaGateway::VERSION} Solidus/#{::Spree.solidus_version} Rails/#{::Rails.version}"
+              config.user_agent = "Klarna Spree Gateway/#{::KlarnaGateway::VERSION} Spree/#{::Spree.version} Rails/#{::Rails.version}"
             end
 
             klarna_response = Klarna.client(:credit).create_session({})

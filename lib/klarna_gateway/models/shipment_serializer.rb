@@ -25,7 +25,7 @@ module KlarnaGateway
     private
 
     def unit_price
-      (shipment.pre_tax_amount * 100).to_i
+      (pre_tax_amount * 100).to_i
     end
 
     def total_amount
@@ -38,7 +38,17 @@ module KlarnaGateway
 
     def tax_rate
       return 0 if total_tax_amount == 0 || total_amount == 0
-      (((shipment.final_price / shipment.pre_tax_amount) - 1) * 10000).to_i
+      (((shipment.final_price / pre_tax_amount) - 1) * 10000).to_i
+    end
+
+    # Backport for Spree 3.0 and 3.1
+    # https://github.com/spree/spree/pull/7357
+    def pre_tax_amount
+      if shipment.pre_tax_amount == 0
+        shipment.discounted_amount - shipment.included_tax_total
+      else
+        shipment.pre_tax_amount
+      end
     end
   end
 end

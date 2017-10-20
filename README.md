@@ -1,8 +1,8 @@
-# Klarna Payments Integration for Solidus
+# Klarna Payments Integration for Spree
 
 ![Klarna](https://cdn.klarna.com/1.0/shared/image/generic/logo/en_us/basic/blue-black.png?height=30)
 
-This integration enables [Solidus](https://solidus.io) to provide [Klarna](https://www.klarna.com/) Payments as a payment option.
+This integration enables [Spree](https://github.com/spree/spree) to provide [Klarna](https://www.klarna.com/) Payments as a payment option.
 
 ![Checkout](docs/checkout.png)
 
@@ -19,19 +19,20 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 ### Limitations
 
 - Auto capturing payments requires prior Klarna approval.
-- *Multiple* captures for one authorization are currently *not* supported because of Solidus's process when capturing payments. This might change in future versions of Solidus and this gem respectively. However, it is possible to use the Klarna Merchant Portal to do that.
+- *Multiple* captures for one authorization are currently *not* supported because of Spree's process when capturing payments. This might change in future versions of Spree and this gem respectively. However, it is possible to use the Klarna Merchant Portal to do that.
 - A customer is able to choose multiple payment options for an order.  If an order does have multiple payment options, you should capture the most recent payment choice first, which be listed at the bottom of the list of payments.
 - It’s important to cancel Klarna payments if the customer paid with another payment method in the end after receiving a successful Klarna authorization, we can not send `release_remaining_amount` to Klarna in this case and the users credit limit would still be blocked.
 
 
-### Supported Solidus Versions
+### Supported Spree Versions
 
-- Solidus 1.3.x
-- Solidus 1.4.x
-- Solidus 2.0.x
-- Solidus 2.1.x
+- Spree 2.3.x
+- Spree 3.4.x
+- Spree 3.0.x
+- Spree 3.1.x
+- Spree 3.2.x
 
-We are currently working on the compatibility with the 2.x branch of Solidus.
+Other versions might work but were not tested yet.
 
 ## Installation (beta)
 
@@ -39,7 +40,7 @@ This gem is currently in **a public beta phase**.  For the time being it will on
 
 ```ruby
 gem 'klarna_client', github: 'bitspire/klarna_client'
-gem 'solidus_klarna_payments', require: 'klarna_gateway', github: 'bitspire/solidus_klarna_payments'
+gem 'spree_klarna_payments', require: 'klarna_gateway', github: 'bitspire/spree_klarna_payments'
 ```
 
 And then execute:
@@ -52,7 +53,7 @@ In your project include the migrations, JavaScript and stylesheets:
 
 Please note that the version is still 0.9. We want to have the option to make breaking changes during the transition to 1.0.
 
-## Solidus configuration
+## Spree configuration
 
 After the installation, create a new payment method and select `Spree::Gateway::KlarnaCredit` as the gateway. After saving the payment method, you can configure your Klarna credentials and set design options for how Klarna is displayed to the customer in the checkout.
 
@@ -60,7 +61,7 @@ After the installation, create a new payment method and select `Spree::Gateway::
 
 The "country" option is mandatory and refers to the region the account is associated with. In the example above it's `us` for the USA, other values would be `uk` for the United Kingdom and `de` for Germany.
 
-There are two other things to configure. Set the payment method to "active" and only enable it in the frontend. Some payment methods can be used in the backend by the merchant. As this is not appropriate for Klarna Payments, it should be disabled. You can also configure to automatically capture the payments when the customer confirms their order.
+There are two other things to configure. Set the payment method to "active" and only enable it in the frontend. Some payment methods can be used in the backend by the merchant. As this is not appropriate for Klarna Payments, it should be disabled. You can also configure to automatically capture the payments when the customer confirms their order. The test mode allows you to test the integration with test data. Disable this option for production use.
 
 ![Configuration](docs/configuration2.png)
 
@@ -79,7 +80,7 @@ The template can be overwritten by copying [the file](app/views/spree/checkout/p
 
 ### JavaScript library
 
-The JavaScript library is used to initialize a session with Klarna, authorize the requested amount and handing the obtained _authorization token_ to Solidus. This token is later used when authorizing the payment in Solidus.
+The JavaScript library is used to initialize a session with Klarna, authorize the requested amount and handing the obtained _authorization token_ to Spree. This token is later used when authorizing the payment in Spree.
 
 If the checkout (template) was modified, it can be necessary to adapt the integration as well. The `KlarnaGateway` library was extracted to make that easier. It is initialized as follows:
 

@@ -4,13 +4,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'klarna_gateway/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "solidus_klarna_payments"
+  spec.name          = "spree_klarna_payments"
   spec.version       = KlarnaGateway::VERSION
   spec.authors       = ["Jose Antonio Pio Gil", "Pascal Jungblut"]
   spec.email         = ["jose.pio@bitspire.de", "pascal.jungblut@bitspire.de"]
 
-  spec.summary       = %q{Klarna Payments ActiveMerchant gateway and Solidus payment method}
-  spec.description   = %q{Klarna Payments ActiveMerchant gateway and Solidus payment method}
+  spec.summary       = %q{Klarna Payments ActiveMerchant gateway and Spree payment method}
+  spec.description   = %q{Klarna Payments ActiveMerchant gateway and Spree payment method}
   spec.homepage      = ""
   spec.license       = "Apache-2.0"
 
@@ -32,6 +32,8 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rspec-rails", "~> 3.5.0"
+  spec.add_development_dependency "sass-rails"
+  spec.add_development_dependency "coffee-rails"
   spec.add_development_dependency "capybara"
   spec.add_development_dependency "poltergeist", "~> 1.15.0"
   spec.add_development_dependency "site_prism"
@@ -49,12 +51,12 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "chromedriver-helper"
   spec.add_development_dependency "listen"
   spec.add_development_dependency "dotenv"
+  spec.add_development_dependency "devise"
 
-  spec.add_dependency "solidus_core", ">= 1.3.0.a", "< 3"
-  spec.add_dependency "solidus_api", ">= 1.3.0.a", "< 3"
-  spec.add_dependency "solidus_frontend", ">= 1.3.0.a", "< 3"
-  spec.add_dependency "solidus_backend", ">= 1.3.0.a", "< 3"
-  spec.add_dependency "solidus_auth_devise"
+  spec.add_dependency "spree_core", ">= 2.3.0"
+  spec.add_dependency "spree_api", ">= 2.3.0"
+  spec.add_dependency "spree_frontend", ">= 2.3.0"
+  spec.add_dependency "spree_backend", ">= 2.3.0"
 
   spec.add_dependency "klarna_client", ">= 0.9.1"
   spec.add_dependency "activemerchant"
