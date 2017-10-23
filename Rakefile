@@ -1,3 +1,5 @@
+ENV['LIB_NAME'] = 'klarna_gateway'
+
 require "dotenv"
 Dotenv.load
 
@@ -30,7 +32,6 @@ namespace :klarna_gateway do
   namespace :spec do
     desc 'Generates a dummy app for testing'
     task :create_dummy_app do
-      ENV['LIB_NAME'] = 'klarna_gateway'
       Rake::Task['common:test_app'].invoke
     end
   end

@@ -3,7 +3,11 @@ module PageDrivers
     class Order < Base
       set_url '/admin/orders/{number}/edit'
 
-      section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
+      if KlarnaGateway.is_solidus?
+        section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
+      else
+        section :menu, PageDrivers::Admin::OrderMenu, 'aside#sidebar ul'
+      end
     end
   end
 end

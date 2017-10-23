@@ -4,7 +4,7 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
   include_context "ordering with klarna"
   include WorkflowDriver::Process
 
-  it 'Captures a klarna payment' do
+  it 'Displays the Klarna Order ID in the Backend' do
     order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
     pay_with_klarna(testing_data: @testing_data)
 
@@ -30,6 +30,7 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
     end
 
     order = Spree::Order.complete.last
+    klarna_order_id = order.klarna_order_id
 
     on_the_admin_payments_page do |page|
       page.load(number: order.number)
@@ -39,11 +40,16 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
       expect(page.payments.first.is_pending?).to be(true)
       expect(page.payments.first.is_klarna_authorized?).to be(true)
 
+      unless KlarnaGateway.up_to_spree?('2.3.99')
+        expect(page.payments.first).to have_content(klarna_order_id)
+      end
+
       page.payments.first.capture!
       expect(page.payments.first.is_klarna_captured?).to be(true)
       expect(page.payments.first.is_completed?).to be(true)
       page.payments.first.identifier.find('a').click
     end
+
 
     on_the_admin_payment_page do |page|
       expect(page.displayed?).to be(true)
@@ -52,10 +58,7 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
 
     on_the_admin_logs_page do |page|
       expect(page.displayed?).to be(true)
-      expect(page.log_entries.count).to eq(2)
-      expect(page.log_entries.first.message.text).to have_content('Placed order')
-      expect(page.log_entries.second.message.text).to have_content('Captured order')
+      expect(page.log_entries.first.message.text).to have_content(klarna_order_id)
     end
-
   end
 end
