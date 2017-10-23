@@ -16,7 +16,7 @@ describe KlarnaGateway::LineItemSerializer do
 
     it "sets the tax amount" do
       expect(serialized[:total_tax_amount]).to be > 0
-      expect(serialized[:total_tax_amount]).to eq((line_item.included_tax_total * 100).to_i)
+      expect(serialized[:total_tax_amount]).to eq((line_item.adjustments.tax.first.amount.abs * 100).to_i)
     end
 
     it "sets the unit_price" do

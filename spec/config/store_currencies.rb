@@ -26,16 +26,16 @@ if RSpec.configuration.inclusion_filter.rules.has_key?(:bdd)
     end
   end
 
-  FactoryGirl.create(:global_zone).tap do |current_zone|
-    FactoryGirl.create( :tax_rate,
-                        name: "Tax International",
-                        tax_category: Spree::TaxCategory.first,
-                        zone: current_zone,
-                        included_in_price: false)
-    FactoryGirl.create( :shipping_method,
-                        name: "Shipping International",
-                        code: "SENDOUT",
-                        tax_category: Spree::TaxCategory.first,
-                        zones: [current_zone])
-  end
+  # FactoryGirl.create(:global_zone).tap do |current_zone|
+  #   FactoryGirl.create( :tax_rate,
+  #                       name: "Tax International",
+  #                       tax_category: Spree::TaxCategory.first,
+  #                       zone: current_zone,
+  #                       included_in_price: false)
+  #   FactoryGirl.create( :shipping_method,
+  #                       name: "Shipping International",
+  #                       code: "SENDOUT",
+  #                       tax_category: Spree::TaxCategory.first,
+  #                       zones: [current_zone])
+  # end
 end
