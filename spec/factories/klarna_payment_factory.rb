@@ -37,25 +37,24 @@ FactoryGirl.define do
     association(:order)
   end
 
-  if KlarnaGateway.is_spree?
-    factory :completed_order_with_promotion, parent: :order_with_line_items, class: "Spree::Order" do
-      transient do
-        promotion nil
-      end
-
-      after(:create) do |order, evaluator|
-        promotion = evaluator.promotion || create(:promotion, code: "test")
-
-        promotion.activate(order: order)
-        order.promotions << promotion
-
-        # Complete the order after the promotion has been activated
-        order.refresh_shipment_rates
-        order.update_column(:completed_at, Time.current)
-        order.update_column(:state, "complete")
-      end
+  factory :completed_klarna_order_with_promotion, parent: :order_with_line_items, class: "Spree::Order" do
+    transient do
+      promotion nil
     end
 
-    factory :credit_card_payment, parent: :payment
+    after(:create) do |order, evaluator|
+      promotion = evaluator.promotion || create(:promotion, code: "test")
+      code = if KlarnaGateway.is_spree?
+                Spree::Promotion.last.code
+              else
+                Spree::Promotion.last.codes.first
+              end
+      promotion.activate(order: order, promotion_code: code)
+
+      # Complete the order after the promotion has been activated
+      order.refresh_shipment_rates
+      order.update_column(:completed_at, Time.current)
+      order.update_column(:state, "complete")
+    end
   end
 end

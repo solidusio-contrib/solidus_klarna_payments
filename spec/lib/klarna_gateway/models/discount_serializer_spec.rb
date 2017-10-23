@@ -1,7 +1,7 @@
 require 'spec_helper.rb'
 
 describe KlarnaGateway::DiscountItemSerializer do
-  let(:order) { create(:completed_order_with_promotion, promotion: promotion) }
+  let(:order) { create(:completed_klarna_order_with_promotion, promotion: promotion) }
   subject(:serializer) { KlarnaGateway::OrderSerializer.new(order) }
   let(:serialized) { serializer.to_hash }
 
@@ -17,7 +17,7 @@ describe KlarnaGateway::DiscountItemSerializer do
     it "sets correct discount amounts" do
       discount_line = serialized[:order_lines].detect { |l| l[:type] == "discount" }
       expect(discount_line[:quantity]).to eq(1)
-      expect(discount_line[:reference]).to eq("MYCODE and MYCODE".downcase)
+      expect(discount_line[:reference]).to eq("MYCODE".downcase)
       expect(discount_line[:total_amount]).to eq((order.promo_total * 100).to_i)
       expect(discount_line[:tax_rate]).to eq(0)
     end
@@ -29,7 +29,7 @@ describe KlarnaGateway::DiscountItemSerializer do
     it "has one discount line" do
       discount_lines = serialized[:order_lines].select { |l| l[:type] == "discount" }
       expect(discount_lines.count).to eq(1)
-      expect(discount_lines.first[:name]).to match("Promo and Promo")
+      expect(discount_lines.first[:name]).to match("Promo")
     end
 
     it "does not set line items' discount value" do
@@ -42,7 +42,7 @@ describe KlarnaGateway::DiscountItemSerializer do
     it "sets correct discount amounts" do
       discount_line = serialized[:order_lines].detect { |l| l[:type] == "discount" }
       expect(discount_line[:quantity]).to eq(1)
-      expect(discount_line[:reference]).to eq("MYCODE and MYCODE".downcase)
+      expect(discount_line[:reference]).to eq("MYCODE".downcase)
       expect(discount_line[:total_amount]).to eq((order.promo_total * 100).to_i)
       expect(discount_line[:total_amount]).to be < 0
       expect(discount_line[:tax_rate]).to eq(0)
