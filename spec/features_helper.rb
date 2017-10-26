@@ -4,12 +4,14 @@ require 'spec_helper'
 require 'capybara/rspec'
 require 'capybara/rails'
 require 'site_prism'
-
+require 'capybara/poltergeist'
 
 require 'support/drivers'
 require 'support/wait_for_ajax'
 require 'support/shared_contexts/ordering_with_klarna'
+require 'support/shared_contexts/change_driver'
 require 'support/responsive_helpers'
+require 'support/klarna_order_walkthrough'
 
 require 'config/capybara_features'
 require 'config/payment_methods'
@@ -43,4 +45,5 @@ RSpec.configure do |config|
       Capybara.use_default_driver
     end
   end
+
 end

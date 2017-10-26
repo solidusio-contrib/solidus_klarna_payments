@@ -157,4 +157,19 @@ shared_context "ordering with klarna" do
     end
   end
 
+
+  def order_on_state(product_name: product_name, state: state, quantity: quantity)
+    user = create(:user)
+
+    order = KlarnaOrderWalkthrough.new(product_name: product_name, state: state, quantity: quantity).call
+    order.reload
+    order.user = user
+    order.update!
+
+    allow_any_instance_of(Spree::Klarna::SessionsController).to receive_messages(current_order: order)
+    allow_any_instance_of(Spree::CheckoutController).to receive_messages(current_order: order)
+    allow_any_instance_of(Spree::CheckoutController).to receive_messages(try_spree_current_user: user)
+
+    order
+  end
 end
