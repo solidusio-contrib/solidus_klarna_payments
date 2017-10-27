@@ -6,7 +6,12 @@ describe 'Ordering with Klarna Payment using differing payment/shipping addresse
 
   # Test will fail since this has not been implemented on the Klarna side yet
   xit 'renders error when payment shipping first & last names differ' do
-    order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data, differing_delivery_addrs: true)
+    klarna_order = order_on_state(product_name: 'Ruby on Rails Bag', state: :delivery, quantity: 1, differing_delivery_addrs: true)
+
+    on_the_payment_page do |page|
+      page.load
+      page.update_hosts
+    end
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)

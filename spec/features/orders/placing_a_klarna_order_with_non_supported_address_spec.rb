@@ -8,7 +8,12 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
   let(:product_quantity) { 2 }
 
   it 'Gateway should be unavailable when shipping to a non-supported country (Canada)' do
-    order_with_different_address(@testing_data.ca_address, product_name, product_quantity)
+    order_on_state(product_name: product_name, state: :delivery, quantity: product_quantity, alternative_address: @testing_data.ca_address)
+
+    on_the_payment_page do |page|
+      page.load
+      page.update_hosts
+    end
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
@@ -23,7 +28,12 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
   end
 
   it 'Gateway should be unavailable when shipping to a non-supported country (Germany)' do
-    order_with_different_address(@testing_data.de_address, product_name, product_quantity)
+    order_on_state(product_name: product_name, state: :delivery, quantity: product_quantity, alternative_address: @testing_data.de_address)
+
+    on_the_payment_page do |page|
+      page.load
+      page.update_hosts
+    end
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
@@ -38,7 +48,12 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
   end
 
   it 'Gateway should be unavailable when shipping to a non-supported country (UK)' do
-    order_with_different_address(@testing_data.uk_address, product_name, product_quantity)
+    order_on_state(product_name: product_name, state: :delivery, quantity: product_quantity, alternative_address: @testing_data.uk_address)
+
+    on_the_payment_page do |page|
+      page.load
+      page.update_hosts
+    end
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
@@ -53,7 +68,12 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
   end
 
   it 'Gateway should be unavailable when shipping to a non-supported country (Norway)' do
-    order_with_different_address(@testing_data.no_address, product_name, product_quantity)
+    order_on_state(product_name: product_name, state: :delivery, quantity: product_quantity, alternative_address: @testing_data.no_address)
+
+    on_the_payment_page do |page|
+      page.load
+      page.update_hosts
+    end
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
@@ -68,7 +88,12 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
   end
 
   it 'Gateway should be unavailable when shipping to a non-supported country (Sweden)' do
-    order_with_different_address(@testing_data.se_address, product_name, product_quantity)
+    order_on_state(product_name: product_name, state: :delivery, quantity: product_quantity, alternative_address: @testing_data.se_address)
+
+    on_the_payment_page do |page|
+      page.load
+      page.update_hosts
+    end
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
@@ -83,7 +108,12 @@ describe 'Orders to non-supported countries', type: 'feature', bdd: true, no_kla
   end
 
   it 'gateway should be unavailable when shipping to a non-supported country (Finland)' do
-    order_with_different_address(@testing_data.fi_address, product_name, product_quantity)
+    order_on_state(product_name: product_name, state: :delivery, quantity: product_quantity, alternative_address: @testing_data.fi_address)
+
+    on_the_payment_page do |page|
+      page.load
+      page.update_hosts
+    end
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)

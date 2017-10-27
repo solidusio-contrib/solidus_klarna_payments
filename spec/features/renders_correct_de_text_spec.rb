@@ -5,7 +5,12 @@ describe 'Renders correct text in DE Gateway', type: 'feature', bdd: true, no_kl
   include WorkflowDriver::Process
 
   it 'Buy button text should contain DE compliant text (DE Specific)' do
-    order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
+    klarna_order = order_on_state(product_name: 'Ruby on Rails Bag', state: :delivery, quantity: 1)
+
+    on_the_payment_page do |page|
+      page.load
+      page.update_hosts
+    end
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)

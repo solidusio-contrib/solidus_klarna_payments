@@ -1,16 +1,19 @@
 class KlarnaOrderWalkthrough
 
-  def initialize(state: state, product_name: product_name, quantity: quantity)
+  def initialize(state: state, product_name: product_name, quantity: quantity, email: "spree@example.com", alternative_address: nil, differing_delivery_addrs: false)
     @product_name = product_name
     @quantity = quantity
     @state = state
+    @email = email
+    @alternative_address = alternative_address
+    @differing_delivery_addrs = differing_delivery_addrs
   end
 
   def call
     @test_data = TestData.new($store_id)
 
     @order = Spree::Order.create!(
-      email: "spree@example.com",
+      email: (@alternative_address && @alternative_address.email) || @email,
       store: Spree::Store.first,
       guest_token: "xyz"
     )
@@ -28,6 +31,7 @@ class KlarnaOrderWalkthrough
       send(state_to_process)
     end
 
+    @order.update!
     @order
   end
 
@@ -39,20 +43,9 @@ class KlarnaOrderWalkthrough
   end
 
   def address
-    country = Spree::Country.find_by_iso(@test_data.address.country_iso)
-    state = country.states.find_by_name(@test_data.address.state)
-    address = Spree::Address.new(
-         firstname: @test_data.address.first_name,
-         lastname: @test_data.address.last_name,
-         address1: @test_data.address.street_address,
-         city: @test_data.address.city,
-         zipcode: @test_data.address.zip,
-         phone: @test_data.address.phone,
-         state: state,
-         country: country)
-
-    @order.ship_address = address.dup
-    @order.bill_address = address.dup
+    address = @alternative_address || @test_data.address
+    @order.ship_address = build_address(address)
+    @order.bill_address = build_address(address, @differing_delivery_addrs)
     @order.save
 
     @order.next!
@@ -64,5 +57,21 @@ class KlarnaOrderWalkthrough
 
   def states
     [:address, :delivery, :payment]
+  end
+
+  private
+
+  def build_address(address, reversed=false)
+    country = Spree::Country.find_by_iso(address.country_iso)
+    state = country.states.find_by_name(address.state)
+    address = Spree::Address.new(
+         firstname: reversed ? address.first_name.reverse : address.first_name,
+         lastname: reversed ? address.last_name.reverse : address.last_name,
+         address1: reversed ? address.street_address.reverse : address.street_address,
+         city: address.city,
+         zipcode: reversed ? address.zip.reverse : address.zip,
+         phone: address.phone,
+         state: state,
+         country: country)
   end
 end
