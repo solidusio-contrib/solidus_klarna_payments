@@ -3,7 +3,6 @@ module PageDrivers
     class Login < Base
       set_url '/admin/login'
 
-      element :title, '#existing-customer h6'
       element :email, 'form #spree_user_email'
       element :password, 'form #spree_user_password'
       element :button, 'form input[type="submit"]'

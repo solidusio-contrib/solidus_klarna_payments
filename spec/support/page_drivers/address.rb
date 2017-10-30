@@ -25,10 +25,14 @@ module PageDrivers
   class Address < Base
     set_url "/checkout"
 
-    element :continue_button, 'form#checkout_form_address input.continue'
+    if KlarnaGateway.is_spree? && !KlarnaGateway.up_to_spree?('2.4.99')
+      element :continue_button, 'form#checkout_form_address input.btn'
+    else
+      element :continue_button, 'form#checkout_form_address input.continue'
+    end
 
-    section :billing_fields, BillingForm, 'fieldset#billing'
-    section :shipping_fields, ShippingForm, 'fieldset#shipping'
+    section :billing_fields, BillingForm, '#billing'
+    section :shipping_fields, ShippingForm, '#shipping'
 
     def set_address(data, address= :billing)
       case address
@@ -46,10 +50,10 @@ module PageDrivers
         billing_fields.zipcode.set(data[:zip])
         billing_fields.phone.set(data[:phone])
 
-        state = country.states.find_by_name(data[:state])
-
-        while billing_fields.state.value.to_i != state.id do
-          billing_fields.state.find(:option, data[:state]).select_option
+        if state = country.states.find_by_name(data[:state])
+          while billing_fields.state.value.to_i != state.id do
+            billing_fields.state.find(:option, data[:state]).select_option
+          end
         end
       when :shipping
         country = Spree::Country.find_by_iso(data[:country_iso])
@@ -67,10 +71,10 @@ module PageDrivers
         shipping_fields.zipcode.set(data[:zip])
         shipping_fields.phone.set(data[:phone])
 
-        state = country.states.find_by_name(data[:state])
-
-        while shipping_fields.state.value.to_i != state.id do
-          shipping_fields.state.find(:option, data[:state]).select_option
+        if state = country.states.find_by_name(data[:state])
+          while shipping_fields.state.value.to_i != state.id do
+            shipping_fields.state.find(:option, data[:state]).select_option
+          end
         end
       end
     end

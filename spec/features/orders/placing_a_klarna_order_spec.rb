@@ -6,7 +6,12 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
 
   # This is only implemented for US
   it 'Denies the order from a banned user', only: :us do
-    order_product(product_name:  'Ruby on Rails Bag', email: TestData::Users.denied, testing_data: @testing_data)
+    klarna_order = order_on_state(product_name: 'Ruby on Rails Bag', state: :delivery, quantity: 1, email: TestData::Users.denied)
+
+    on_the_payment_page do |page|
+      page.load
+      page.update_hosts
+    end
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
@@ -25,7 +30,12 @@ describe 'Ordering with Klarna Payment Method', type: 'feature', bdd: true do
   # Due to a bug in Solidus this test is currently not working
   # see https://github.com/solidusio/solidus/pull/542
   xit 'can change to a check payment before confirming the payment' do
-    order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
+    klarna_order = order_on_state(product_name: 'Ruby on Rails Bag', state: :delivery, quantity: 1)
+
+    on_the_payment_page do |page|
+      page.load
+      page.update_hosts
+    end
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)

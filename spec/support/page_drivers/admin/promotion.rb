@@ -10,7 +10,7 @@ module PageDrivers
       element :select_currency_field, "select#promotion_promotion_actions_attributes_7_calculator_attributes_preferred_flat_percent"
       element :action_amount_field, "input[id*='_calculator_attributes_preferred_flat_percent']"
 
-      element :update_rule_button, "div[id='rules_container'] form[class='edit_promotion'] fieldset button"
+      element :update_rule_button, "div[id='rules_container'] form[class='edit_promotion'] button"
       element :update_action_button, "div[id='actions_container'] form[class='edit_promotion'] button"
 
       def add_rule
@@ -22,7 +22,12 @@ module PageDrivers
       end
 
       def complete_rule_form
-        rule_amount_field.set('10.0')
+        if all("input[id*='preferred_amount']").count == 1
+          rule_amount_field.set('10.0')
+        else
+          all("input[id*='preferred_amount']").first.set('0.0')
+          all("input[id*='preferred_amount']")[1].set('100.0')
+        end
       end
 
       def complete_promotion_form

@@ -14,7 +14,7 @@ module KlarnaGateway
       private
 
       def unit_price(line_item)
-        line_item.display_price.cents
+        line_item.single_money.cents
       end
 
       def total_amount(line_item)
@@ -22,7 +22,7 @@ module KlarnaGateway
       end
 
       def total_tax_amount(line_item)
-        line_item.display_included_tax_total.cents
+        Spree::Money.new(tax_total_version(line_item).abs, { currency: line_item.currency }).cents
       end
 
       def tax_rate(line_item)
@@ -30,6 +30,14 @@ module KlarnaGateway
           (line_item.adjustments.tax.first.source.amount * 10000).to_i
         else
           0
+        end
+      end
+
+      def tax_total_version(line_item)
+        if KlarnaGateway.up_to_solidus?('2.0.99')
+          line_item.included_tax_total
+        else
+          line_item.additional_tax_total
         end
       end
     end

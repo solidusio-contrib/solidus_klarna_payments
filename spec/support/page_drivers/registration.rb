@@ -1,7 +1,12 @@
 module PageDrivers
   class GuestUser < SitePrism::Section
     element :email, "input#order_email"
-    element :continue_button, "input.button"
+
+    if KlarnaGateway.is_spree? && !KlarnaGateway.up_to_spree?('2.4.99')
+      element :continue_button, "input.btn"
+    else
+      element :continue_button, "input.button"
+    end
   end
 
   class Registration < Base

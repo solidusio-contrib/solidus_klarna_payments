@@ -13,7 +13,7 @@ module KlarnaGateway
       private
 
       def unit_price(line_item)
-        line_item.display_price.cents
+        line_item.single_money.cents
       end
 
       def total_amount(line_item)

@@ -8,67 +8,10 @@ shared_context "ordering with klarna" do
     testing_data = options.fetch(:testing_data)
     product_quantity = options.fetch(:product_quantity, 2)
     email = options.fetch(:email) { testing_data.address.email }
-
-    on_the_home_page do |page|
-      page.load
+    discount_code = options.fetch(:discount_code, nil)
 
 
-      expect(page.displayed?).to be(true)
-      page.choose(product_name)
-    end
 
-    on_the_product_page do |page|
-      page.wait_for_title
-      expect(page.displayed?).to be(true)
-
-      expect(page.title).to have_content(product_name)
-      page.add_to_cart(product_quantity)
-    end
-
-    on_the_cart_page do |page|
-      page.line_items
-      expect(page.displayed?).to be(true)
-      if options[:discount_code]
-        discount_code = options.fetch(:discount_code)
-        page.add_coupon_code(discount_code)
-
-        expect(page.displayed?).to be(true)
-        expect(page.adjustment).to have_content('Adjustment: Promotion')
-      end
-
-      expect(page.line_items).to have_content(product_name)
-      expect(page.line_items).to have_link(product_name, href: "/products/#{product_name.parameterize}")
-      page.continue
-    end
-
-    on_the_registration_page do |page|
-      expect(page.displayed?).to be(true)
-
-      page.checkout_as_guest(email)
-    end
-
-    on_the_address_page do |page|
-      expect(page.displayed?).to be(true)
-      page.set_address(testing_data.address)
-
-      if options[:differing_delivery_addrs]
-        testing_data.address.tap do |x|
-          x.first_name = testing_data.address.first_name.reverse
-          x.last_name = testing_data.address.last_name.reverse
-        end
-        page.set_address(testing_data.address, :shipping)
-      end
-
-      page.continue
-    end
-
-    on_the_delivery_page do |page|
-      expect(page.displayed?).to be(true)
-      page.stock_contents.each do |stocks|
-        expect(stocks).to have_content(product_name)
-      end
-      page.continue
-    end
   end
 
   def select_klarna_payment(testing_data)
@@ -84,19 +27,6 @@ shared_context "ordering with klarna" do
     testing_data = options.fetch(:testing_data)
 
     select_klarna_payment(testing_data)
-
-    confirm_on_local
-  end
-
-  def confirm_on_local
-    Capybara.using_wait_time(CapybaraExtraWaitTime) do
-      on_the_confirm_page do |page|
-        expect(page.displayed?).to be(true)
-
-        wait_for_ajax
-        page.continue
-      end
-    end
   end
 
   def confirm_on_remote
@@ -121,51 +51,31 @@ shared_context "ordering with klarna" do
     end
   end
 
-  def order_with_different_address(address, product_name, product_quantity)
-    on_the_home_page do |page|
-      page.load
-      expect(page.displayed?).to be(true)
+  def order_on_state(product_name: product_name, state: state, quantity: quantity, email: "spree@example.com", alternative_address: nil, promotion: nil, differing_delivery_addrs: false)
+    user = create(:user)
 
-      page.choose(product_name)
-    end
+    order = KlarnaOrderWalkthrough.new(product_name: product_name, state: state, quantity: quantity, email: email, alternative_address: alternative_address, differing_delivery_addrs: differing_delivery_addrs).call
+    order.reload
+    order.user = user
+    order.update!
 
-    on_the_product_page do |page|
-      page.wait_for_title
-      expect(page.displayed?).to be(true)
-
-      expect(page.title).to have_content(product_name)
-      page.add_to_cart(product_quantity)
-    end
-
-    on_the_cart_page do |page|
-      page.line_items
-      expect(page.displayed?).to be(true)
-
-      expect(page.line_items).to have_content(product_name)
-
-      page.continue
-    end
-
-    on_the_registration_page do |page|
-      expect(page.displayed?).to be(true)
-
-      page.checkout_as_guest(address.email)
-    end
-
-    on_the_address_page do |page|
-      expect(page.displayed?).to be(true)
-      page.set_address(address)
-
-      page.continue
-    end
-
-    on_the_delivery_page do |page|
-      expect(page.displayed?).to be(true)
-      page.stock_contents.each do |stocks|
-        expect(stocks).to have_content(product_name)
+    if promotion
+      promotion_code = if KlarnaGateway.is_spree?
+                        Spree::Promotion.last.code
+                      else
+                        Spree::Promotion.last.codes.first
+                      end
+      Spree::OrderPromotion.create!(promotion: promotion, order: order, promotion_code: promotion_code)
+      promotion.actions.each do |action|
+        action.perform({ order: order, promotion: promotion, promotion_code: promotion_code })
       end
-      page.continue
     end
-  end
 
+    allow_any_instance_of(Spree::Klarna::SessionsController).to receive_messages(current_order: order)
+    allow_any_instance_of(Spree::CheckoutController).to receive_messages(current_order: order)
+    allow_any_instance_of(Spree::CheckoutController).to receive_messages(try_spree_current_user: user)
+
+    order.reload.update!
+    order
+  end
 end

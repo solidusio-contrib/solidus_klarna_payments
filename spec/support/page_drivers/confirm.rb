@@ -28,6 +28,8 @@ module PageDrivers
 
     def continue
       scroll_to(continue_button)
+      update_hosts
+
       continue_button.click
     end
   end
