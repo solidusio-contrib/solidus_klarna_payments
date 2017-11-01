@@ -1,55 +1,43 @@
-if Spree::Zone.where(name: 'GlobalZone').none?
-  shipping_method = FactoryGirl.create(:shipping_method)
-else
-  shipping_method = Spree::ShippingMethod.last
-end
+if RSpec.configuration.inclusion_filter.rules.has_key?(:bdd)
+  Spree::TaxRate.destroy_all
+  Spree::Zone.destroy_all
+  Spree::ShippingMethod.destroy_all
 
 
-if RSpec.configuration.inclusion_filter.rules.has_key?(:bdd) && $store_id != 'us'
-  euro_zone = Spree::Zone.find_by(name: "EU_VAT") || Spree::Zone.find_by(name: "GlobalZone")
-  tax_rate = Spree::TaxRate.find_by(name: "USt.") ||
-    FactoryGirl.create(:tax_rate, name: "USt.", tax_category: Spree::TaxCategory.first, included_in_price: true, zone: euro_zone)
-  euro_zone.update(default_tax: true)
-end
+  test_data = TestData.new($store_id)
 
-case $store_id
-  when 'us'
-    Spree::Config.currency = 'USD'
-    Spree::Price.update_all(currency: 'USD')
-    Spree::Store.update_all(default_currency: 'USD')
-  when 'de'
-    Spree::Config.currency = 'EUR'
-    Spree::Price.update_all(currency: 'EUR')
-    Spree::Store.update_all(default_currency: 'EUR')
-  when 'uk'
-    Spree::Config.currency = 'GBP'
-    Spree::Price.update_all(currency: 'GBP')
-    Spree::Store.update_all(default_currency: 'GBP')
+  Spree::Config.currency = test_data.currency
+  Spree::Price.update_all(currency: test_data.currency)
+  Spree::Store.update_all(default_currency: test_data.currency)
 
-    shipping_method.calculator.tap do |calculator|
-      calculator.preferences = {:amount=>10.0, :currency=>"GBP"}
-      calculator.save
+  if !Spree::Zone.find_by_name("Zone #{$store_id.upcase}")
+    FactoryGirl.create(:zone, name: "Zone #{$store_id.upcase}", countries: [test_data.spree_country]).tap do |current_zone|
+      FactoryGirl.create( :tax_rate,
+                          name: "Tax on #{$store_id.upcase}",
+                          tax_category: Spree::TaxCategory.first,
+                          zone: current_zone,
+                          included_in_price: !test_data.us?)
+      FactoryGirl.create( :shipping_method,
+                          name: "Shipping on #{$store_id.upcase}",
+                          code: "SEND#{$store_id.upcase}",
+                          tax_category: Spree::TaxCategory.first,
+                          zones: [current_zone],
+                          currency: test_data.currency)
     end
-  when 'no'
-    Spree::Config.currency = 'NOK'
-    Spree::Price.update_all(currency: 'NOK')
-    Spree::Store.update_all(default_currency: 'NOK')
+  end
 
-    shipping_method.calculator.tap do |calculator|
-      calculator.preferences = {:amount=>10.0, :currency=>"NOK"}
-      calculator.save
-    end
-  when 'se'
-    Spree::Config.currency = 'SEK'
-    Spree::Price.update_all(currency: 'SEK')
-    Spree::Store.update_all(default_currency: 'SEK')
+  FactoryGirl.create(:global_zone).tap do |current_zone|
+    current_zone.members.where(zoneable_id: test_data.spree_country.id).first.destroy
 
-    shipping_method.calculator.tap do |calculator|
-      calculator.preferences = {:amount=>10.0, :currency=>"SEK"}
-      calculator.save
-    end
-  when 'fi'
-    Spree::Config.currency = 'EUR'
-    Spree::Price.update_all(currency: 'EUR')
-    Spree::Store.update_all(default_currency: 'EUR')
+    FactoryGirl.create( :tax_rate,
+                        name: "Tax International",
+                        tax_category: Spree::TaxCategory.first,
+                        zone: current_zone,
+                        included_in_price: false)
+    FactoryGirl.create( :shipping_method,
+                        name: "Shipping International",
+                        code: "SENDOUT",
+                        tax_category: Spree::TaxCategory.first,
+                        zones: [current_zone])
+  end
 end

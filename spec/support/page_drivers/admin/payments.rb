@@ -5,9 +5,14 @@ module PageDrivers
       element :date, :xpath, 'td[2]'
       element :amount, :xpath, 'td[3]'
       element :payment_method, :xpath, 'td[4]'
-      element :transaction_id, :xpath, 'td[5]'
-      element :payment_state, :xpath, 'td[6]'
-      element :actions, :xpath, 'td[7]'
+
+      if KlarnaGateway.up_to_spree?('2.3.99')
+        element :payment_state, :xpath, 'td[5]'
+        element :actions, :xpath, 'td[6]'
+      else
+        element :payment_state, :xpath, 'td[6]'
+        element :actions, :xpath, 'td[7]'
+      end
 
       def is_check?
         !payment_method.text.match(/Check/i).nil?
@@ -69,17 +74,31 @@ module PageDrivers
 
       def refund!
         Capybara.using_wait_time(CapybaraExtraWaitTime) do
-          actions.find('a.fa.fa-reply.icon_link').click
+          if KlarnaGateway.is_solidus? || KlarnaGateway.up_to_spree?('2.4.99')
+            actions.find('a.fa-reply').click
+          else
+            actions.find('a.action-refund').click
+          end
         end
       end
     end
 
     class Payments < Base
       set_url '/admin/orders/{number}/payments'
+      sections :payments, PaymentItem, 'table#payments tbody tr[data-hook="payments_row"]'
 
-      sections :payments, PaymentItem, '[data-hook="payment_list"] tbody tr[data-hook="payments_row"]'
-      section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
-      element :new_payment_button, '#content-header .header-actions #new_payment_section a'
+
+      if KlarnaGateway.is_solidus?
+        section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
+        element :new_payment_button, '#content-header .header-actions #new_payment_section a'
+      elsif KlarnaGateway.up_to_spree?('2.4.99')
+        section :menu, PageDrivers::Admin::OrderMenu, 'aside#sidebar ul'
+        element :new_payment_button, '#content-header .page-actions #new_payment_section a'
+      else
+        section :menu, PageDrivers::Admin::OrderMenu, 'aside#sidebar ul'
+        element :new_payment_button, '.content-header .page-actions #new_payment_section a'
+      end
+
       elements :refunds, 'tr[data-hook="refunds_row"]'
     end
   end

@@ -5,7 +5,7 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
   include_context "change driver"
   include WorkflowDriver::Process
 
-  it 'Captures a klarna payment' do
+  it 'Displays the Klarna Order ID in the Backend' do
     klarna_order = order_on_state(product_name: 'Ruby on Rails Bag', state: :delivery, quantity: 1)
 
     on_the_payment_page do |page|
@@ -32,6 +32,7 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
     Capybara.current_session.driver.quit
 
     change_driver_to(:poltergeist) do
+
       on_the_admin_login_page do |page|
         page.load
         expect(page.displayed?).to be(true)
@@ -39,21 +40,24 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
         page.login_with(TestData::AdminUser)
       end
 
-      order = Spree::Order.complete.last
-
       on_the_admin_payments_page do |page|
-        page.load(number: order.number)
+        page.load(number: klarna_order.number)
         expect(page.displayed?).to be(true)
 
         expect(page.payments.first.is_klarna?).to be(true)
         expect(page.payments.first.is_pending?).to be(true)
         expect(page.payments.first.is_klarna_authorized?).to be(true)
 
+        unless KlarnaGateway.up_to_spree?('2.3.99')
+          expect(page.payments.first).to have_content(klarna_order.klarna_order_id)
+        end
+
         page.payments.first.capture!
         expect(page.payments.first.is_klarna_captured?).to be(true)
         expect(page.payments.first.is_completed?).to be(true)
         page.payments.first.identifier.find('a').click
       end
+
 
       on_the_admin_payment_page do |page|
         expect(page.displayed?).to be(true)
@@ -62,11 +66,8 @@ describe 'Managing a Klarna Payment', type: 'feature', bdd: true do
 
       on_the_admin_logs_page do |page|
         expect(page.displayed?).to be(true)
-        expect(page.log_entries.count).to eq(2)
-        expect(page.log_entries.first.message.text).to have_content('Placed order')
-        expect(page.log_entries.second.message.text).to have_content('Captured order')
+        expect(page.log_entries.first.message.text).to have_content(klarna_order_id)
       end
     end
-
   end
 end

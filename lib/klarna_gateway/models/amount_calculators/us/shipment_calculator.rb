@@ -15,7 +15,7 @@ module KlarnaGateway
       # In US taxes are calculated on the whole sale.
       # Taxes related to the shipment will be added to the sale tax
       def unit_price(shipment)
-        (shipment.pre_tax_amount * 100).to_i
+        shipment.display_amount.cents
       end
 
       def total_amount(shipment)

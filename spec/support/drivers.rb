@@ -11,6 +11,7 @@ require 'support/page_drivers/payment.rb'
 require 'support/page_drivers/product.rb'
 require 'support/page_drivers/registration.rb'
 
+require 'support/page_drivers/admin/base.rb'
 require 'support/page_drivers/admin/order_menu.rb'
 
 require 'support/page_drivers/admin/login.rb'

@@ -4,16 +4,18 @@ require 'spec_helper'
 require 'capybara/rspec'
 require 'capybara/rails'
 require 'site_prism'
-
-require 'config/capybara_features'
-require 'config/payment_methods'
-require 'config/store_currencies'
+require 'capybara/poltergeist'
 
 require 'support/drivers'
 require 'support/wait_for_ajax'
 require 'support/shared_contexts/ordering_with_klarna'
+require 'support/shared_contexts/change_driver'
 require 'support/responsive_helpers'
+require 'support/klarna_order_walkthrough'
 
+require 'config/capybara_features'
+require 'config/payment_methods'
+require 'config/store_currencies'
 
 RSpec.configure do |config|
   config.include Capybara::DSL
@@ -21,13 +23,15 @@ RSpec.configure do |config|
 
   if config.inclusion_filter.rules.has_key?(:bdd)
     store = $store_id.downcase.to_sym
+
+    if KlarnaGateway.is_solidus?
+      config.filter_run_excluding framework: :spree
+    else
+      config.filter_run_excluding framework: :solidus
+    end
+
     config.filter_run_excluding only: lambda {|v| !Array(v).include?(store) }
     config.filter_run_excluding except: lambda {|v| Array(v).include?(store) }
-    if KlarnaGateway.up_to_solidus?('1.5.0')
-      Spree::Store.current.update_attributes(url: "http://#{Spree::Store.current.url}") unless Spree::Store.current.url && Spree::Store.current.url.match(/http/)
-    else
-      Spree::Store.default.update_attributes(url: "http://#{Spree::Store.default.url}") unless Spree::Store.default.url && Spree::Store.default.url.match(/http/)
-    end
   end
 
   config.before(:each) do |example|
@@ -41,4 +45,5 @@ RSpec.configure do |config|
       Capybara.use_default_driver
     end
   end
+
 end

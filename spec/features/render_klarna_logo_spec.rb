@@ -5,7 +5,12 @@ describe 'renders Klarna logos on checkout', type: 'feature', bdd: true do
   include WorkflowDriver::Process
 
   it 'renders the main img logo from the CDN after klarna is selected' do
-    order_product(product_name: 'Ruby on Rails Bag', testing_data: @testing_data)
+    klarna_order = order_on_state(product_name: 'Ruby on Rails Bag', state: :delivery, quantity: 1)
+
+    on_the_payment_page do |page|
+      page.load
+      page.update_hosts
+    end
 
     Capybara.using_wait_time(CapybaraExtraWaitTime) do
       on_the_payment_page do |page|
@@ -21,7 +26,12 @@ describe 'renders Klarna logos on checkout', type: 'feature', bdd: true do
   end
 
   it 'renders the footer svg logo from the CDN after klarna is selected' do
-    order_product(product_name: 'Ruby on Rails Bag', testing_data: @testing_data)
+    klarna_order = order_on_state(product_name: 'Ruby on Rails Bag', state: :delivery, quantity: 1)
+
+    on_the_payment_page do |page|
+      page.load
+      page.update_hosts
+    end
 
     Capybara.using_wait_time(CapybaraExtraWaitTime) do
       on_the_payment_page do |page|

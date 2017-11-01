@@ -3,7 +3,6 @@ require "spec_helper"
 Spree::Admin::PaymentMethodsController.include(KlarnaGateway::Admin::PaymentMethodsController)
 
 describe Spree::Admin::PaymentMethodsController do
-  include Devise::Test::ControllerHelpers
   stub_authorization!
 
   describe "#validate_klarna_credentials" do

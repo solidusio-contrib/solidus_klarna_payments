@@ -5,7 +5,12 @@ describe 'Orders with non-klarna payment method renders legacy checkout', type: 
   include WorkflowDriver::Process
 
   it 'Should not render the klarna iframe if check is payment method' do
-    order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
+    klarna_order = order_on_state(product_name: 'Ruby on Rails Bag', state: :delivery, quantity: 1)
+
+    on_the_payment_page do |page|
+      page.load
+      page.update_hosts
+    end
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
@@ -17,7 +22,12 @@ describe 'Orders with non-klarna payment method renders legacy checkout', type: 
   end
 
   it 'Should not render the klarna iframe if Credit Card is payment method' do
-    order_product(product_name:  'Ruby on Rails Bag', testing_data: @testing_data)
+    klarna_order = order_on_state(product_name: 'Ruby on Rails Bag', state: :delivery, quantity: 1)
+
+    on_the_payment_page do |page|
+      page.load
+      page.update_hosts
+    end
 
     on_the_payment_page do |page|
       expect(page.displayed?).to be(true)
