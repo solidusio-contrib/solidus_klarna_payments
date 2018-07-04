@@ -39,7 +39,7 @@ describe Spree::Klarna::SessionsController do
       it "raises an exception" do
         expect {
           spree_post :create, {klarna_payment_method_id: payment_method.id}
-        }.to raise_error("Could not create or update Klarna session for order '#{order.number}'.")
+        }.to raise_error(Klarna::SessionError, "Could not create or update Klarna session for order '#{order.number}'.")
       end
     end
   end

@@ -18,7 +18,8 @@ module KlarnaGateway
       end
 
       if current_order.klarna_client_token.blank?
-        raise "Could not create or update Klarna session for order '#{current_order.number}'."
+        raise Klarna::SessionError,
+              "Could not create or update Klarna session for order '#{current_order.number}'."
       end
 
       render json: {token: current_order.reload.klarna_client_token}
