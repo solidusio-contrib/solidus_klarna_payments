@@ -1,4 +1,6 @@
-module KlarnaGateway
+# frozen_string_literal: true
+
+module SolidusKlarnaPayments
   class DiscountItemSerializer
     attr_reader :order
 
@@ -35,5 +37,3 @@ module KlarnaGateway
     end
   end
 end
-
-

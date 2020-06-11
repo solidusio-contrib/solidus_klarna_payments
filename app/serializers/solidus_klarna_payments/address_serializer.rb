@@ -1,4 +1,6 @@
-module KlarnaGateway
+# frozen_string_literal: true
+
+module SolidusKlarnaPayments
   class AddressSerializer
     attr_reader :address
 
@@ -8,6 +10,7 @@ module KlarnaGateway
 
     def to_hash
       return {} if address.nil?
+
       {
         organization_name: address.company,
         given_name: address.first_name,

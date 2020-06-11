@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require "spec_helper.rb"
 
-describe KlarnaGateway::AddressSerializer do
-  let(:serializer) { KlarnaGateway::AddressSerializer.new(address) }
+describe SolidusKlarnaPayments::AddressSerializer do
   subject(:serialized) { serializer.to_hash }
+
+  let(:serializer) { described_class.new(address) }
   let(:address) { Spree::Address.new(state: state, country: country) }
   let(:country) { build(:country, iso: "DE") }
   let(:state) { build(:state) }

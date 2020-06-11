@@ -1,4 +1,6 @@
-module KlarnaGateway
+# frozen_string_literal: true
+
+module SolidusKlarnaPayments
   class ShipmentSerializer
     attr_reader :shipment, :strategy
 
@@ -14,7 +16,7 @@ module KlarnaGateway
           reference: shipment.number,
           name: shipment.shipping_method.name,
           quantity: 1,
-          unit_price: unit_price ,
+          unit_price: unit_price,
           total_amount: total_amount,
           total_tax_amount: total_tax_amount,
           tax_rate: tax_rate
@@ -29,7 +31,7 @@ module KlarnaGateway
     end
 
     def total_amount
-      (shipment.final_price * 100).to_i
+      (shipment.total * 100).to_i
     end
 
     def total_tax_amount
@@ -38,16 +40,17 @@ module KlarnaGateway
 
     def tax_rate
       return 0 if total_tax_amount == 0 || total_amount == 0
-      (((shipment.final_price / pre_tax_amount) - 1) * 10000).to_i
+
+      (((shipment.total / pre_tax_amount) - 1) * 10_000).to_i
     end
 
     # Backport for Spree 3.0 and 3.1
     # https://github.com/spree/spree/pull/7357
     def pre_tax_amount
-      if shipment.pre_tax_amount == 0
+      if shipment.total_excluding_vat == 0
         shipment.discounted_amount - shipment.included_tax_total
       else
-        shipment.pre_tax_amount
+        shipment.total_excluding_vat
       end
     end
   end

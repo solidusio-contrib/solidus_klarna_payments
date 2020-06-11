@@ -1,4 +1,6 @@
-module KlarnaGateway
+# frozen_string_literal: true
+
+module SolidusKlarnaPayments
   class OrderSerializer
     attr_reader :order, :region
     attr_accessor :options, :design, :skip_personal_data, :store
@@ -48,7 +50,7 @@ module KlarnaGateway
         options: options,
         design: design,
         merchant_urls: merchant_urls,
-      }.delete_if { |k, v| v.nil? }
+      }.delete_if { |_k, v| v.nil? }
     end
 
     def purchase_country
@@ -75,6 +77,7 @@ module KlarnaGateway
 
     def billing_address
       return shipping_address if order.billing_address.nil?
+
       {
         email: @order.email
       }.merge(
@@ -84,6 +87,7 @@ module KlarnaGateway
 
     def shipping_address
       return nil if order.shipping_address.nil?
+
       {
         email: @order.email
       }.merge(
@@ -93,27 +97,29 @@ module KlarnaGateway
 
     def strategy
       @strategy ||= case region
-        when :us then KlarnaGateway::AmountCalculators::US::OrderCalculator.new
-        else KlarnaGateway::AmountCalculators::UK::OrderCalculator.new(skip_personal_data)
+                    when :us then SolidusKlarnaPayments::AmountCalculators::Us::OrderCalculator.new
+                    else SolidusKlarnaPayments::AmountCalculators::Uk::OrderCalculator.new(skip_personal_data)
         end
     end
 
     def merchant_urls
-      {
-        # terms: "http://host/terms",
-        # checkout: "http://host/orders/#{@order.number}",
-        # push: "http://host/klarna/push",
-        # validation: "string",
-        # shipping_option_update: "string",
-        # address_update: "string",
-        # country_change: "string",
-        confirmation: confirmation_url,
-        notification: url_helpers.klarna_notification_url(host: store_url)
-      } if store.present?
+      if store.present?
+        {
+          # terms: "http://host/terms",
+          # checkout: "http://host/orders/#{@order.number}",
+          # push: "http://host/klarna/push",
+          # validation: "string",
+          # shipping_option_update: "string",
+          # address_update: "string",
+          # country_change: "string",
+          confirmation: confirmation_url,
+          notification: url_helpers.klarna_notification_url(host: store_url)
+        }
+      end
     end
 
     def confirmation_url
-      configured_url = KlarnaGateway.configuration.confirmation_url
+      configured_url = SolidusKlarnaPayments.configuration.confirmation_url
       case configured_url
       when String then configured_url
       when Proc then configured_url.call(store, @order)
@@ -126,7 +132,7 @@ module KlarnaGateway
     end
 
     def url_helpers
-      Spree::Core::Engine.routes.url_helpers
+      ::Spree::Core::Engine.routes.url_helpers
     end
   end
 end

@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-describe KlarnaGateway::ShipmentSerializer do
+describe SolidusKlarnaPayments::ShipmentSerializer do
   let(:shipment) { create(:shipment) }
-  let(:us_strategy) { KlarnaGateway::AmountCalculators::US::ShipmentCalculator.new }
+  let(:us_strategy) { SolidusKlarnaPayments::AmountCalculators::Us::ShipmentCalculator.new }
 
   it "serialize the shipping name" do
     described_class.new(shipment, us_strategy).to_hash.tap do |data|

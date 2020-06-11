@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 require 'spec_helper.rb'
 
-describe KlarnaGateway::DiscountItemSerializer do
+describe SolidusKlarnaPayments::DiscountItemSerializer do
+  subject(:serializer) { SolidusKlarnaPayments::OrderSerializer.new(order) }
+
   let(:order) { create(:completed_klarna_order_with_promotion, promotion: promotion) }
-  subject(:serializer) { KlarnaGateway::OrderSerializer.new(order) }
   let(:serialized) { serializer.to_hash }
 
   before do
-    order.update_totals
-    order.persist_totals
+    order.recalculate
     allow_any_instance_of(Spree::Shipment).to receive(:shipping_method).and_return(Spree::ShippingMethod.last)
   end
 
@@ -34,7 +36,7 @@ describe KlarnaGateway::DiscountItemSerializer do
 
     it "does not set line items' discount value" do
       line_items_with_discount = serialized[:order_lines].count do |line|
-        line[:type] == "line_item" && line[:total_discount_amount] != nil
+        line[:type] == "line_item" && !line[:total_discount_amount].nil?
       end
       expect(line_items_with_discount).to eq(0)
     end

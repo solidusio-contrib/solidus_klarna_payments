@@ -1,7 +1,8 @@
-module KlarnaGateway
+# frozen_string_literal: true
+
+module SolidusKlarnaPayments
   class LineItemSerializer
     attr_reader :line_item, :strategy
-
 
     def initialize(line_item, strategy)
       @line_item = line_item
@@ -37,17 +38,17 @@ module KlarnaGateway
     def line_item_tax_rate
       # TODO: should we just calculate this?
       tax_rate = line_item.adjustments.tax.inject(0) { |total, tax| total + tax.source.amount }
-      (10000 * tax_rate).to_i
+      (10_000 * tax_rate).to_i
     end
 
     def total_amount
-      display_final_amount = Spree::Money.new(line_item.final_amount, { currency: line_item.currency })
+      display_final_amount = ::Spree::Money.new(line_item.total, currency: line_item.currency)
       display_final_amount.cents
     end
 
     def total_tax_amount
-      pre_tax_amount = line_item.discounted_amount - line_item.included_tax_total
-      display_pre_tax_amount = Spree::Money.new(pre_tax_amount, { currency: line_item.currency })
+      pre_tax_amount = line_item.total_before_tax - line_item.included_tax_total
+      display_pre_tax_amount = ::Spree::Money.new(pre_tax_amount, currency: line_item.currency)
       total_amount - display_pre_tax_amount.cents
     end
 
@@ -62,8 +63,8 @@ module KlarnaGateway
       return unless image.present? && host
 
       begin
-        scheme = "http://" unless host.to_s.match(/^https?:\/\//)
-        uri = URI::parse("#{scheme}#{host.sub(/\/$/, '')}#{image.attachment.url}")
+        scheme = "http://" unless host.to_s.match?(%r{^https?://})
+        uri = URI.parse("#{scheme}#{host.sub(%r{/$}, '')}#{image.attachment.url}")
       rescue URI::InvalidURIError => e
         return nil
       end
@@ -72,13 +73,13 @@ module KlarnaGateway
 
     def strategy_for_region(region)
       case region.downcase.to_sym
-        when :us then AmountCalculators::US::LineItemCalculator.new
-        else AmountCalculators::UK::LineItemCalculator.new
+      when :us then AmountCalculators::Us::LineItemCalculator.new
+      else AmountCalculators::Uk::LineItemCalculator.new
         end
     end
 
     def image_host
-      host_conf = KlarnaGateway.configuration.image_host
+      host_conf = SolidusKlarnaPayments.configuration.image_host
 
       case host_conf
       when nil then nil
@@ -88,11 +89,10 @@ module KlarnaGateway
     end
 
     def product_url
-      product_conf = KlarnaGateway.configuration.product_url
+      product_conf = SolidusKlarnaPayments.configuration.product_url
 
       case product_conf
       when Proc then product_conf.call(line_item)
-      else nil
       end
     end
   end
