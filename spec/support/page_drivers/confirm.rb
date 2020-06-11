@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PageDrivers
   class CheckoutSteps < SitePrism::Section
     element :address, :xpath, 'li[1]'
@@ -27,9 +29,6 @@ module PageDrivers
     end
 
     def continue
-      scroll_to(continue_button)
-      update_hosts
-
       continue_button.click
     end
   end

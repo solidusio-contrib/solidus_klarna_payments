@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PageDrivers
   module Admin
     class Orders < Base
@@ -6,9 +8,8 @@ module PageDrivers
       elements :orders, 'table#listing_orders [data-hook="admin_orders_index_rows"]'
 
       def select_first_order
-        scroll_to(orders.first.find('[data-action="edit"]')).click
+        orders.first.find('[data-action="edit"]').click
       end
     end
   end
 end
-

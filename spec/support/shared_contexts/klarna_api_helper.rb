@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 RSpec.shared_context "Klarna API helper", :klarna_api do
   let!(:a_successful_response) do
-     -> (double) {
+    ->(double) {
       allow(double).to receive(:success?).and_return(true)
       allow(double).to receive(:[]).and_return("A-HEADER")
       allow(double).to receive(:error?).and_return(false)
@@ -9,7 +11,7 @@ RSpec.shared_context "Klarna API helper", :klarna_api do
   end
 
   let!(:a_error_response) do
-     -> (double) {
+    ->(double) {
       allow(double).to receive(:success?).and_return(false)
       allow(double).to receive(:error?).and_return(true)
       double
@@ -18,7 +20,7 @@ RSpec.shared_context "Klarna API helper", :klarna_api do
 
   let(:payment) do
     create(:klarna_payment).tap do |payment|
-      payment.source.update_attributes(payment_method_id: payment.payment_method.id)
+      payment.source.update(payment_method_id: payment.payment_method.id)
     end
   end
 
@@ -28,8 +30,7 @@ RSpec.shared_context "Klarna API helper", :klarna_api do
       headers: {},
       order_id: 1234,
       fraud_status: "ACCEPTED",
-      redirect_url: "http://someplace.com"
-    )
+      redirect_url: "http://someplace.com")
   }
 
   let(:klarna_order_response) {
@@ -43,8 +44,7 @@ RSpec.shared_context "Klarna API helper", :klarna_api do
       order_id: 1234,
       fraud_status: "ACCEPTED",
       status: "AUTHORIZED",
-      expires_at: (DateTime.now + 6.days).to_s
-    )
+      expires_at: (DateTime.now + 6.days).to_s)
   }
 
   let(:klarna_negative_response) {
@@ -53,8 +53,7 @@ RSpec.shared_context "Klarna API helper", :klarna_api do
       headers: {},
       error_code: "SOME_ERROR",
       error_messages: "some error",
-      correlation_id: 1234
-    )
+      correlation_id: 1234)
   }
 
   let(:klarna_captured_response) {
@@ -64,8 +63,7 @@ RSpec.shared_context "Klarna API helper", :klarna_api do
       order_id: 1234,
       fraud_status: "ACCEPTED",
       status: "CAPTURED",
-      expires_at: (DateTime.now + 6.days).to_s
-    )
+      expires_at: (DateTime.now + 6.days).to_s)
   }
 
   let(:klarna_cancelled_response) {
@@ -75,18 +73,16 @@ RSpec.shared_context "Klarna API helper", :klarna_api do
       order_id: 1234,
       fraud_status: "ACCEPTED",
       status: "CANCELLED",
-      expires_at: (DateTime.now + 6.days).to_s
-    )
+      expires_at: (DateTime.now + 6.days).to_s)
   }
 
   let(:klarna_empty_success_response) {
     a_successful_response.call double('ApiResponse',
       body: {},
-      headers: {}
-    )
+      headers: {})
   }
 
-  let(:options) { {order_id: "#{payment.order.number}-123"}}
+  let(:options) { { order_id: "#{payment.order.number}-123" } }
 
   let(:api_client) { double('KlarnaApi') }
 
@@ -96,7 +92,7 @@ RSpec.shared_context "Klarna API helper", :klarna_api do
     order.tap do |order|
       order.payments << payment
       order.save!
-      payment.source.update_attributes(order: order)
+      payment.source.update(order: order)
     end
   end
 

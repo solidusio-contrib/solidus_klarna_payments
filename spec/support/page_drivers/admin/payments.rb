@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PageDrivers
   module Admin
     class PaymentItem < SitePrism::Section
@@ -5,14 +7,8 @@ module PageDrivers
       element :date, :xpath, 'td[2]'
       element :amount, :xpath, 'td[3]'
       element :payment_method, :xpath, 'td[4]'
-
-      if KlarnaGateway.up_to_spree?('2.3.99')
-        element :payment_state, :xpath, 'td[5]'
-        element :actions, :xpath, 'td[6]'
-      else
-        element :payment_state, :xpath, 'td[6]'
-        element :actions, :xpath, 'td[7]'
-      end
+      element :payment_state, :xpath, 'td[6]'
+      element :actions, :xpath, 'td[7]'
 
       def is_check?
         !payment_method.text.match(/Check/i).nil?
@@ -55,50 +51,37 @@ module PageDrivers
       end
 
       def capture!
-        Capybara.using_wait_time(CapybaraExtraWaitTime) do
+        Capybara.using_wait_time(30) do
           actions.find('[data-action="capture"]').click
         end
       end
 
       def extend!
-        Capybara.using_wait_time(CapybaraExtraWaitTime) do
+        Capybara.using_wait_time(30) do
           actions.find('[data-action="extend_period"]').click
         end
       end
 
       def cancel!
-        Capybara.using_wait_time(CapybaraExtraWaitTime) do
+        Capybara.using_wait_time(30) do
           actions.find('[data-action="cancel"]').click
         end
       end
 
       def refund!
-        Capybara.using_wait_time(CapybaraExtraWaitTime) do
-          if KlarnaGateway.is_solidus? || KlarnaGateway.up_to_spree?('2.4.99')
-            actions.find('a.fa-reply').click
-          else
-            actions.find('a.action-refund').click
-          end
+        Capybara.using_wait_time(30) do
+          actions.find('a.fa-reply').click
         end
       end
     end
 
     class Payments < Base
       set_url '/admin/orders/{number}/payments'
+
       sections :payments, PaymentItem, 'table#payments tbody tr[data-hook="payments_row"]'
+      section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
 
-
-      if KlarnaGateway.is_solidus?
-        section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
-        element :new_payment_button, '#content-header .header-actions #new_payment_section a'
-      elsif KlarnaGateway.up_to_spree?('2.4.99')
-        section :menu, PageDrivers::Admin::OrderMenu, 'aside#sidebar ul'
-        element :new_payment_button, '#content-header .page-actions #new_payment_section a'
-      else
-        section :menu, PageDrivers::Admin::OrderMenu, 'aside#sidebar ul'
-        element :new_payment_button, '.content-header .page-actions #new_payment_section a'
-      end
-
+      element :new_payment_button, '#content-header .header-actions #new_payment_section a'
       elements :refunds, 'tr[data-hook="refunds_row"]'
     end
   end

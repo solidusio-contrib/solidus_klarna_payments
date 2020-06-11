@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PageDrivers
   module Admin
     class NewPayment < Base
@@ -7,9 +9,8 @@ module PageDrivers
       element :update_button, '[data-hook="buttons"] button'
 
       def select_check
-        payment_methods.find{|e| e.text.downcase.match(/check/)}.click
+        payment_methods.find{ |e| e.text.downcase.match(/check/) }.click
       end
     end
   end
 end
-

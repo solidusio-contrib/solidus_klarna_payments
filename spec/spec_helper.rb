@@ -1,57 +1,30 @@
-$store_id = ENV['STORE'] || 'us'
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+# frozen_string_literal: true
+
+# Configure Rails Environment
 ENV['RAILS_ENV'] = 'test'
 
-begin
-  require File.expand_path("../dummy/config/environment.rb",  __FILE__)
-  ENV["RAILS_ROOT"] ||= File.dirname(__FILE__) + "../../../spec/dummy"
-rescue LoadError
-  puts "Could not load dummy application. Please ensure you have run `bundle exec rake common:test_app`"
-end
+# Run Coverage report
+require 'solidus_dev_support/rspec/coverage'
 
-require "pry"
-require "awesome_print"
+require File.expand_path('dummy/config/environment.rb', __dir__).tap { |file|
+  # Create the dummy app if it's still missing.
+  system 'bin/rake extension:test_app' unless File.exist? file
+}
 
-require 'spree/core/version'
-require 'rails/all'
-require 'rspec/rails'
-require 'klarna_gateway'
-require 'devise'
+# Requires factories and other useful helpers defined in spree_core.
+require 'solidus_dev_support/rspec/feature_helper'
+require 'spree/testing_support/order_walkthrough'
 
-# Feature specs
-require 'capybara'
-require 'capybara/rspec'
-require 'capybara/rails'
-require 'capybara/poltergeist'
-require 'config/payment_methods'
+# Requires supporting ruby files with custom matchers and macros, etc,
+# in spec/support/ and its subdirectories.
+Dir[File.join(File.dirname(__FILE__), 'support/config/*.rb')].each { |f| require f }
+Dir[File.join(File.dirname(__FILE__), 'support/test_helpers/*.rb')].each { |f| require f }
+Dir[File.join(File.dirname(__FILE__), 'support/shared_contexts/*.rb')].each { |f| require f }
 
-require 'vcr'
-require 'ffaker' # Spree < 3.2 uses old FFaker that internally exposes class Faker. This forces proper loading.
-require 'spree/testing_support/factories'
-require 'spree/testing_support/controller_requests'
-require 'spree/testing_support/authorization_helpers'
-require 'factories/klarna_payment_factory'
-require 'support/klarna_api_helper'
-require 'support/site_prism'
-require 'support/testing_countries'
-require 'config/database_cleaner'
-require 'config/capybara'
-require 'config/vcr'
-require 'config/stock_items_provision'
-
-require 'spree_sample'
+# Requires factories defined in lib/solidus_klarna_payments/factories.rb
+require 'solidus_klarna_payments/factories'
 
 RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
-  config.include FactoryGirl::Syntax::Methods
-  config.include TestingCountries
-  config.include Spree::TestingSupport::ControllerRequests, type: :controller
-  config.include Devise::TestHelpers, :type => :controller
-  config.include_context "Klarna API helper", :klarna_api
-
-  unless config.inclusion_filter.rules.has_key?(:bdd)
-    config.before(:each) do |example|
-      populate_countr($store_id)
-    end
-  end
+  config.use_transactional_fixtures = false
 end

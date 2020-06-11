@@ -1,14 +1,11 @@
+# frozen_string_literal: true
+
 module PageDrivers
   module Admin
     class Order < Base
       set_url '/admin/orders/{number}/edit'
 
-      if KlarnaGateway.is_solidus?
-        section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
-      else
-        section :menu, PageDrivers::Admin::OrderMenu, 'aside#sidebar ul'
-      end
+      section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
     end
   end
 end
-

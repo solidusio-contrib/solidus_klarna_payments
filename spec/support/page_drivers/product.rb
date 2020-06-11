@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PageDrivers
   class Product < Base
     set_url "/products/{slug}"
@@ -12,4 +14,3 @@ module PageDrivers
     end
   end
 end
-

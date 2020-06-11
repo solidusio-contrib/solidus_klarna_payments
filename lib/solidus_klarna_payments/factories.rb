@@ -1,29 +1,34 @@
-FactoryGirl.define do
+# frozen_string_literal: true
+
+FactoryBot.define do
   factory :rand_store, parent: :store do
-    sequence(:code) { |i| "spree_#{i*rand(99999)}" }
+    sequence(:code) { |i| "spree_#{i * rand(99_999)}" }
   end
 
-
   factory :klarna_credit_payment_method, class: Spree::Gateway::KlarnaCredit do
-    name 'Klarna'
-    description 'Klarna'
+    name { 'Klarna' }
+    description { 'Klarna' }
 
-    preferences(
-      api_key: ENV.fetch("KLARNA_API_KEY") { "DUMMY" },
-      api_secret: ENV.fetch("KLARNA_API_SECRET") { "DUMMY" })
+    preferences do
+      {
+        api_key: ENV.fetch("KLARNA_API_KEY") { "DUMMY" },
+        api_secret: ENV.fetch("KLARNA_API_SECRET") { "DUMMY" }
+      }
+    end
   end
 
   factory :klarna_credit_payment, class: Spree::KlarnaCreditPayment do
     association(:payment_method, factory: :klarna_credit_payment_method)
-    user
-    sequence(:order_id){|n| "1234-123-#{n}"}
-    sequence(:authorization_token){|n| "asldfjasfdlasfaslkdfjaslkdfjhasifudp98q3h4irufhaosidufalsdf#{n}"}
-    redirect_url 'http://localhost:3000/someurl'
+    association(:user)
+    association(:order)
+    sequence(:order_id) { |n| "1234-123-#{n}" }
+    sequence(:authorization_token) { |n| "asldfjasfdlasfaslkdfjaslkdfjhasifudp98q3h4irufhaosidufalsdf#{n}" }
+    redirect_url { 'http://localhost:3000/someurl' }
 
     factory :error_klarna_credit_payment do
-      error_code 'NOT_VALID'
-      error_messages 'Errored message'
-      sequence(:correlation_id){|n| "2345-2345-#{n}"}
+      error_code { 'NOT_VALID' }
+      error_messages { 'Errored message' }
+      sequence(:correlation_id) { |n| "2345-2345-#{n}" }
     end
   end
 
@@ -39,16 +44,12 @@ FactoryGirl.define do
 
   factory :completed_klarna_order_with_promotion, parent: :order_with_line_items, class: "Spree::Order" do
     transient do
-      promotion nil
+      promotion { nil }
     end
 
     after(:create) do |order, evaluator|
       promotion = evaluator.promotion || create(:promotion, code: "test")
-      code = if KlarnaGateway.is_spree?
-                Spree::Promotion.last.code
-              else
-                Spree::Promotion.last.codes.first
-              end
+      code = Spree::Promotion.last.codes.first
       promotion.activate(order: order, promotion_code: code)
 
       # Complete the order after the promotion has been activated
