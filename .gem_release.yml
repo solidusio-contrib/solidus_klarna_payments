@@ -1,0 +1,5 @@
+bump:
+  recurse: false
+  file: 'lib/solidus_klarna_payments/version.rb'
+  message: Bump SolidusKlarnaPayments to %{version}
+  tag: true
