@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Deface::Override.new(
   virtual_path: "spree/admin/orders/_risk_analysis",
   insert_bottom: "[data-hook='order_details_adjustments']",
