@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 module Spree
   class KlarnaCreditPayment < Spree::Base
     belongs_to :payment_method
-    belongs_to :user, class_name: Spree.user_class, foreign_key: 'user_id'
-    belongs_to :order, class_name: Spree::Order, foreign_key: 'spree_order_id'
+    belongs_to :user, class_name: Spree.user_class.to_s, foreign_key: 'user_id', optional: true
+    belongs_to :order, class_name: 'Spree::Order', foreign_key: 'spree_order_id', optional: true
+
     serialize :response_body, Hash
 
     scope :with_payment_profile, -> { where(false) }
@@ -19,7 +22,7 @@ module Spree
       %w(refresh capture cancel extend_period release credit)
     end
 
-    def can_refresh?(payment)
+    def can_refresh?(_payment)
       true
     end
 
@@ -59,81 +62,81 @@ module Spree
     end
 
     def accepted?
-      self.fraud_status == "ACCEPTED"
+      fraud_status == "ACCEPTED"
     end
 
     def pending?
-      self.fraud_status == "PENDING"
+      fraud_status == "PENDING"
     end
 
     def rejected?
-      self.fraud_status == "REJECTED"
+      fraud_status == "REJECTED"
     end
 
     def error?
-      self.error_code? && self.error_messages?
+      error_code? && error_messages?
     end
 
     def fraud_status_icon
-      case self.fraud_status
-        when "ACCEPTED"
-          'ready'
-        when "PENDING"
-          'pending'
-        when "REJECTED"
-          'void'
-        else
-          'void' if error?
+      case fraud_status
+      when "ACCEPTED"
+        'ready'
+      when "PENDING"
+        'pending'
+      when "REJECTED"
+        'void'
+      else
+        'void' if error?
       end
     end
 
     def status_icon
-      case self.status
-        when "AUTHORIZED"
-          'ready'
-        when "PART_CAPTURED"
-          'ready'
-        when "CAPTURED"
-          'ready'
-        else
-          'void'
+      case status
+      when "AUTHORIZED"
+        'ready'
+      when "PART_CAPTURED"
+        'ready'
+      when "CAPTURED"
+        'ready'
+      else
+        'void'
       end
     end
 
     def authorized?
-      self.status.present? && self.status == "AUTHORIZED"
+      status.present? && status == "AUTHORIZED"
     end
 
     def part_captured?
-      self.status.present? && self.status == "PART_CAPTURED"
+      status.present? && status == "PART_CAPTURED"
     end
 
     def captured?
-      self.status.present? && self.status.match("CAPTURED")
+      status.present? && status.match("CAPTURED")
     end
 
     def fully_captured?
-      self.status.present? && self.status == "CAPTURED"
+      status.present? && status == "CAPTURED"
     end
 
     def cancelled?
-      self.status.present? && self.status == "CANCELLED"
+      status.present? && status == "CANCELLED"
     end
 
     def expired?
-      self.status.present? && self.status == "EXPIRED"
+      status.present? && status == "EXPIRED"
     end
 
     def closed?
-      self.status.present? && self.status == "CLOSED"
+      status.present? && status == "CLOSED"
     end
 
     def expired?
-      self.expires_at? && self.expires_at < DateTime.now
+      expires_at? && expires_at < DateTime.now
     end
 
     def payments
-      Spree::Payment.where(source: self, payment_method: self.payment_method)
+      Spree::Payment.where(source: self, payment_method: payment_method)
     end
   end
 end
