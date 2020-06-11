@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Deface::Override.new(
   virtual_path: "spree/admin/payment_methods/_form",
   insert_after: "[data-hook='admin_payment_method_form_fields']",

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PageDrivers
   class BillingForm < SitePrism::Section
     element :first_name, 'input#order_bill_address_attributes_firstname'
@@ -25,21 +27,17 @@ module PageDrivers
   class Address < Base
     set_url "/checkout"
 
-    if KlarnaGateway.is_spree? && !KlarnaGateway.up_to_spree?('2.4.99')
-      element :continue_button, 'form#checkout_form_address input.btn'
-    else
-      element :continue_button, 'form#checkout_form_address input.continue'
-    end
+    element :continue_button, 'form#checkout_form_address input.continue'
 
     section :billing_fields, BillingForm, '#billing'
     section :shipping_fields, ShippingForm, '#shipping'
 
-    def set_address(data, address= :billing)
+    def set_address(data, address = :billing)
       case address
       when :billing
-        country = Spree::Country.find_by_iso(data[:country_iso])
+        country = Spree::Country.find_by(iso: data[:country_iso])
 
-        while billing_fields.country.value.to_i != country.id do
+        while billing_fields.country.value.to_i != country.id
           billing_fields.country.find(:option, data[:country]).select_option
         end
 
@@ -50,17 +48,17 @@ module PageDrivers
         billing_fields.zipcode.set(data[:zip])
         billing_fields.phone.set(data[:phone])
 
-        if state = country.states.find_by_name(data[:state])
-          while billing_fields.state.value.to_i != state.id do
+        if state = country.states.find_by(name: data[:state])
+          while billing_fields.state.value.to_i != state.id
             billing_fields.state.find(:option, data[:state]).select_option
           end
         end
       when :shipping
-        country = Spree::Country.find_by_iso(data[:country_iso])
+        country = Spree::Country.find_by(iso: data[:country_iso])
 
         shipping_fields.shipping_toggle.click
 
-        while shipping_fields.country.value.to_i != country.id do
+        while shipping_fields.country.value.to_i != country.id
           shipping_fields.country.find(:option, data[:country]).select_option
         end
 
@@ -71,8 +69,8 @@ module PageDrivers
         shipping_fields.zipcode.set(data[:zip])
         shipping_fields.phone.set(data[:phone])
 
-        if state = country.states.find_by_name(data[:state])
-          while shipping_fields.state.value.to_i != state.id do
+        if state = country.states.find_by(name: data[:state])
+          while shipping_fields.state.value.to_i != state.id
             shipping_fields.state.find(:option, data[:state]).select_option
           end
         end
@@ -80,7 +78,6 @@ module PageDrivers
     end
 
     def continue
-      scroll_to(continue_button)
       continue_button.click
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PageDrivers
   module Admin
     class LogEntry < SitePrism::Section
@@ -10,4 +12,3 @@ module PageDrivers
     end
   end
 end
-

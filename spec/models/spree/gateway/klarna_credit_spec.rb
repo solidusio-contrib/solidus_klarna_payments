@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 describe Spree::Gateway::KlarnaCredit do
@@ -12,8 +14,8 @@ describe Spree::Gateway::KlarnaCredit do
       expect(subject).to receive(:provider).and_return(provider)
       expect(provider).to receive(:capture)
       expect {
-        subject.capture(amount, klarna_order_id, {order_id: "#{order.number}-dummy"}) 
-      }.to_not raise_error
+        subject.capture(amount, klarna_order_id, order_id: "#{order.number}-dummy")
+      }.not_to raise_error
     end
   end
 end

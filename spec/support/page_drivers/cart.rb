@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PageDrivers
   class Cart < Base
     set_url "/cart"
@@ -18,7 +20,9 @@ module PageDrivers
     end
 
     def has_coupon_field?
-      coupon_field.set("") rescue nil
+      coupon_field.set("")
+    rescue StandardError
+      nil
     end
   end
 end

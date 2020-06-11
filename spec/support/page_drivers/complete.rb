@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PageDrivers
   class Complete < Base
     set_url "/orders{/order_number}"

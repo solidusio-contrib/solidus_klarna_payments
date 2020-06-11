@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Spree::Core::Engine.routes.draw do
   namespace :klarna do
     resource :session, only: [:create, :show] do

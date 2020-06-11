@@ -1,4 +1,6 @@
-class AddFailureData < ActiveRecord::Migration
+# frozen_string_literal: true
+
+class AddFailureData < ActiveRecord::Migration[5.2]
   def change
     add_column :spree_klarna_credit_payments, :response_body, :text
     add_column :spree_klarna_credit_payments, :error_code, :string

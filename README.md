@@ -128,7 +128,7 @@ $(container).klarnaAuthorize({
   paymentMethodWrapper: $(".form-payment-method-klarna_credit"),
   // The session URL of the store. The store needs to create a session from the server
   // side. This should not be changed.
-  sessionUrl: Spree.url(Spree.pathFor("/klarna/session")),
+  sessionUrl: Spree.pathFor("/klarna/session"),
 
   // The submit button that triggers the authorization. This button will be disabled while
   // the autorization is issued.

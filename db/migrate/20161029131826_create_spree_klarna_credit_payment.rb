@@ -1,4 +1,6 @@
-class CreateSpreeKlarnaCreditPayment < ActiveRecord::Migration
+# frozen_string_literal: true
+
+class CreateSpreeKlarnaCreditPayment < ActiveRecord::Migration[5.2]
   def change
     create_table :spree_klarna_credit_payments do |t|
       t.references :spree_order

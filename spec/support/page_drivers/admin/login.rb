@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PageDrivers
   module Admin
     class Login < Base
@@ -15,4 +17,3 @@ module PageDrivers
     end
   end
 end
-

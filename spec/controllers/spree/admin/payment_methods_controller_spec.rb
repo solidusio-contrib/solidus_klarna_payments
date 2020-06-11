@@ -1,72 +1,80 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
-Spree::Admin::PaymentMethodsController.include(KlarnaGateway::Admin::PaymentMethodsController)
-
-describe Spree::Admin::PaymentMethodsController do
+RSpec.describe Spree::Admin::PaymentMethodsController do
   stub_authorization!
 
-  describe "#validate_klarna_credentials" do
-    context "Create" do
-      it "Creates a Klarna Payment Method" do
-        expect {
-          spree_post :create, payment_method: { name: "Test Klarna Method", type: "Spree::Gateway::KlarnaCredit" }
-        }.to change(Spree::PaymentMethod, :count).by(1)
-
-        expect(response).to be_redirect
-      end
-    end
-
-    context "Update" do
-      let(:payment_method) { create(:klarna_credit_payment_method) }
-      let(:attributes) do
-        {  _method: "patch",
+  describe '#create' do
+    it 'creates a Klarna payment method' do
+      expect {
+        post :create, params: {
           payment_method: {
-           name: "Test Klarna Method",
-          type: "Spree::Gateway::KlarnaCredit" },
-          gateway_klarna_credit: {
-            preferred_api_key: '123',
-            preferred_api_secret: '123',
-            preferred_country: 'us'
+            name: 'Test Klarna Method',
+            type: 'Spree::Gateway::KlarnaCredit',
           },
-          id: payment_method.to_param
         }
-      end
+      }.to change(Spree::PaymentMethod, :count).by(1)
+    end
+  end
 
-      it "updates with no credentials" do
-        attributes[:gateway_klarna_credit][:preferred_api_key] = nil
-        attributes[:gateway_klarna_credit][:preferred_api_secret] = nil
+  describe '#update' do
+    context 'when passing empty credentials' do
+      it 'renders an error' do
+        payment_method = create(:klarna_credit_payment_method)
 
         VCR.use_cassette('payment methods controller update with no credentials') do
-          spree_put(:update, attributes)
+          patch :update, params: build_update_attributes(payment_method,
+            preferred_api_key: nil,
+            preferred_api_secret: nil,)
         end
 
         expect(flash[:error]).to match(/can not be tested/)
         expect(flash[:success]).to match(/successfully updated/)
       end
+    end
 
-      it "updates with invalid credentials" do
+    context 'when passing invalid credentials' do
+      it 'renders an error' do
+        payment_method = create(:klarna_credit_payment_method)
+
         VCR.use_cassette('payment methods controller update with invalid credentials') do
-          spree_put(:update, attributes)
+          patch :update, params: build_update_attributes(payment_method,
+            preferred_api_key: 'invalid',
+            preferred_api_secret: 'invalid',)
         end
 
         expect(flash[:error]).to match(/invalid/)
         expect(flash[:success]).to match(/successfully updated/)
       end
+    end
 
-      it "updates with valid credentials" do
-        attributes[:gateway_klarna_credit][:preferred_api_key] = current_store_keys['key']
-        attributes[:gateway_klarna_credit][:preferred_api_secret] = current_store_keys['secret']
+    context 'when passing valid credentials' do
+      it 'renders a success message' do
+        payment_method = create(:klarna_credit_payment_method)
 
         VCR.use_cassette('payment methods controller update with valid credentials') do
-          spree_put(:update, attributes)
+          patch :update, params: build_update_attributes(payment_method,
+            preferred_api_key: klarna_credentials[:key],
+            preferred_api_secret: klarna_credentials[:secret],)
         end
 
         expect(flash[:notice]).to match(/configuration completed/)
         expect(flash[:success]).to match(/successfully updated/)
       end
     end
+
+    private
+
+    def build_update_attributes(payment_method, attributes)
+      {
+        payment_method: {
+          name: 'Test Klarna Method',
+          type: 'Spree::Gateway::KlarnaCredit',
+          preferred_country: 'us'
+        }.merge(attributes),
+        id: payment_method.to_param,
+      }
+    end
   end
 end
-
-
-

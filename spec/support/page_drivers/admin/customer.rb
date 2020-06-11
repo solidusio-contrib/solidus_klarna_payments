@@ -1,20 +1,12 @@
+# frozen_string_literal: true
+
 module PageDrivers
   module Admin
     class Customer < Base
-      if KlarnaGateway.is_solidus?
-        set_url '/admin/orders/{number}/customer/edit'
-      else
-        set_url '/admin/orders/{number}/customer'
-      end
+      set_url '/admin/orders/{number}/customer/edit'
 
-      if KlarnaGateway.is_solidus?
-        section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
-      else
-        section :menu, PageDrivers::Admin::OrderMenu, 'aside#sidebar ul'
-      end
-
+      section :menu, PageDrivers::Admin::OrderMenu, '.container nav ul.tabs'
       section :payment_menu, PaymentMenu, '#content-header ul.header-actions'
     end
   end
 end
-

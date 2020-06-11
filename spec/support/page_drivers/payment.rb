@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PageDrivers
   class KlarnaCredit < SitePrism::Page
     elements :options, 'label'
@@ -21,37 +23,25 @@ module PageDrivers
     element :order_coupon_code, "#payment #order_coupon_code"
     element :summary, '[data-hook="order_summary"]'
 
-    if KlarnaGateway.is_spree? && !KlarnaGateway.up_to_spree?('2.4.99')
-      element :continue_button, 'form#checkout_form_payment input.btn'
-    else
-      element :continue_button, 'form#checkout_form_payment input.continue'
-    end
+    element :continue_button, 'form#checkout_form_payment input.continue'
 
     iframe :klarna_credit, KlarnaCredit, '#klarna-credit-main'
     iframe :klarna_credit_fullscreen, KlarnaCreditFullscreen, '#klarna-credit-fullscreen'
 
     def select_payment_method(name)
-      payment_methods.find{|e| e.text == name }
+      payment_methods.find{ |e| e.text == name }
     end
 
-    def select_klarna(store_data, &block)
-      Capybara.using_wait_time(CapybaraExtraWaitTime) do
-        select_payment_method(store_data.payment_name).tap do |payment_method|
-          scroll_to(payment_method)
+    def select_klarna(&block)
+      Capybara.using_wait_time(60) do
+        select_payment_method('Klarna US').tap do |payment_method|
           payment_method.click
           yield payment_method.find('input') if block
         end
 
-        wait_for_klarna_credit
+        wait_until_klarna_credit_visible
 
-        klarna_credit do |frame|
-          frame.wait_for_klarna_credit_logo
-
-          if store_data.payment_name.include? "US"
-            wait_for_klarna_credit
-            frame.options.first.click
-          end
-        end
+        klarna_credit(&:wait_until_klarna_credit_logo_visible)
       end
     end
 
@@ -69,27 +59,16 @@ module PageDrivers
       end
     end
 
-    def continue(store_data=nil)
-      Capybara.using_wait_time(CapybaraExtraWaitTime) do
-        scroll_to(continue_button)
+    def continue(_store_data = nil)
+      Capybara.using_wait_time(30) do
         continue_button.click
-
-        if store_data
-          wait_for_klarna_credit_fullscreen
-          if store_data.payment_name.include? "DE"
-            klarna_credit_fullscreen do |frame|
-              frame.date_field.set store_data.address.date
-              frame.agreement_field.click
-              frame.continue_button.click
-            end
-            wait_for_klarna_credit_fullscreen
-          end
-        end
       end
     end
 
     def has_coupon_code_field?
-      order_coupon_code.set("") rescue nil
+      order_coupon_code.set("")
+    rescue StandardError
+      nil
     end
 
     def is_coupon_applied?
