@@ -31,7 +31,7 @@ module SolidusKlarnaPayments
     end
 
     def total_amount
-      (shipment.total * 100).to_i
+      (shipment.cost * 100).to_i
     end
 
     def total_tax_amount
