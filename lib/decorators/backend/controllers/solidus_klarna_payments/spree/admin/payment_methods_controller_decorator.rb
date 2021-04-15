@@ -28,7 +28,7 @@ module SolidusKlarnaPayments
 
               klarna_response = Klarna.client(:credit).create_session({})
 
-              if klarna_response.code == 401
+              if klarna_response.http_response.code == '401'
                 flash[:error] = I18n.t('spree.klarna.invalid_api_credentials')
               else
                 flash[:notice] = I18n.t('spree.klarna.valid_api_credentials')
