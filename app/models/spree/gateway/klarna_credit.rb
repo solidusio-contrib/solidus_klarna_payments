@@ -38,7 +38,7 @@ module Spree
         ActiveMerchant::Billing::KlarnaGateway
       end
 
-      def method_type
+      def partial_name
         'klarna_credit'
       end
 
