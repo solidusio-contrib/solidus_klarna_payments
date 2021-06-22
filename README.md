@@ -10,7 +10,7 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 
 ### Features
 
-- Integrates seamlessly as a payment provider
+- Integrates seamlessly as a payment gateway
 - Supports auto capture
 - Supports partial captures, refunds, and partial refunds
 - Configurable design

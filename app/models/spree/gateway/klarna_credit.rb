@@ -56,9 +56,9 @@ module Spree
 
       def cancel(order_id)
         if source(order_id).fully_captured?
-          provider.refund(payment_amount(order_id), order_id)
+          gateway.refund(payment_amount(order_id), order_id)
         else
-          provider.cancel(order_id)
+          gateway.cancel(order_id)
         end
       end
 
@@ -78,7 +78,7 @@ module Spree
         order = spree_order(params)
         serialized_order = ::SolidusKlarnaPayments::OrderSerializer.new(order, options[:country]).to_hash
         klarna_params = { shipping_info: serialized_order[:shipping_info] }
-        provider.capture(amount, order_id, params.merge(klarna_params))
+        gateway.capture(amount, order_id, params.merge(klarna_params))
       end
 
       private

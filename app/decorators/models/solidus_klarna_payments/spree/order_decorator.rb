@@ -60,7 +60,7 @@ module SolidusKlarnaPayments
         return unless shipment_state_changed? && shipment_state == "shipped"
 
         captured_klarna_payments.each do |payment|
-          payment.payment_method.provider.shipping_info(
+          payment.payment_method.gateway.shipping_info(
             payment.source.order_id,
             payment.source.capture_id,
             shipping_info: to_klarna(
@@ -85,7 +85,7 @@ module SolidusKlarnaPayments
         end
 
         authorized_klarna_payments.each do |payment|
-          payment.payment_method.provider.customer_details(
+          payment.payment_method.gateway.customer_details(
             payment.source.order_id,
             addresses
           )
