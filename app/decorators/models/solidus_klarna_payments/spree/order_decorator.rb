@@ -5,13 +5,6 @@ module SolidusKlarnaPayments
     module OrderDecorator
       KLARNA_SESSION_LIFETIME = 48.hours
 
-      def self.prepended(base)
-        base.class_eval do
-          register_update_hook(:update_klarna_shipments)
-          register_update_hook(:update_klarna_customer)
-        end
-      end
-
       def update_klarna_session(session_id: nil, client_token: nil)
         update!(
           klarna_session_id: session_id,
