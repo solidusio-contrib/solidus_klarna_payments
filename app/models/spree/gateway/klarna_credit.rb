@@ -71,7 +71,7 @@ module Spree
       end
 
       def payment_amount(order_id)
-        Spree::Payment.find_by(source: source(order_id)).display_amount.cents
+        Spree::Payment.find_by(source: source(order_id)).display_total.cents
       end
 
       def capture(amount, order_id, params = {})

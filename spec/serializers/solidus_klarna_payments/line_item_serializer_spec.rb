@@ -38,7 +38,7 @@ describe SolidusKlarnaPayments::LineItemSerializer do
       serialized_hash = build_serializer_for(line_item).to_hash
 
       expect(serialized_hash[:total_amount]).to be > 0
-      expect(serialized_hash[:total_amount]).to eq(line_item.display_total.cents)
+      expect(serialized_hash[:total_amount]).to eq(line_item.display_amount.cents)
     end
 
     it "does not set a discount" do
