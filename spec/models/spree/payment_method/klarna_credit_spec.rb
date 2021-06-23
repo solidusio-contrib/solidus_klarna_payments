@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Spree::Gateway::KlarnaCredit do
+describe Spree::PaymentMethod::KlarnaCredit do
   describe "capture", :klarna_api do
     let(:order) { create(:order_with_line_items) }
     let(:gateway) { double(:gateway) }

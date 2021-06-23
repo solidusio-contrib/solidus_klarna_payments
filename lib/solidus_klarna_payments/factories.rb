@@ -5,7 +5,7 @@ FactoryBot.define do
     sequence(:code) { |i| "spree_#{i * rand(99_999)}" }
   end
 
-  factory :klarna_credit_payment_method, class: Spree::Gateway::KlarnaCredit do
+  factory :klarna_credit_payment_method, class: Spree::PaymentMethod::KlarnaCredit do
     name { 'Klarna' }
     description { 'Klarna' }
 

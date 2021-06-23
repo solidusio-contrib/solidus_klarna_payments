@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Spree
-  class Gateway
+  class PaymentMethod
     class KlarnaCredit < Spree::PaymentMethod
       preference :api_key, :string
       preference :api_secret, :string
