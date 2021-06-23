@@ -6,9 +6,9 @@ describe SolidusKlarnaPayments::AddressSerializer do
   subject(:serialized) { serializer.to_hash }
 
   let(:serializer) { described_class.new(address) }
-  let(:address) { Spree::Address.new(state: state, country: country) }
-  let(:country) { build(:country, iso: "DE") }
-  let(:state) { build(:state) }
+  let(:address) { create(:address, state: state, country: country) }
+  let(:country) { create(:country, iso: "DE") }
+  let(:state) { create(:state, country: country) }
 
   # regression test
   it "sets the region name" do
@@ -16,7 +16,7 @@ describe SolidusKlarnaPayments::AddressSerializer do
   end
 
   context "in the US" do
-    let(:country) { build(:country, iso: "US") }
+    let(:country) { create(:country, iso: "US") }
 
     it "sets the region abbr" do
       expect(subject[:region]).to eq(state.abbr)
