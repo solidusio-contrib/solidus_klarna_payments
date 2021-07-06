@@ -10,7 +10,7 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 
 ### Features
 
-- Integrates seamlessly as a payment provider
+- Integrates seamlessly as a payment gateway
 - Supports auto capture
 - Supports partial captures, refunds, and partial refunds
 - Configurable design
@@ -54,7 +54,7 @@ Please note that the version is still 0.9. We want to have the option to make br
 
 ## Solidus configuration
 
-After the installation, create a new payment method and select `Spree::Gateway::KlarnaCredit` as the gateway. After saving the payment method, you can configure your Klarna credentials and set design options for how Klarna is displayed to the customer in the checkout.
+After the installation, create a new payment method and select `Spree::PaymentMethod::KlarnaCredit` as the gateway. After saving the payment method, you can configure your Klarna credentials and set design options for how Klarna is displayed to the customer in the checkout.
 
 ![Configuration](docs/configuration.png)
 

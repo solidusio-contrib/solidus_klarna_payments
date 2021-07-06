@@ -49,7 +49,7 @@ describe SolidusKlarnaPayments::OrderSerializer do
 
     it "has one line for sales tax" do
       create(:tax_category)
-      create(:tax_rate, tax_category: Spree::TaxCategory.last)
+      create(:tax_rate, tax_categories: [Spree::TaxCategory.last])
       tax_lines = serialized[:order_lines].count { |l| l[:type] == "sales_tax" }
       expect(tax_lines).to eq(1)
     end

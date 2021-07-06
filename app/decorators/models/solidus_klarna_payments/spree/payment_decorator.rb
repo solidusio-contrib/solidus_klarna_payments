@@ -37,7 +37,7 @@ module SolidusKlarnaPayments
       end
 
       def refund!
-        payment_gateway.refund(display_amount.cents, klarna_order_id).tap do |response|
+        payment_gateway.refund(display_total.cents, klarna_order_id).tap do |response|
           handle_void_response(response)
         end
       end

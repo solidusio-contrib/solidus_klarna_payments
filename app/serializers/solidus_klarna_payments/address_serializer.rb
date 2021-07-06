@@ -13,8 +13,8 @@ module SolidusKlarnaPayments
 
       {
         organization_name: address.company,
-        given_name: address.first_name,
-        family_name: address.last_name,
+        given_name: given_name(address),
+        family_name: family_name(address),
         street_address: address.address1,
         street_address2: address.address2,
         postal_code: address.zipcode,
@@ -33,6 +33,16 @@ module SolidusKlarnaPayments
       else
         address.state.try(:name)
       end
+    end
+
+    def given_name(address)
+      return address.first_name unless SolidusSupport.combined_first_and_last_name_in_address?
+      address.name.split("\s", 2)[0]
+    end
+
+    def family_name(address)
+      return address.last_name unless SolidusSupport.combined_first_and_last_name_in_address?
+      address.name.split("\s", 2)[1]
     end
   end
 end

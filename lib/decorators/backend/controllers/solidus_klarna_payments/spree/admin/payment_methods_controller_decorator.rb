@@ -12,7 +12,7 @@ module SolidusKlarnaPayments
         private
 
         def validate_klarna_credentials
-          if params[:payment_method][:type] == 'Spree::Gateway::KlarnaCredit'
+          if params[:payment_method][:type] == 'Spree::PaymentMethod::KlarnaCredit'
             if params[:payment_method][:preferred_api_secret].blank? || params[:payment_method][:preferred_api_key].blank?
               flash[:error] = I18n.t('spree.klarna.can_not_test_api_connection')
             end

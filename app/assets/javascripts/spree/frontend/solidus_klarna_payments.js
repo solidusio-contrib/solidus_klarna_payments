@@ -14,7 +14,7 @@
       paymentId: $(this).data("payment-method-id"),
       paymentMethodWrapper: $(".form-payment-method-klarna_credit"),
       preferredPaymentMethod: $(this).data("preferred-payment-method"),
-      sessionUrl: Spree.url(Spree.pathFor("klarna/session")),
+      sessionUrl: Spree.urlForDomain(Spree.pathFor("klarna/session")),
       submitButton: $("form.edit_order :submit"),
     }, options);
 
@@ -83,7 +83,7 @@
       // First get the current, serialized order
       Spree.ajax({
         method: "GET",
-        url: Spree.url(Spree.pathFor("/klarna/session/order_addresses")),
+        url: Spree.urlForDomain(Spree.pathFor("/klarna/session/order_addresses")),
         dataType: "json",
         data: {klarna_payment_method_id: settings.paymentId}
       }).done(function(result) {
@@ -149,3 +149,15 @@
     n.onload = callback;
   };
 }(window.KlarnaGateway = window.KlarnaGateway || {}, jQuery));
+
+Spree.urlForDomain = function (uri, query) {
+  if (uri.path === undefined) {
+    uri = new Uri(uri);
+  }
+  if (query) {
+    $.each(query, function (key, value) {
+      return uri.addQueryParam(key, value);
+    });
+  }
+  return uri;
+};

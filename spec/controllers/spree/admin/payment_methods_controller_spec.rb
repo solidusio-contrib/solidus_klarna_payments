@@ -11,7 +11,7 @@ RSpec.describe Spree::Admin::PaymentMethodsController do
         post :create, params: {
           payment_method: {
             name: 'Test Klarna Method',
-            type: 'Spree::Gateway::KlarnaCredit',
+            type: 'Spree::PaymentMethod::KlarnaCredit',
           },
         }
       }.to change(Spree::PaymentMethod, :count).by(1)
@@ -70,7 +70,7 @@ RSpec.describe Spree::Admin::PaymentMethodsController do
       {
         payment_method: {
           name: 'Test Klarna Method',
-          type: 'Spree::Gateway::KlarnaCredit',
+          type: 'Spree::PaymentMethod::KlarnaCredit',
           preferred_country: 'us'
         }.merge(attributes),
         id: payment_method.to_param,

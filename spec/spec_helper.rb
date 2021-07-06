@@ -21,10 +21,17 @@ Dir[File.join(File.dirname(__FILE__), 'support/config/*.rb')].each { |f| require
 Dir[File.join(File.dirname(__FILE__), 'support/test_helpers/*.rb')].each { |f| require f }
 Dir[File.join(File.dirname(__FILE__), 'support/shared_contexts/*.rb')].each { |f| require f }
 
-# Requires factories defined in lib/solidus_klarna_payments/factories.rb
-require 'solidus_klarna_payments/factories'
+# Will load Solidus core factory first and then the ones
+# defined in `lib/solidus_klarna_payments/testing_support/factories.rb`.
+# and `lib/solidus_klarna_payments/testing_support/factories`.
+SolidusDevSupport::TestingSupport::Factories.load_for(SolidusKlarnaPayments::Engine)
 
 RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.use_transactional_fixtures = false
+  if defined?(ActiveStorage::Current)
+    config.before(:all) do
+      ActiveStorage::Current.host = 'http://www.example.com'
+    end
+  end
 end

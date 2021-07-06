@@ -1,10 +1,9 @@
 <script type="text/javascript">
   $(document).ready(function() {
-    $provider_select = $("#gtwy-type");
+    $gateway_select = $("#gtwy-type");
     $admin_checkbox = $("#payment_method_available_to_admin, #gateway_klarna_credit_available_to_admin");
-
-    $provider_select.on("change", function(e) {
-      if (e.val == 'Spree::Gateway::KlarnaCredit') {
+    $gateway_select.on("change", function(e) {
+      if (e.val == 'Spree::PaymentMethod::KlarnaCredit') {
         $admin_checkbox.prop('checked', false);
       } else {
         $admin_checkbox.prop('checked', true);

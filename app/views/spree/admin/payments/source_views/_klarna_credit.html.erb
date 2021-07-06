@@ -30,7 +30,7 @@
               fire_admin_order_payment_path(@order, payment, e: 'capture'),
                 method: :put,
                 class: 'button',
-                data: { confirm: Spree.t(:are_you_sure) }
+                data: { confirm: I18n.t('spree.are_you_sure') }
         %>
       <% end %>
 
@@ -40,7 +40,7 @@
               fire_admin_order_payment_path(@order, payment, e: 'extend_period'),
                 method: :put,
                 class: 'button',
-                data: { confirm: Spree.t(:are_you_sure) }
+                data: { confirm: I18n.t('spree.are_you_sure') }
         %>
       <% end %>
 
@@ -50,7 +50,7 @@
               fire_admin_order_payment_path(@order, payment, e: 'cancel'),
                 method: :put,
                 class: 'button',
-                data: { confirm: Spree.t(:are_you_sure) }
+                data: { confirm: I18n.t('spree.are_you_sure') }
         %>
       <% end %>
 
@@ -60,7 +60,7 @@
               fire_admin_order_payment_path(@order, payment, e: 'release'),
                 method: :put,
                 class: 'button',
-                data: { confirm: Spree.t(:are_you_sure) }
+                data: { confirm: I18n.t('spree.are_you_sure') }
         %>
       <% end %>
       </div>

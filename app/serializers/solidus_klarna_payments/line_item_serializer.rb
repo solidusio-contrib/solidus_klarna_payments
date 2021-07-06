@@ -59,12 +59,15 @@ module SolidusKlarnaPayments
     def image_url
       image = line_item.variant.images.first
       host = image_host
-
       return unless image.present? && host
 
       begin
-        scheme = "http://" unless host.to_s.match?(%r{^https?://})
-        uri = URI.parse("#{scheme}#{host.sub(%r{/$}, '')}#{image.attachment.url}")
+        if image.attachment.url.match?(%r{^http})
+          uri = image.attachment.url
+        else
+          scheme = "http://" unless host.to_s.match?(%r{^https?://})
+          uri = URI.parse("#{scheme}#{host.sub(%r{/$}, '')}#{image.attachment.url}")
+        end
       rescue URI::InvalidURIError => e
         return nil
       end

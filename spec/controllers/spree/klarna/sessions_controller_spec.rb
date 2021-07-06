@@ -6,7 +6,7 @@ RSpec.describe Spree::Klarna::SessionsController do
   describe "#create" do
     let!(:store) { create(:store, default: true) }
     let(:order) { create(:order_with_line_items, state: "payment") }
-    let!(:payment_method) { Spree::Gateway::KlarnaCredit.create(name: 'Klarna') }
+    let!(:payment_method) { Spree::PaymentMethod::KlarnaCredit.create(name: 'Klarna') }
 
     before do
       payment_method.preferred_api_key = klarna_credentials[:key]
