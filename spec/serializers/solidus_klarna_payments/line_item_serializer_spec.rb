@@ -38,7 +38,7 @@ describe SolidusKlarnaPayments::LineItemSerializer do
       serialized_hash = build_serializer_for(line_item).to_hash
 
       expect(serialized_hash[:total_amount]).to be > 0
-      expect(serialized_hash[:total_amount]).to eq(line_item.display_total.cents)
+      expect(serialized_hash[:total_amount]).to eq(line_item.display_amount.cents)
     end
 
     it "does not set a discount" do
@@ -116,26 +116,25 @@ describe SolidusKlarnaPayments::LineItemSerializer do
       end
 
       context "with a string as image_host" do
-        let(:image_host) { "example.com" }
+        let(:image_host) { "www.example.com" }
 
         it "uses the string as host" do
           line_item = create_line_item_with_image
 
           serialized_hash = build_serializer_for(line_item).to_hash
 
-          expect(serialized_hash[:image_url]).to start_with("http://example.com/")
+          expect(serialized_hash[:image_url]).to start_with("http://www.example.com/")
         end
       end
 
       context "with a Proc configured" do
-        let(:image_host) { proc{ |_line_item| "http://example.com" } }
+        let(:image_host) { proc{ |_line_item| "http://www.example.com" } }
 
         it 'calls the proc to get the host' do
           line_item = create_line_item_with_image
 
           serialized_hash = build_serializer_for(line_item).to_hash
-
-          expect(serialized_hash[:image_url]).to eq("http://example.com#{line_item.variant.images.first.attachment.url}")
+          expect(serialized_hash[:image_url]).to match(/^http:\/\/www.example.com\/.+\/(blank.+|thinking-cat.+)/)
         end
       end
 

@@ -8,8 +8,8 @@
   </div>
 
   <%= hidden_field_tag "#{param_prefix}[authorization_token]", "", {id: "klarna_authorization_token"} %>
-  <div class="klarna_error general_error flash error"><%= Spree.t('klarna.general_error') %></div>
-  <div class="klarna_error denied_error flash error"><%= Spree.t('klarna.denied_error') %></div>
+  <div class="klarna_error general_error flash error"><%= I18n.t('klarna.general_error') %></div>
+  <div class="klarna_error denied_error flash error"><%= I18n.t('klarna.denied_error') %></div>
   <div id="klarna_container"></div>
 </div>
 

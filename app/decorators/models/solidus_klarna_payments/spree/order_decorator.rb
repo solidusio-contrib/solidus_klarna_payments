@@ -5,13 +5,6 @@ module SolidusKlarnaPayments
     module OrderDecorator
       KLARNA_SESSION_LIFETIME = 48.hours
 
-      def self.prepended(base)
-        base.class_eval do
-          register_update_hook(:update_klarna_shipments)
-          register_update_hook(:update_klarna_customer)
-        end
-      end
-
       def update_klarna_session(session_id: nil, client_token: nil)
         update!(
           klarna_session_id: session_id,
@@ -60,7 +53,7 @@ module SolidusKlarnaPayments
         return unless shipment_state_changed? && shipment_state == "shipped"
 
         captured_klarna_payments.each do |payment|
-          payment.payment_method.provider.shipping_info(
+          payment.payment_method.gateway.shipping_info(
             payment.source.order_id,
             payment.source.capture_id,
             shipping_info: to_klarna(
@@ -85,7 +78,7 @@ module SolidusKlarnaPayments
         end
 
         authorized_klarna_payments.each do |payment|
-          payment.payment_method.provider.customer_details(
+          payment.payment_method.gateway.customer_details(
             payment.source.order_id,
             addresses
           )

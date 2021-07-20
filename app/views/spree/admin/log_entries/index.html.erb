@@ -8,8 +8,8 @@
 <% end %>
 
 <% content_for :page_actions do %>
-  <li><%= button_link_to Spree.t(:logs), spree.admin_order_payment_log_entries_url(@order, @payment), :icon => 'archive' %></li>
-  <li><%= button_link_to Spree.t(:back_to_payment), spree.admin_order_payment_url(@order, @payment), :icon => 'arrow-left' %></li>
+  <li><%= button_link_to I18n.t('spree.logs'), spree.admin_order_payment_log_entries_url(@order, @payment), :icon => 'archive' %></li>
+  <li><%= button_link_to I18n.t('spree.back_to_payment'), spree.admin_order_payment_url(@order, @payment), :icon => 'arrow-left' %></li>
 <% end %>
 
 <div id="listing_log_entries">

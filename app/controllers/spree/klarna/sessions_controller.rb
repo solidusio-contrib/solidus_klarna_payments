@@ -75,7 +75,7 @@ module Spree
       end
 
       def klarna_payment_method
-        @klarna_payment_method ||= Spree::PaymentMethod.find_by(id: klarna_payment_method_id, type: 'Spree::Gateway::KlarnaCredit')
+        @klarna_payment_method ||= Spree::PaymentMethod.find_by(id: klarna_payment_method_id, type: 'Spree::PaymentMethod::KlarnaCredit')
       end
 
       def klarna_options
