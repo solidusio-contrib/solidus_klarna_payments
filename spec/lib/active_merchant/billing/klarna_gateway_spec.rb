@@ -111,7 +111,7 @@ RSpec.describe ActiveMerchant::Billing::KlarnaGateway, :klarna_api do
 
     it "forwards the request to Klarna SDK" do
       expect(client).to receive(:create_session).with(order).and_return(message: "true")
-      expect(Klarna).to receive(:client).with(:credit).and_return(client)
+      expect(Klarna).to receive(:client).with(:payment).and_return(client)
 
       payment.payment_method.gateway.create_session(order).tap do |response|
         expect(response.key?(:message)).to be(true)
@@ -127,7 +127,7 @@ RSpec.describe ActiveMerchant::Billing::KlarnaGateway, :klarna_api do
 
     it "forwards the request to Klarna SDK" do
       expect(client).to receive(:update_session).with(1, order).and_return(message: "true")
-      expect(Klarna).to receive(:client).with(:credit).and_return(client)
+      expect(Klarna).to receive(:client).with(:payment).and_return(client)
 
       payment.payment_method.gateway.update_session(1, order).tap do |response|
         expect(response.key?(:message)).to be(true)

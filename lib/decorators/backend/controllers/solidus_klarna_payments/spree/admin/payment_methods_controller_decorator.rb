@@ -26,7 +26,7 @@ module SolidusKlarnaPayments
                 config.user_agent = "Klarna Solidus Gateway/#{::SolidusKlarnaPayments::VERSION} Solidus/#{::Spree.solidus_version} Rails/#{::Rails.version}"
               end
 
-              klarna_response = Klarna.client(:credit).create_session({})
+              klarna_response = Klarna.client(:payment).create_session({})
 
               if klarna_response.http_response.code == '401'
                 flash[:error] = I18n.t('spree.klarna.invalid_api_credentials')
