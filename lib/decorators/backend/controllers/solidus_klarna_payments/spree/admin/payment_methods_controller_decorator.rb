@@ -19,7 +19,7 @@ module SolidusKlarnaPayments
 
             if params[:payment_method][:preferred_api_secret].present? && params[:payment_method][:preferred_api_key].present?
               Klarna.configure do |config|
-                config.environment = !Rails.env.production? ? 'test' : 'production'
+                config.environment = Rails.env.production? ? 'production' : 'test'
                 config.country = params[:payment_method][:preferred_country]
                 config.api_key =  params[:payment_method][:preferred_api_key]
                 config.api_secret = params[:payment_method][:preferred_api_secret]
