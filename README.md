@@ -23,7 +23,6 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 - A customer is able to choose multiple payment options for an order.  If an order does have multiple payment options, you should capture the most recent payment choice first, which be listed at the bottom of the list of payments.
 - It’s important to cancel Klarna payments if the customer paid with another payment method in the end after receiving a successful Klarna authorization, we can not send `release_remaining_amount` to Klarna in this case and the users credit limit would still be blocked.
 
-
 ### Supported Solidus Versions
 
 - Solidus 1.3.x
@@ -33,28 +32,25 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 
 We are currently working on the compatibility with the 2.x branch of Solidus.
 
-## Installation (beta)
+## Installation
 
-This gem is currently in **a public beta phase**.  For the time being it will only be installable via git:
+Add solidus_klarna_payments to your Gemfile:
 
 ```ruby
-gem 'klarna_client', github: 'bitspire/klarna_client'
-gem 'solidus_klarna_payments', require: 'klarna_gateway', github: 'bitspire/solidus_klarna_payments'
+gem 'solidus_klarna_payments', github: 'solidusio-contrib/solidus_klarna_payments'
 ```
 
-And then execute:
+Bundle your dependencies and run the installation generator:
 
-    $ bundle
-
-In your project include the migrations, JavaScript and stylesheets:
-
-    $ rails generate klarna_gateway:install
+```
+$ bin/rails generate solidus_klarna_payments:install
+```
 
 Please note that the version is still 0.9. We want to have the option to make breaking changes during the transition to 1.0.
 
 ## Solidus configuration
 
-After the installation, create a new payment method and select `Spree::PaymentMethod::KlarnaCredit` as the gateway. After saving the payment method, you can configure your Klarna credentials and set design options for how Klarna is displayed to the customer in the checkout.
+After the installation, create a new payment method and select `Spree::PaymentMethod::KlarnaPayment` as the gateway. After saving the payment method, you can configure your Klarna credentials and set design options for how Klarna is displayed to the customer in the checkout.
 
 ![Configuration](docs/configuration.png)
 
@@ -65,7 +61,6 @@ There are two other things to configure. Set the payment method to "active" and 
 ![Configuration](docs/configuration2.png)
 
 *Note*: After you ran `klarna_gateway:install` the initializer in `config/initializers/klarna_gateway.rb` allows some configuration. It's usually not necessary to touch the file unless you're sure what you're doing.
-
 
 ## Technical information
 
@@ -136,13 +131,12 @@ $(container).klarnaAuthorize({
 })
 ```
 
-
 ### Klarna API documentation
 
-- [Klarna's API](https://developers.klarna.com/api/) is used by the payment gateway
+- [Klarna&#39;s API](https://developers.klarna.com/api/) is used by the payment gateway
 - [Javascript SDK](https://credit.klarnacdn.net/lib/v1/index.html) for the frontend part
 
-For more information see [Klarna's Developers Portal](https://developers.klarna.com/).
+For more information see [Klarna&#39;s Developers Portal](https://developers.klarna.com/).
 
 ## Contributing
 
