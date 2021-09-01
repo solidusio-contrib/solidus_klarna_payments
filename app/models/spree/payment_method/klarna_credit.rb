@@ -81,6 +81,10 @@ module Spree
         gateway.capture(amount, order_id, params.merge(klarna_params))
       end
 
+      def try_void(payment)
+        cancel(payment.order.klarna_order_id)
+      end
+
       private
 
       def spree_order(options)
