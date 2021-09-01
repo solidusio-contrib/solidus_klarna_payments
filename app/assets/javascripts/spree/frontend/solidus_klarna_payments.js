@@ -1,4 +1,5 @@
 "use strict";
+
 (function (KlarnaGateway, $) {
   $.fn.klarnaAuthorize = function (options) {
     var settings = $.extend(
@@ -37,14 +38,14 @@
         .success(function (response) {
           if (!response.token) {
             window.console &&
-              console.log("[Klarna Credit] received empty token:", response);
+              console.log("[Klarna Payments] received empty token:", response);
             displayError();
             return;
           }
           settings.clientToken = response.token;
 
-          // Initialize the Klarna Credit session in the frontend
-          Klarna.Credit.init({
+          // Initialize the Klarna Payments session in the frontend
+          Klarna.Payments.init({
             client_token: response.token,
           });
 
@@ -56,7 +57,7 @@
         .error(function (response) {
           window.console &&
             console.log(
-              "[Klarna Credit] received erroneous server response:",
+              "[Klarna Payments] received erroneous server response:",
               response
             );
           displayError();
@@ -81,7 +82,7 @@
         return;
       }
 
-      Klarna.Credit.load(
+      Klarna.Payments.load(
         {
           container: "#klarna_container",
           preferred_payment_method: settings.preferredPaymentMethod,
@@ -108,7 +109,7 @@
         dataType: "json",
         data: { klarna_payment_method_id: settings.paymentId },
       }).done(function (result) {
-        Klarna.Credit.authorize(result, function (res) {
+        Klarna.Payments.authorize(result, function (res) {
           if (res.approved === true) {
             settings.authorizationToken.val(res.authorization_token);
             approved(res);
@@ -129,7 +130,7 @@
 
     // Check whether Klarna is selected and load the form
     settings.paymentChangedElements.on("change", function () {
-      // check if Klarna Credit is selected
+      // check if Klarna Payments is selected
       if (settings.klarnaSelected(settings)) {
         loadKlarnaForm();
       }
@@ -166,7 +167,7 @@
   };
 
   KlarnaGateway.loadSdk = function (w, d, callback) {
-    var url = "https://credit.klarnacdn.net/lib/v1/api.js";
+    var url = "https://x.klarnacdn.net/kp/lib/v1/api.js";
     var n = d.createElement("script");
     var c = d.getElementById("klarna-credit-lib-x");
     n.async = !0;
