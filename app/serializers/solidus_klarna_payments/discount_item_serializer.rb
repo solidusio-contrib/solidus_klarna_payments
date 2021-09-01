@@ -2,8 +2,6 @@
 
 module SolidusKlarnaPayments
   class DiscountItemSerializer
-    attr_reader :order
-
     def initialize(order)
       @order = order
     end
@@ -15,8 +13,8 @@ module SolidusKlarnaPayments
         # send the name and the promo code
         name: name,
         reference: reference,
-        total_amount: (@order.promo_total * 100).to_i,
-        unit_price: (@order.promo_total * 100).to_i,
+        total_amount: (order.promo_total * 100).to_i,
+        unit_price: (order.promo_total * 100).to_i,
         tax_rate: 0,
         total_tax_amount: 0
       }
@@ -25,15 +23,15 @@ module SolidusKlarnaPayments
     private
 
     def name
-      @order.promotions.map(&:name).to_sentence
+      order.promotions.map(&:name).to_sentence
     end
 
     def reference
-      if @order.promotions.first.respond_to?(:codes)
-        @order.promotions.flat_map(&:codes).map(&:value).to_sentence
-      else
-        @order.promotions.map(&:code).to_sentence
-      end
+      order.all_adjustments.promotion.map do |promotion|
+        promotion&.promotion_code&.value
+      end.join(' ')
     end
+
+    attr_reader :order
   end
 end
