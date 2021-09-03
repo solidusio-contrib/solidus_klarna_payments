@@ -34,8 +34,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'solidus_core', ['>= 2.0.0', '< 4']
   spec.add_dependency 'solidus_support', '~> 0.8'
 
-  spec.add_development_dependency 'site_prism'
   spec.add_development_dependency 'solidus_dev_support'
   spec.add_development_dependency 'vcr'
   spec.add_development_dependency 'webmock'
+  spec.add_development_dependency 'pry-rails'
 end

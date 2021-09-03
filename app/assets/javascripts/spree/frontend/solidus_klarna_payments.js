@@ -21,7 +21,7 @@
         paymentId: $(this).data("payment-method-id"),
         paymentMethodWrapper: $(".form-payment-method-klarna_credit"),
         preferredPaymentMethod: $(this).data("preferred-payment-method"),
-        sessionUrl: Spree.urlForDomain(Spree.pathFor("klarna/session")),
+        sessionUrl: Spree.urlForDomain(Spree.pathFor("solidus_klarna_payments/sessions")),
         submitButton: $("form.edit_order :submit"),
       },
       options
@@ -104,7 +104,7 @@
       Spree.ajax({
         method: "GET",
         url: Spree.urlForDomain(
-          Spree.pathFor("/klarna/session/order_addresses")
+          Spree.pathFor("solidus_klarna_payments/sessions/order_addresses")
         ),
         dataType: "json",
         data: { klarna_payment_method_id: settings.paymentId },
@@ -181,10 +181,12 @@ Spree.urlForDomain = function (uri, query) {
   if (uri.path === undefined) {
     uri = new Uri(uri);
   }
+
   if (query) {
     $.each(query, function (key, value) {
       return uri.addQueryParam(key, value);
     });
   }
+
   return uri;
 };

@@ -11,8 +11,9 @@ FactoryBot.define do
 
     preferences do
       {
-        api_key: ENV.fetch("KLARNA_API_KEY") { "DUMMY" },
-        api_secret: ENV.fetch("KLARNA_API_SECRET") { "DUMMY" }
+        api_key: ENV.fetch("SOLIDUS_KLARNA_PAYMENTS_API_KEY") { "DUMMY" },
+        api_secret: ENV.fetch("SOLIDUS_KLARNA_PAYMENTS_API_SECRET") { "DUMMY" },
+        test_mode: ENV.fetch("SOLIDUS_KLARNA_PAYMENTS_TEST_MODE") { true }
       }
     end
   end

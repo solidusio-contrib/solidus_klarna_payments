@@ -44,10 +44,10 @@ en:
     klarna_general_error: "A technical error has occurred. Please try reloading the page or contact the merchant."
     rejected_klarna_payments: Rejected Klarna payments
     klarna:
+      can_not_test_api_connection: API can not be tested. Credentials are missing
       invalid_api_credentials: Klarna configuration data is invalid
       valid_api_credentials: Klarna Credentials have been validated. API configuration completed!
   klarna:
-    can_not_test_api_connection: API can not be tested. Credentials are missing
     specify_credentials: "Please specify %{missing_preferece} to finish your configuration"
     general_error: "A technical error has occurred. Please try reloading the page or contact the merchant."
     denied_error: "Unable to approve your application for Klarna Credit."

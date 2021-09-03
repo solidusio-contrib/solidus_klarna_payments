@@ -8,9 +8,8 @@ module SolidusKlarnaPayments
 
     def to_hash
       {
-        type: "discount",
+        type: 'discount',
         quantity: 1,
-        # send the name and the promo code
         name: name,
         reference: reference,
         total_amount: (order.promo_total * 100).to_i,

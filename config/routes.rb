@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-Spree::Core::Engine.routes.draw do
-  namespace :klarna do
-    resource :session, only: [:create, :show] do
-      collection do
-        get :order_addresses
-      end
-    end
-    post '/callbacks/notification', to: 'callbacks#notification', as: :notification
-    post '/callbacks/push', to: 'callbacks#push', as: :push
-  end
+SolidusKlarnaPayments::Engine.routes.draw do
+  post '/callbacks/notification', to: '/solidus_klarna_payments/callbacks#notification', as: :notification
+  post '/callbacks/push', to: '/solidus_klarna_payments/callbacks#push', as: :push
+
+  post '/sessions', to: '/solidus_klarna_payments/sessions#create'
+  get '/sessions', to: '/solidus_klarna_payments/sessions#show'
+  get '/sessions/order_addresses', to: '/solidus_klarna_payments/sessions#order_addresses'
 end

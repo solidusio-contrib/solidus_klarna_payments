@@ -113,7 +113,7 @@ module SolidusKlarnaPayments
           # address_update: "string",
           # country_change: "string",
           confirmation: confirmation_url,
-          notification: url_helpers.klarna_notification_url(host: store_url)
+          notification: solidus_klarna_payments_url_helpers.notification_url(host: store_url)
         }
       end
     end
@@ -123,7 +123,7 @@ module SolidusKlarnaPayments
       case configured_url
       when String then configured_url
       when Proc then configured_url.call(store, @order)
-      else url_helpers.order_url(@order.number, host: store_url)
+      else spree_url_helpers.order_url(@order.number, host: store_url)
       end
     end
 
@@ -131,8 +131,12 @@ module SolidusKlarnaPayments
       store.url.to_s.split("\n").first.chomp
     end
 
-    def url_helpers
+    def spree_url_helpers
       ::Spree::Core::Engine.routes.url_helpers
+    end
+
+    def solidus_klarna_payments_url_helpers
+      ::SolidusKlarnaPayments::Engine.routes.url_helpers
     end
   end
 end
