@@ -27,7 +27,7 @@ module SolidusKlarnaPayments
     private
 
     def unit_price
-      (pre_tax_amount * 100).to_i
+      (shipment.total_excluding_vat * 100).to_i
     end
 
     def total_amount
@@ -41,17 +41,7 @@ module SolidusKlarnaPayments
     def tax_rate
       return 0 if total_tax_amount == 0 || total_amount == 0
 
-      (((shipment.total / pre_tax_amount) - 1) * 10_000).to_i
-    end
-
-    # Backport for Spree 3.0 and 3.1
-    # https://github.com/spree/spree/pull/7357
-    def pre_tax_amount
-      if shipment.total_excluding_vat == 0
-        shipment.discounted_amount - shipment.included_tax_total
-      else
-        shipment.total_excluding_vat
-      end
+      (((shipment.total / shipment.total_excluding_vat) - 1) * 10_000).to_i
     end
   end
 end
