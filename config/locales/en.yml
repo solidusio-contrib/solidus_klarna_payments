@@ -25,8 +25,8 @@ en:
     release: "Release remaining amount"
     # preferences
     country: Country
-    api_key: Merchant ID
-    api_secret: Secret
+    api_key: Username
+    api_secret: Password
     design: Design
     color_details: Details color (hex)
     color_button: Button color (hex)
@@ -45,12 +45,12 @@ en:
     rejected_klarna_payments: Rejected Klarna payments
     klarna:
       can_not_test_api_connection: API can not be tested. Credentials are missing
-      valid_api_credentials: Klarna Credentials have been validated. API configuration completed!
       invalid_api_credentials: Klarna configuration data is invalid
-      specify_credentials: "Please specify %{missing_preferece} to finish your configuration"
-      general_error: "A technical error has occurred. Please try reloading the page or contact the merchant."
-      denied_error: "Unable to approve your application for Klarna Credit."
+      valid_api_credentials: Klarna Credentials have been validated. API configuration completed!
   klarna:
+    specify_credentials: "Please specify %{missing_preferece} to finish your configuration"
+    general_error: "A technical error has occurred. Please try reloading the page or contact the merchant."
+    denied_error: "Unable to approve your application for Klarna Credit."
     gateway_errors:
       internal_server_error: "There was a technical error while processing the payment. Please try again."
       http_error: "There was a technical error while processing the payment. Please try again."
@@ -63,8 +63,8 @@ en:
     attributes:
       spree/gateway/klarna_credit:
         preferred_country: Country
-        preferred_api_key: Merchant ID
-        preferred_api_secret: Secret
+        preferred_api_key: Username
+        preferred_api_secret: Password
         preferred_border_radius: Border radius
     errors:
       models:

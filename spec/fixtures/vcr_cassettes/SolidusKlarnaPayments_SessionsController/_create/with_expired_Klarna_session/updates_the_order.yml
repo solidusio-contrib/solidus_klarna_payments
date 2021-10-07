@@ -1,0 +1,76 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api-na.playground.klarna.com/payments/v1/sessions
+    body:
+      encoding: UTF-8
+      string: '{"purchase_country":"US","purchase_currency":"USD","locale":"en-US","order_amount":11000,"billing_address":{"email":"email4@example.com","organization_name":"Company","given_name":"John","family_name":"Von
+        Doe","street_address":"PO Box 1337","street_address2":"Northwest","postal_code":"10005","city":"Herndon","region":"AL","phone":"555-555-0199","country":"US"},"shipping_address":{"email":"email4@example.com","organization_name":"Company","given_name":"John","family_name":"Von
+        Doe","street_address":"A Different Road","street_address2":"Northwest","postal_code":"10006","city":"Herndon","region":"AL","phone":"555-555-0199","country":"US"},"order_lines":[{"reference":"SKU-3","name":"Product
+        #3 - 4547","quantity":1,"unit_price":1000,"tax_rate":0,"total_amount":1000,"total_tax_amount":0,"image_url":null,"product_url":"http://www.example3.com/products/3"},{"type":"shipping_fee","reference":"H74337081840","name":"UPS
+        Ground","quantity":1,"unit_price":10000,"total_amount":10000,"total_tax_amount":0,"tax_rate":0}],"merchant_reference1":"R503221742","options":{},"merchant_urls":{"confirmation":"http://www.example3.com/orders/R503221742","notification":"http://www.example3.com/solidus_klarna_payments/callbacks/notification"},"order_tax_amount":0}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby Klarna 0.9.2 (Klarna Solidus Gateway/0.1.1 Solidus/3.2.0.alpha Rails/6.1.4.1
+        Ruby/2.7.3)
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic VUcxMDAyMTlfY2VhMDNjNDgxYWM3OnBDZmxJWENsdjJJbWVNeEs=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 16 Sep 2021 14:31:34 GMT
+      Content-Type:
+      - application/json;charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - openresty
+      Vary:
+      - Accept-Encoding
+      Klarna-Correlation-Id:
+      - e5d25caa-7ed6-4ef1-917a-c35d8217443e
+      Render-Time:
+      - '20'
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Envoy-Upstream-Service-Time:
+      - '20'
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "session_id" : "75ba8231-20cc-3cec-ab78-cc4aafafb8b2",
+          "client_token" : "eyJhbGciOiJSUzI1NiIsImtpZCI6IjgyMzA1ZWJjLWI4MTEtMzYzNy1hYTRjLTY2ZWNhMTg3NGYzZCJ9.eyJzZXNzaW9uX2lkIjoiNzViYTgyMzEtMjBjYy0zY2VjLWFiNzgtY2M0YWFmYWZiOGIyIiwiYmFzZV91cmwiOiJodHRwczovL2pzLnBsYXlncm91bmQua2xhcm5hLmNvbS9uYS9rcCIsImRlc2lnbiI6ImtsYXJuYSIsImxhbmd1YWdlIjoiZW4iLCJwdXJjaGFzZV9jb3VudHJ5IjoiVVMiLCJlbnZpcm9ubWVudCI6InBsYXlncm91bmQiLCJtZXJjaGFudF9uYW1lIjoiTmVidWxhYiIsInNlc3Npb25fdHlwZSI6IlBBWU1FTlRTIiwiY2xpZW50X2V2ZW50X2Jhc2VfdXJsIjoiaHR0cHM6Ly9uYS5wbGF5Z3JvdW5kLmtsYXJuYWV2dC5jb20iLCJzY2hlbWUiOnRydWUsImV4cGVyaW1lbnRzIjpbeyJuYW1lIjoiaW4tYXBwLXNkay1jYXJkLXNjYW5uaW5nIiwidmFyaWF0ZSI6ImNhcmQtc2Nhbm5pbmctZW5hYmxlIiwicGFyYW1ldGVycyI6eyJ2YXJpYXRlX2lkIjoiY2FyZC1zY2FubmluZy1lbmFibGUifX1dLCJyZWdpb24iOiJ1cyIsInVhX2VuYWJsZWRfYW5kX29uZV9wbSI6dHJ1ZX0.MORFkqjwFBsEQuL73ear7_L295E12ZnSGxA9Ys2q-FDJwqzfoYs4gV2YNKnIemxHQaLTdk1vufo1zaCG-h_8A_hI_wrCS_m8cpgmk7H-WVkOxeNfnIrEGcHstguF7UjaOmTRnDo6v7HB0Ny9cgB5v1fMLcWAn8zYO7DlcghKfiUgF8OySgY8yIi6HH11HGwqy9QqaWf93N5u84HPpA9KOHikvsWh0B8qIQgAQEDBGCAuE-fLxHM80-G0QGoo8ZZPkpnO9Jck0s8g_iacN73IsjjTcjd16dsP4rkhWzB_R8KuDgjmSVgdQ51FTX2IK_fpWciP1Luh2BTtAGOE-Ctdqw",
+          "payment_method_categories" : [ {
+            "identifier" : "pay_over_time",
+            "name" : "4 interest-free payments",
+            "asset_urls" : {
+              "descriptive" : "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg",
+              "standard" : "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg"
+            }
+          } ]
+        }
+  recorded_at: Thu, 16 Sep 2021 14:31:34 GMT
+recorded_with: VCR 6.0.0

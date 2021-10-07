@@ -17,9 +17,7 @@ require 'spree/testing_support/order_walkthrough'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
-Dir[File.join(File.dirname(__FILE__), 'support/config/*.rb')].each { |f| require f }
-Dir[File.join(File.dirname(__FILE__), 'support/test_helpers/*.rb')].each { |f| require f }
-Dir[File.join(File.dirname(__FILE__), 'support/shared_contexts/*.rb')].each { |f| require f }
+Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |f| require f }
 
 # Will load Solidus core factory first and then the ones
 # defined in `lib/solidus_klarna_payments/testing_support/factories.rb`.

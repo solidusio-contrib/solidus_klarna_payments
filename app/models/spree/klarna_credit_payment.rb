@@ -52,25 +52,25 @@ module Spree
     end
 
     def accept!
-      self.fraud_status = "ACCEPTED"
+      self.fraud_status = 'ACCEPTED'
       save
     end
 
     def reject!
-      self.fraud_status = "REJECTED"
+      self.fraud_status = 'REJECTED'
       save
     end
 
     def accepted?
-      fraud_status == "ACCEPTED"
+      fraud_status == 'ACCEPTED'
     end
 
     def pending?
-      fraud_status == "PENDING"
+      fraud_status == 'PENDING'
     end
 
     def rejected?
-      fraud_status == "REJECTED"
+      fraud_status == 'REJECTED'
     end
 
     def error?
@@ -79,11 +79,11 @@ module Spree
 
     def fraud_status_icon
       case fraud_status
-      when "ACCEPTED"
+      when 'ACCEPTED'
         'ready'
-      when "PENDING"
+      when 'PENDING'
         'pending'
-      when "REJECTED"
+      when 'REJECTED'
         'void'
       else
         'void' if error?
@@ -92,11 +92,7 @@ module Spree
 
     def status_icon
       case status
-      when "AUTHORIZED"
-        'ready'
-      when "PART_CAPTURED"
-        'ready'
-      when "CAPTURED"
+      when 'AUTHORIZED', 'PART_CAPTURED', 'CAPTURED'
         'ready'
       else
         'void'
@@ -104,31 +100,31 @@ module Spree
     end
 
     def authorized?
-      status.present? && status == "AUTHORIZED"
+      status.present? && status == 'AUTHORIZED'
     end
 
     def part_captured?
-      status.present? && status == "PART_CAPTURED"
+      status.present? && status == 'PART_CAPTURED'
     end
 
     def captured?
-      status.present? && status.match("CAPTURED")
+      status.present? && status.match('CAPTURED')
     end
 
     def fully_captured?
-      status.present? && status == "CAPTURED"
+      status.present? && status == 'CAPTURED'
     end
 
     def cancelled?
-      status.present? && status == "CANCELLED"
+      status.present? && status == 'CANCELLED'
     end
 
     def expired?
-      status.present? && status == "EXPIRED"
+      status.present? && status == 'EXPIRED'
     end
 
     def closed?
-      status.present? && status == "CLOSED"
+      status.present? && status == 'CLOSED'
     end
 
     def expired?
