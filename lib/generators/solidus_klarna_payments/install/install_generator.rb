@@ -7,6 +7,10 @@ module SolidusKlarnaPayments
 
       class_option :auto_run_migrations, type: :boolean, default: false
 
+      def copy_initializer
+        template 'initializer.rb', 'config/initializers/solidus_klarna_payments.rb'
+      end
+
       def add_javascripts
         append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require spree/frontend/solidus_klarna_payments\n"
       end
@@ -20,13 +24,9 @@ module SolidusKlarnaPayments
         run 'bin/rails railties:install:migrations FROM=solidus_klarna_payments'
       end
 
-      def copy_initializer
-        template('initializer.rb', 'config/initializers/solidus_klarna_payments.rb')
-      end
-
       def mount_engine
-        insert_into_file File.join('config', 'routes.rb'), after: "Rails.application.routes.draw do\n" do
-          "mount SolidusKlarnaPayments::Engine, at: '/solidus_klarna_payments'\n"
+        insert_into_file File.join('config', 'routes.rb'), after: "mount Spree::Core::Engine, at: '/'\n" do
+          "  mount SolidusKlarnaPayments::Engine, at: '/solidus_klarna_payments'\n"
         end
       end
 
