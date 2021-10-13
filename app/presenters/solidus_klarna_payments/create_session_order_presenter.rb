@@ -12,7 +12,7 @@ module SolidusKlarnaPayments
     def serialized_order
       return @serialized_order if defined? @serialized_order
 
-      @serialized_order = order.to_klarna(klarna_payment_method.options[:country] || :us)
+      @serialized_order = order.to_klarna(klarna_payment_method.options[:country])
       @serialized_order.intent = 'TOKENIZE' if klarna_payment_method.preferred_tokenization
       @serialized_order.options = options
       @serialized_order.skip_personal_data = skip_personal_data

@@ -53,11 +53,6 @@ module SolidusKlarnaPayments
       render json: klarna_order.serialized_order.addresses
     end
 
-    def klarna_update_session
-      @order.klarna_payments.last.source.update(authorization_token: params[:token])
-      render json: { status: "ok" }
-    end
-
     private
 
     def klarna_order(skip_personal_data: false)
