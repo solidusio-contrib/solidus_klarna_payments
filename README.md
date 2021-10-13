@@ -29,8 +29,7 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 - Solidus 1.4.x
 - Solidus 2.0.x
 - Solidus 2.1.x
-
-We are currently working on the compatibility with the 2.x branch of Solidus.
+- Solidus 3.1.x
 
 ## Installation
 
@@ -60,7 +59,7 @@ There are two other things to configure. Set the payment method to "active" and 
 
 ![Configuration](docs/configuration2.png)
 
-*Note*: After you ran `klarna_gateway:install` the initializer in `config/initializers/klarna_gateway.rb` allows some configuration. It's usually not necessary to touch the file unless you're sure what you're doing.
+*Note*: After you ran `solidus_klarna_payments:install` the initializer in `config/initializers/solidus_klarna_payments.rb` allows some configuration. It's usually not necessary to touch the file unless you're sure what you're doing.
 
 ## Technical information
 
@@ -134,7 +133,7 @@ $(container).klarnaAuthorize({
 ### Klarna API documentation
 
 - [Klarna&#39;s API](https://developers.klarna.com/api/) is used by the payment gateway
-- [Javascript SDK](https://credit.klarnacdn.net/lib/v1/index.html) for the frontend part
+- [Javascript SDK](https://x.klarnacdn.net/kp/lib/v1/index.html) for the frontend part
 
 For more information see [Klarna&#39;s Developers Portal](https://developers.klarna.com/).
 
