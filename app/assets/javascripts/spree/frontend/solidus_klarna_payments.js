@@ -21,7 +21,9 @@
         paymentId: $(this).data("payment-method-id"),
         paymentMethodWrapper: $(".form-payment-method-klarna_credit"),
         preferredPaymentMethod: $(this).data("preferred-payment-method"),
-        sessionUrl: Spree.urlForDomain(Spree.pathFor("solidus_klarna_payments/sessions")),
+        sessionUrl: Spree.urlForDomain(
+          Spree.pathFor("solidus_klarna_payments/sessions")
+        ),
         submitButton: $("form.edit_order :submit"),
       },
       options
@@ -34,8 +36,7 @@
         method: "POST",
         url: settings.sessionUrl,
         data: { klarna_payment_method_id: settings.paymentId },
-      })
-        .success(function (response) {
+        success: function (response) {
           if (!response.token) {
             window.console &&
               console.log("[Klarna Payments] received empty token:", response);
@@ -53,15 +54,16 @@
           if (settings.loadDirectly || settings.klarnaSelected(settings)) {
             loadKlarnaForm();
           }
-        })
-        .error(function (response) {
+        },
+        error: function (response) {
           window.console &&
             console.log(
               "[Klarna Payments] received erroneous server response:",
               response
             );
           displayError();
-        });
+        },
+      });
     }
 
     function displayError() {
