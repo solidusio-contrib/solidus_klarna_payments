@@ -15,6 +15,7 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 - Supports partial captures, refunds, and partial refunds
 - Configurable design
 - [ActiveMerchant](http://activemerchant.org) interface for Klarna Payments
+- Tokenization to enable subscriptions
 
 ### Limitations
 
@@ -54,6 +55,8 @@ After the installation, create a new payment method and select `Spree::PaymentMe
 ![Configuration](docs/configuration.png)
 
 The "country" option is mandatory and refers to the region the account is associated with. In the example above it's `us` for the USA, other values would be `uk` for the United Kingdom and `de` for Germany.
+
+The "tokenization" option is false by default and it is needed to enable the tokenization feature for this payment method. This option will change the flow and allowing the customer to complete the checkout making a subscription. You can found more information [here](https://docs.klarna.com/klarna-payments/api-call-descriptions/place-order-token/)
 
 There are two other things to configure. Set the payment method to "active" and only enable it in the frontend. Some payment methods can be used in the backend by the merchant. As this is not appropriate for Klarna Payments, it should be disabled. You can also configure to automatically capture the payments when the customer confirms their order.
 

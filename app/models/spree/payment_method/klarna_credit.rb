@@ -5,6 +5,7 @@ module Spree
     class KlarnaCredit < Spree::PaymentMethod
       preference :api_key, :string
       preference :api_secret, :string
+      preference :tokenization, :boolean
       preference :country, :string, default: 'us'
       preference :payment_method, :string
 
