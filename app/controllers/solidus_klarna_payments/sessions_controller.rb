@@ -50,7 +50,7 @@ module SolidusKlarnaPayments
         { email: current_order.email }.merge(v)
       end
 
-      render json: klarna_order.addresses
+      render json: klarna_order.serialized_order.addresses
     end
 
     def klarna_update_session
@@ -61,22 +61,16 @@ module SolidusKlarnaPayments
     private
 
     def klarna_order(skip_personal_data: false)
-      order = current_order.to_klarna(klarna_payment_method.options[:country])
-      order.options = klarna_options
-      order.skip_personal_data = skip_personal_data
-      order.design = klarna_payment_method.options[:design]
-      order.store = current_store
-      order
+      SolidusKlarnaPayments::CreateSessionOrderPresenter.new(
+        order: current_order,
+        klarna_payment_method: klarna_payment_method,
+        store: current_store,
+        skip_personal_data: skip_personal_data
+      )
     end
 
     def klarna_payment_method
       @klarna_payment_method ||= ::Spree::PaymentMethod.find_by(id: klarna_payment_method_id, type: 'Spree::PaymentMethod::KlarnaCredit')
-    end
-
-    def klarna_options
-      klarna_payment_method.options.select do |key, value|
-        key.to_s.start_with?("color_", "radius_") && value.present?
-      end
     end
 
     def klarna_payment_method_id

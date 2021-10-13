@@ -1,0 +1,83 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api-na.playground.klarna.com/payments/v1/sessions
+    body:
+      encoding: UTF-8
+      string: '{"purchase_country":"US","purchase_currency":"USD","locale":"en-US","order_amount":11000,"billing_address":{"email":"email1@example.com","organization_name":"Company","given_name":"John","family_name":"Von
+        Doe","street_address":"PO Box 1337","street_address2":"Northwest","postal_code":"10001","city":"Herndon","region":"AL","phone":"555-555-0199","country":"US"},"shipping_address":{"email":"email1@example.com","organization_name":"Company","given_name":"John","family_name":"Von
+        Doe","street_address":"A Different Road","street_address2":"Northwest","postal_code":"10002","city":"Herndon","region":"AL","phone":"555-555-0199","country":"US"},"order_lines":[{"reference":"SKU-1","name":"Product
+        #1 - 3215","quantity":1,"unit_price":1000,"tax_rate":0,"total_amount":1000,"total_tax_amount":0,"image_url":null,"product_url":"http://www.example1.com/products/1"},{"type":"shipping_fee","reference":"H07632438847","name":"UPS
+        Ground","quantity":1,"unit_price":10000,"total_amount":10000,"total_tax_amount":0,"tax_rate":0}],"merchant_reference1":"R059366405","options":{},"merchant_urls":{"confirmation":"http://www.example1.com/orders/R059366405","notification":"http://www.example1.com/solidus_klarna_payments/callbacks/notification"},"order_tax_amount":0}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby Klarna 0.9.3 (Klarna Solidus Gateway/0.1.1 Solidus/3.2.0.alpha Rails/6.1.4.1
+        Ruby/2.7.3)
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic VUcxMDAyMTlfY2VhMDNjNDgxYWM3OnBDZmxJWENsdjJJbWVNeEs=
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 13 Oct 2021 13:56:17 GMT
+      Content-Type:
+      - application/json;charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - openresty
+      Vary:
+      - Accept-Encoding
+      Klarna-Correlation-Id:
+      - ddeaeb01-59d5-4939-a65f-b9905aca652d
+      Render-Time:
+      - '10'
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Envoy-Upstream-Service-Time:
+      - '10'
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "session_id" : "c9b2dd0d-6aeb-33e5-b8e1-3982b56af15b",
+          "client_token" : "eyJhbGciOiJSUzI1NiIsImtpZCI6IjgyMzA1ZWJjLWI4MTEtMzYzNy1hYTRjLTY2ZWNhMTg3NGYzZCJ9.eyJzZXNzaW9uX2lkIjoiYzliMmRkMGQtNmFlYi0zM2U1LWI4ZTEtMzk4MmI1NmFmMTViIiwiYmFzZV91cmwiOiJodHRwczovL2pzLnBsYXlncm91bmQua2xhcm5hLmNvbS9uYS9rcCIsImRlc2lnbiI6ImtsYXJuYSIsImxhbmd1YWdlIjoiZW4iLCJwdXJjaGFzZV9jb3VudHJ5IjoiVVMiLCJlbnZpcm9ubWVudCI6InBsYXlncm91bmQiLCJtZXJjaGFudF9uYW1lIjoiTmVidWxhYiIsInNlc3Npb25fdHlwZSI6IlBBWU1FTlRTIiwiY2xpZW50X2V2ZW50X2Jhc2VfdXJsIjoiaHR0cHM6Ly9uYS5wbGF5Z3JvdW5kLmtsYXJuYWV2dC5jb20iLCJzY2hlbWUiOnRydWUsImV4cGVyaW1lbnRzIjpbeyJuYW1lIjoiaW4tYXBwLXNkay1jYXJkLXNjYW5uaW5nIiwidmFyaWF0ZSI6ImNhcmQtc2Nhbm5pbmctZW5hYmxlIiwicGFyYW1ldGVycyI6eyJ2YXJpYXRlX2lkIjoiY2FyZC1zY2FubmluZy1lbmFibGUifX0seyJuYW1lIjoia3AtY2xpZW50LW9uZS1vZmZlcmluZy12ZXJzaW9uIiwidmFyaWF0ZSI6InYxLXN0YWdpbmctODMwZjc4ZTkwZmU4YWVjMDA4OTE0MDVkZmMxNDgyNCIsInBhcmFtZXRlcnMiOnsidmFyaWF0ZV9pZCI6InYxLXN0YWdpbmctODMwZjc4ZTkwZmU4YWVjMDA4OTE0MDVkZmMxNDgyNCJ9fV0sInJlZ2lvbiI6InVzIiwidWFfZW5hYmxlZF9hbmRfb25lX3BtIjp0cnVlfQ.kjmO7rYfNy6sbkjiT40LBT8Yj1eXwjKtZzlujOdYHmEjCVJNquaLcOuYOO0JWua72F2KCHZY0lRtmncAXP0XCuVw8ri0VEgxIxDGsSW-IHEQI83MTxblQ4YuwH9-DUsEg9ebFQ7cbhAZycS-0Pd8xtmlevyHlodGAgFvrQEG73yM26RPMIx-qfxcXzMRwAhWzMTpDGj73VQxPM7ERAfkpCToTanU_CSA5XU3Em5-_DAdgeVhDMNvvHvHM-eV_YkvmsFMH6Gn6YLu9eQk7NGEoOa9nx9ue-g-8HtNSCf1vTWMt5rMaNNVFkYnlnTU5t6Z_fEtbFubrZI-Z0_IvizaUQ",
+          "payment_method_categories" : [ {
+            "identifier" : "pay_over_time",
+            "name" : "4 interest-free payments",
+            "asset_urls" : {
+              "descriptive" : "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg",
+              "standard" : "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg"
+            }
+          } ],
+          "descriptor" : {
+            "tagline" : "Choose your way to pay",
+            "asset_urls" : {
+              "descriptive" : "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg",
+              "standard" : "https://x.klarnacdn.net/payment-method/assets/badges/generic/klarna.svg"
+            }
+          }
+        }
+  recorded_at: Wed, 13 Oct 2021 13:56:17 GMT
+recorded_with: VCR 6.0.0
