@@ -64,14 +64,43 @@ describe SolidusKlarnaPayments::PlaceOrderWithCustomerTokenService do
         .and_return({ serialized_customer_token: 'yes' })
 
       allow(customer_token_response).to receive(:success?).and_return(true)
+
+    context 'when the retrieve customer token method returns the customer token' do
+      before do
+        allow(SolidusKlarnaPayments.configuration.retrieve_customer_token_service_class)
+          .to receive(:call)
+          .and_return('CUSTOMER_TOKEN')
+      end
+
+      it 'calls the retrieve customer token class' do
+        service
+
+        expect(SolidusKlarnaPayments.configuration.retrieve_customer_token_service_class)
+          .to have_received(:call)
+      end
+
+      it 'does not call the fetch customer token API' do
+        service
+
+        expect(klarna_payment_client)
+          .not_to have_received(:customer_token)
+      end
     end
 
-    it 'calls the Klarna payment customer token method' do
-      service
+    context 'when the retrieve customer token method returns nil' do
+      before do
+        allow(SolidusKlarnaPayments.configuration.retrieve_customer_token_service_class)
+          .to receive(:call)
+          .and_return(nil)
+      end
 
-      expect(klarna_payment_client)
-        .to have_received(:customer_token)
-        .with(authorization_token, { serialized_customer_token: 'yes' })
+      it 'calls the Klarna payment customer token method' do
+        service
+
+        expect(klarna_payment_client)
+          .to have_received(:customer_token)
+          .with(authorization_token, { serialized_customer_token: 'yes' })
+      end
     end
 
     it 'calls the Klarna customer token place order method' do

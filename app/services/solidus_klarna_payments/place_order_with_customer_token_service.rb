@@ -25,8 +25,19 @@ module SolidusKlarnaPayments
     private
 
     def customer_token
-      return @customer_token if @customer_token
+      customer_token = SolidusKlarnaPayments
+                       .configuration
+                       .retrieve_customer_token_service_class
+                       .call(order: order)
 
+      customer_token = fetch_customer_token if customer_token.blank?
+
+      raise FetchCustomerTokenError if customer_token.blank?
+
+      customer_token
+    end
+
+    def fetch_customer_token
       @customer_token_response = Klarna
                                  .client(:payment)
                                  .customer_token(
@@ -34,9 +45,16 @@ module SolidusKlarnaPayments
                                    customer_token_params
                                  )
 
-      raise FetchCustomerTokenError unless @customer_token_response.success?
+      customer_token = begin
+        @customer_token_response.token_id
+      rescue NoMethodError
+        nil
+      end
 
-      @customer_token_response.token_id
+      return customer_token unless customer_token
+
+
+      customer_token
     end
 
     def customer_token_params
@@ -56,7 +74,7 @@ module SolidusKlarnaPayments
     end
 
     def payment_method
-      @payment_method ||= payment_source.payment_method
+      @payment_method ||= payment_source&.payment_method || ::Spree::PaymentMethod::KlarnaCredit.active.last
     end
 
     attr_reader :order, :payment_source
