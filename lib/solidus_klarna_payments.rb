@@ -20,6 +20,7 @@ module SolidusKlarnaPayments
       yield configuration
     end
 
+    delegate :store_customer_token_service_class, to: :configuration
     delegate :retrieve_customer_token_service_class, to: :configuration
   end
 end

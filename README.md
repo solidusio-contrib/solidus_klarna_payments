@@ -69,6 +69,11 @@ There are two other things to configure. Set the payment method to "active" and 
 By default, the extension gets the user customer token from the `Spree::User` model.
 If you want to override this logic, you can provide your own `retrieve_customer_token_service_class`.
 
+### Customize how to store the user customer token
+
+By default, the extension stores the user customer token inside the `Spree::User` model.
+If you want to override this logic, you can provide your own `store_customer_token_service_class`.
+
 To know more about the customer token follow this [link](https://docs.klarna.com/klarna-payments/api-call-descriptions/create-customer-token/).
 
 ## Technical information
