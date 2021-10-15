@@ -3,32 +3,12 @@
 module SolidusKlarnaPayments
   class SessionsController < ::Spree::StoreController
     def create
-      if current_order.klarna_session_expired?
-        klarna_payment_method.gateway.create_session(klarna_order(skip_personal_data: true).to_hash).tap do |response|
-          raise response.inspect unless response.success?
-
-          current_order.update_klarna_session(
-            session_id: response.session_id,
-            client_token: response.client_token
-          )
-        end
-      else
-        klarna_payment_method.gateway.update_session(
-          current_order.klarna_session_id,
-          klarna_order(skip_personal_data: true).to_hash
-        ).tap do |response|
-          raise response.inspect unless response.success?
-
-          current_order.update_klarna_session_time
-        end
-      end
-
-      if current_order.klarna_client_token.blank?
-        raise "Could not create or update Klarna session for order '#{current_order.number}'."
-      end
-
       render json: {
-        token: current_order.reload.klarna_client_token,
+        token: SolidusKlarnaPayments::CreateOrUpdateKlarnaSessionService.call(
+          order: current_order,
+          klarna_payment_method: klarna_payment_method,
+          store: current_store
+        )
       }
     end
 
@@ -55,12 +35,12 @@ module SolidusKlarnaPayments
 
     private
 
-    def klarna_order(skip_personal_data: false)
+    def klarna_order
       SolidusKlarnaPayments::CreateSessionOrderPresenter.new(
         order: current_order,
         klarna_payment_method: klarna_payment_method,
         store: current_store,
-        skip_personal_data: skip_personal_data
+        skip_personal_data: false
       )
     end
 
