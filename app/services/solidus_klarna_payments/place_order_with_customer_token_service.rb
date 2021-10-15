@@ -53,6 +53,10 @@ module SolidusKlarnaPayments
 
       return customer_token unless customer_token
 
+      SolidusKlarnaPayments
+        .configuration
+        .store_customer_token_service_class
+        .call(order: order, customer_token: customer_token)
 
       customer_token
     end

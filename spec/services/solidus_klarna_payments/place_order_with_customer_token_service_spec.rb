@@ -65,6 +65,10 @@ describe SolidusKlarnaPayments::PlaceOrderWithCustomerTokenService do
 
       allow(customer_token_response).to receive(:success?).and_return(true)
 
+      allow(SolidusKlarnaPayments.configuration.store_customer_token_service_class)
+        .to receive(:call)
+    end
+
     context 'when the retrieve customer token method returns the customer token' do
       before do
         allow(SolidusKlarnaPayments.configuration.retrieve_customer_token_service_class)
@@ -109,6 +113,14 @@ describe SolidusKlarnaPayments::PlaceOrderWithCustomerTokenService do
       expect(klarna_customer_token_client)
         .to have_received(:place_order)
         .with('CUSTOMER_TOKEN', { serialized_order: 'yes' })
+    end
+
+    it 'calls the store customer token class' do
+      service
+
+      expect(SolidusKlarnaPayments.configuration.store_customer_token_service_class)
+        .to have_received(:call)
+        .with(order: order, customer_token: 'CUSTOMER_TOKEN')
     end
   end
 end
