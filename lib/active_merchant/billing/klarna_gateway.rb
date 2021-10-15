@@ -45,10 +45,19 @@ module ActiveMerchant
 
       def authorize(_amount, payment_source, options = {})
         order = order_from_authorization(options)
-        region = payment_source.payment_method.options[:country]
-        serializer = ::SolidusKlarnaPayments::OrderSerializer.new(order, region)
 
-        response = Klarna.client(:payment).place_order(payment_source.authorization_token, serializer.to_hash)
+        response = if payment_source.payment_method.preferred_tokenization
+                     ::SolidusKlarnaPayments::PlaceOrderWithCustomerTokenService.call(
+                       order: order,
+                       payment_source: payment_source
+                     )
+                   else
+                     ::SolidusKlarnaPayments::PlaceOrderWithAuthorizationTokenService.call(
+                       order: order,
+                       payment_source: payment_source
+                     )
+                   end
+
         update_payment_source_from_authorization(payment_source, response, order)
         update_order(response, order)
 

@@ -80,7 +80,7 @@ module SolidusKlarnaPayments
       return shipping_address if order.billing_address.nil?
 
       {
-        email: @order.email
+        email: order.email
       }.merge(
         AddressSerializer.new(order.billing_address).to_hash
       )
@@ -90,7 +90,7 @@ module SolidusKlarnaPayments
       return nil if order.shipping_address.nil?
 
       {
-        email: @order.email
+        email: order.email
       }.merge(
         AddressSerializer.new(order.shipping_address).to_hash
       )
