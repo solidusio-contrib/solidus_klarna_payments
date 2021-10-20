@@ -64,6 +64,22 @@ There are two other things to configure. Set the payment method to "active" and 
 
 *Note*: After you ran `solidus_klarna_payments:install` the initializer in `config/initializers/solidus_klarna_payments.rb` allows some configuration. It's usually not necessary to touch the file unless you're sure what you're doing.
 
+### Guest checkout
+
+Tokenization require a user to be present to allow them to be managed after they are purchased.
+
+Because of this, you must disable guest checkout if you want to use the `klarna payment tokenization flow`.
+
+An example would be adding this to the registration page:
+
+`config/initializers/spree.rb`
+
+```ruby
+Spree.config do |config|
+  config.allow_guest_checkout = false
+end
+```
+
 ### Customize how to retrieve the user customer token locally
 
 By default, the extension gets the user customer token from the `Spree::User` model.

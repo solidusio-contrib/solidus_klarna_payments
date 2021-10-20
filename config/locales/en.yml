@@ -46,6 +46,7 @@ en:
     klarna:
       can_not_test_api_connection: API can not be tested. Credentials are missing
       invalid_api_credentials: Klarna configuration data is invalid
+      disable_guest_checkout: flow requires the guest checkout disabled
       valid_api_credentials: Klarna Credentials have been validated. API configuration completed!
   klarna:
     specify_credentials: "Please specify %{missing_preferece} to finish your configuration"

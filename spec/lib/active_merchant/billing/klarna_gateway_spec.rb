@@ -105,7 +105,6 @@ describe ActiveMerchant::Billing::KlarnaGateway do
     context 'with the tokenization flow enabled' do
       before do
         payment_method.preferred_tokenization = true
-        payment_method.save!
 
         allow(::SolidusKlarnaPayments::PlaceOrderWithCustomerTokenService)
           .to receive(:call)

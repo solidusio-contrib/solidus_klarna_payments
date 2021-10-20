@@ -15,7 +15,7 @@ RSpec.describe Spree::Admin::PaymentMethodsController do
             preferred_country: 'us',
             preferred_api_key: 'API_KEY',
             preferred_api_secret: 'API_SECRET',
-            preferred_test_mode: '0'
+            preferred_test_mode: '0',
           }
         }
       )
@@ -27,6 +27,10 @@ RSpec.describe Spree::Admin::PaymentMethodsController do
 
     before do
       login_as create(:admin_user)
+
+      allow(SolidusKlarnaPayments::ValidateKlarnaCredentialsService)
+        .to receive(:call)
+        .and_return(true)
     end
 
     context 'when the validation returns true' do
@@ -89,11 +93,6 @@ RSpec.describe Spree::Admin::PaymentMethodsController do
 
     context 'when the payment method type is not klarna' do
       let(:type) { 'Spree::PaymentMethod::CreditCard' }
-
-      before do
-        allow(SolidusKlarnaPayments::ValidateKlarnaCredentialsService)
-          .to receive(:call)
-      end
 
       it 'does not call the validate klarna credentials service' do
         make_request

@@ -19,7 +19,8 @@ module SolidusKlarnaPayments
               :preferred_api_key,
               :preferred_api_secret,
               :preferred_test_mode,
-              :preferred_country
+              :preferred_country,
+              :preferred_tokenization
             )
         end
 

@@ -13,7 +13,7 @@ module SolidusKlarnaPayments
       return @serialized_order if defined? @serialized_order
 
       @serialized_order = order.to_klarna(klarna_payment_method.options[:country])
-      @serialized_order.intent = 'TOKENIZE' if klarna_payment_method.preferred_tokenization
+      @serialized_order.intent = 'TOKENIZE' if tokenization_available?
       @serialized_order.options = options
       @serialized_order.skip_personal_data = skip_personal_data
       @serialized_order.design = klarna_payment_method.options[:design]
@@ -29,6 +29,10 @@ module SolidusKlarnaPayments
       klarna_payment_method.options.select do |key, value|
         key.to_s.start_with?('color_', 'radius_') && value.present?
       end
+    end
+
+    def tokenization_available?
+      klarna_payment_method.preferred_tokenization && order.user.present?
     end
 
     attr_reader :order, :klarna_payment_method, :store, :skip_personal_data
