@@ -3,7 +3,7 @@
 module SolidusKlarnaPayments
   class OrderSerializer
     attr_reader :order, :region
-    attr_accessor :options, :design, :skip_personal_data, :store
+    attr_accessor :options, :design, :skip_personal_data, :store, :intent
 
     def initialize(order, region = :us)
       @order = order
@@ -13,7 +13,7 @@ module SolidusKlarnaPayments
 
     def to_hash
       strategy.adjust_with(order) do
-        config
+        order_information
       end
     end
 
@@ -36,7 +36,7 @@ module SolidusKlarnaPayments
 
     private
 
-    def config
+    def order_information
       {
         purchase_country: purchase_country,
         purchase_currency: order.currency,
@@ -50,7 +50,8 @@ module SolidusKlarnaPayments
         options: options,
         design: design,
         merchant_urls: merchant_urls,
-      }.delete_if { |_k, v| v.nil? }
+        intent: intent
+      }.delete_if { |_key, value| value.nil? }
     end
 
     def purchase_country
@@ -79,7 +80,7 @@ module SolidusKlarnaPayments
       return shipping_address if order.billing_address.nil?
 
       {
-        email: @order.email
+        email: order.email
       }.merge(
         AddressSerializer.new(order.billing_address).to_hash
       )
@@ -89,7 +90,7 @@ module SolidusKlarnaPayments
       return nil if order.shipping_address.nil?
 
       {
-        email: @order.email
+        email: order.email
       }.merge(
         AddressSerializer.new(order.shipping_address).to_hash
       )

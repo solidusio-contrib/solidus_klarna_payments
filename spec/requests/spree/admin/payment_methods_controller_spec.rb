@@ -3,91 +3,103 @@
 require 'spec_helper'
 
 RSpec.describe Spree::Admin::PaymentMethodsController do
-  describe '#create' do
-    subject(:request) do
-      post(
-        '/admin/payment_methods',
-        params: {
-          payment_method: {
-            name: 'Test Klarna Method',
-            type: 'Spree::PaymentMethod::KlarnaCredit',
-          },
-        }
-      )
-    end
-
-    before { login_as create(:admin_user) }
-
-    it 'creates a Klarna payment method' do
-      expect {
-        request
-      }.to change(Spree::PaymentMethod, :count).by(1)
-    end
-  end
-
   describe '#update' do
-    subject(:request) do
+    subject(:make_request) do
       patch(
         "/admin/payment_methods/#{payment_method.id}",
-        params: build_update_attributes(
-          payment_method,
-          preferred_api_key: preferred_api_key,
-          preferred_api_secret: preferred_api_secret
-        )
+        params: {
+          id: payment_method.to_param,
+          payment_method: {
+            name: 'Test Klarna Method',
+            type: type,
+            preferred_country: 'us',
+            preferred_api_key: 'API_KEY',
+            preferred_api_secret: 'API_SECRET',
+            preferred_test_mode: '0',
+          }
+        }
       )
     end
 
     let(:payment_method) { create(:klarna_credit_payment_method) }
 
-    before { login_as create(:admin_user) }
+    let(:type) { 'Spree::PaymentMethod::KlarnaCredit' }
 
-    context 'when passing empty credentials', vcr: 'payment methods controller update with no credentials' do
-      let(:preferred_api_key) { nil }
-      let(:preferred_api_secret) { nil }
+    before do
+      login_as create(:admin_user)
 
-      before { request }
-
-      it 'renders an error' do
-        expect(flash[:error]).to match(/can not be tested/)
-        expect(flash[:success]).to match(/successfully updated/)
-      end
+      allow(SolidusKlarnaPayments::ValidateKlarnaCredentialsService)
+        .to receive(:call)
+        .and_return(true)
     end
 
-    context 'when passing invalid credentials' do
-      let(:preferred_api_key) { 'invalid' }
-      let(:preferred_api_secret) { 'invalid' }
-
-      before { request }
-
-      it 'renders an error' do
-        expect(flash[:error]).to match(/invalid/)
-        expect(flash[:success]).to match(/successfully updated/)
+    context 'when the validation returns true' do
+      before do
+        allow(SolidusKlarnaPayments::ValidateKlarnaCredentialsService)
+          .to receive(:call)
+          .and_return(true)
       end
-    end
 
-    context 'when passing valid credentials' do
-      let(:preferred_api_key) { klarna_credentials[:key] }
-      let(:preferred_api_secret) { klarna_credentials[:secret] }
+      it 'calls the validate klarna credentials service' do
+        make_request
 
-      before { request }
+        expect(SolidusKlarnaPayments::ValidateKlarnaCredentialsService)
+          .to have_received(:call)
+          .with(
+            api_key: 'API_KEY',
+            api_secret: 'API_SECRET',
+            test_mode: '0',
+            country: 'us'
+          )
+      end
 
       it 'renders a success message' do
+        make_request
+
         expect(flash[:notice]).to match(/configuration completed/)
         expect(flash[:success]).to match(/successfully updated/)
       end
     end
 
-    private
+    context 'when the validation raises a missing credential exception' do
+      before do
+        allow(SolidusKlarnaPayments::ValidateKlarnaCredentialsService)
+          .to receive(:call)
+          .and_raise(::SolidusKlarnaPayments::ValidateKlarnaCredentialsService::MissingCredentialsError)
+      end
 
-    def build_update_attributes(payment_method, attributes)
-      {
-        payment_method: {
-          name: 'Test Klarna Method',
-          type: 'Spree::PaymentMethod::KlarnaCredit',
-          preferred_country: 'us'
-        }.merge(attributes),
-        id: payment_method.to_param,
-      }
+      it 'renders the cannot be tested error' do
+        make_request
+
+        expect(flash[:error]).to match(/can not be tested/)
+        expect(flash[:success]).to match(/successfully updated/)
+      end
+    end
+
+    context 'when the validation returns false' do
+      before do
+        allow(SolidusKlarnaPayments::ValidateKlarnaCredentialsService)
+          .to receive(:call)
+          .and_return(false)
+      end
+
+      it 'renders the invalid credentials error' do
+        make_request
+
+        expect(flash[:error]).to match(/invalid/)
+        expect(flash[:success]).to match(/successfully updated/)
+      end
+    end
+
+    context 'when the payment method type is not klarna' do
+      let(:type) { 'Spree::PaymentMethod::CreditCard' }
+
+      it 'does not call the validate klarna credentials service' do
+        make_request
+
+        expect(SolidusKlarnaPayments::ValidateKlarnaCredentialsService)
+          .not_to have_received(:call)
+      end
     end
   end
 end

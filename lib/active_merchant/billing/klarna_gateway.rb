@@ -15,7 +15,7 @@ module ActiveMerchant
 
         Klarna.configure do |config|
           if @options[:api_secret].blank? || @options[:api_key].blank?
-            raise ::SolidusKlarnaPayments::InvalidConfiguration, "Missing mandatory API credentials"
+            raise ::SolidusKlarnaPayments::InvalidConfiguration, 'Missing mandatory API credentials'
           end
 
           config.environment = @options[:test_mode] ? 'test' : 'production'
@@ -44,12 +44,20 @@ module ActiveMerchant
       end
 
       def authorize(_amount, payment_source, options = {})
-        # TODO: check if we get a better handle for the order
-        order = Spree::Order.find_by(number: options[:order_id].split("-").first)
-        region = payment_source.payment_method.options[:country]
-        serializer = ::SolidusKlarnaPayments::OrderSerializer.new(order, region)
+        order = order_from_authorization(options)
 
-        response = Klarna.client(:payment).place_order(payment_source.authorization_token, serializer.to_hash)
+        response = if payment_source.payment_method.preferred_tokenization && order.user.present?
+                     ::SolidusKlarnaPayments::PlaceOrderWithCustomerTokenService.call(
+                       order: order,
+                       payment_source: payment_source
+                     )
+                   else
+                     ::SolidusKlarnaPayments::PlaceOrderWithAuthorizationTokenService.call(
+                       order: order,
+                       payment_source: payment_source
+                     )
+                   end
+
         update_payment_source_from_authorization(payment_source, response, order)
         update_order(response, order)
 
@@ -262,6 +270,12 @@ module ActiveMerchant
 
       private
 
+      def order_from_authorization(options)
+        return options[:originator].order if options[:originator].respond_to?(:order)
+
+        Spree::Order.find_by!(number: options[:order_id]&.split('-')&.first)
+      end
+
       def update_order(response, order)
         if response.success?
           order.update(
@@ -311,7 +325,7 @@ module ActiveMerchant
       end
 
       def readable_error(response)
-        I18n.t(response.error_code.to_s.downcase, scope: "klarna.gateway_errors", default: "Klarna Gateway: Please check your payment method.")
+        I18n.t(response.error_code.to_s.downcase, scope: 'klarna.gateway_errors', default: 'Klarna Gateway: Please check your payment method.')
       end
     end
   end

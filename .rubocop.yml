@@ -8,3 +8,6 @@ AllCops:
   Exclude:
     - sandbox/**/*
     - spec/dummy/**/*
+
+RSpec/MessageSpies:
+  EnforcedStyle: have_received

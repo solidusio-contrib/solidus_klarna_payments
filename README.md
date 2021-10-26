@@ -15,6 +15,7 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 - Supports partial captures, refunds, and partial refunds
 - Configurable design
 - [ActiveMerchant](http://activemerchant.org) interface for Klarna Payments
+- Tokenization to enable subscriptions
 
 ### Limitations
 
@@ -29,8 +30,7 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 - Solidus 1.4.x
 - Solidus 2.0.x
 - Solidus 2.1.x
-
-We are currently working on the compatibility with the 2.x branch of Solidus.
+- Solidus 3.1.x
 
 ## Installation
 
@@ -56,11 +56,41 @@ After the installation, create a new payment method and select `Spree::PaymentMe
 
 The "country" option is mandatory and refers to the region the account is associated with. In the example above it's `us` for the USA, other values would be `uk` for the United Kingdom and `de` for Germany.
 
+The "tokenization" option is false by default and it is needed to enable the tokenization feature for this payment method. This option will change the flow and allowing the customer to complete the checkout making a subscription. You can found more information [here](https://docs.klarna.com/klarna-payments/api-call-descriptions/place-order-token/)
+
 There are two other things to configure. Set the payment method to "active" and only enable it in the frontend. Some payment methods can be used in the backend by the merchant. As this is not appropriate for Klarna Payments, it should be disabled. You can also configure to automatically capture the payments when the customer confirms their order.
 
 ![Configuration](docs/configuration2.png)
 
-*Note*: After you ran `klarna_gateway:install` the initializer in `config/initializers/klarna_gateway.rb` allows some configuration. It's usually not necessary to touch the file unless you're sure what you're doing.
+*Note*: After you ran `solidus_klarna_payments:install` the initializer in `config/initializers/solidus_klarna_payments.rb` allows some configuration. It's usually not necessary to touch the file unless you're sure what you're doing.
+
+### Guest checkout
+
+Tokenization require a user to be present to allow them to be managed after they are purchased.
+
+Because of this, you must disable guest checkout if you want to use the `klarna payment tokenization flow`.
+
+An example would be adding this to the registration page:
+
+`config/initializers/spree.rb`
+
+```ruby
+Spree.config do |config|
+  config.allow_guest_checkout = false
+end
+```
+
+### Customize how to retrieve the user customer token locally
+
+By default, the extension gets the user customer token from the `Spree::User` model.
+If you want to override this logic, you can provide your own `retrieve_customer_token_service_class`.
+
+### Customize how to store the user customer token
+
+By default, the extension stores the user customer token inside the `Spree::User` model.
+If you want to override this logic, you can provide your own `store_customer_token_service_class`.
+
+To know more about the customer token follow this [link](https://docs.klarna.com/klarna-payments/api-call-descriptions/create-customer-token/).
 
 ## Technical information
 
@@ -134,7 +164,7 @@ $(container).klarnaAuthorize({
 ### Klarna API documentation
 
 - [Klarna&#39;s API](https://developers.klarna.com/api/) is used by the payment gateway
-- [Javascript SDK](https://credit.klarnacdn.net/lib/v1/index.html) for the frontend part
+- [Javascript SDK](https://x.klarnacdn.net/kp/lib/v1/index.html) for the frontend part
 
 For more information see [Klarna&#39;s Developers Portal](https://developers.klarna.com/).
 

@@ -5,6 +5,7 @@ module Spree
     class KlarnaCredit < Spree::PaymentMethod
       preference :api_key, :string
       preference :api_secret, :string
+      preference :tokenization, :boolean
       preference :country, :string, default: 'us'
       preference :payment_method, :string
 
@@ -28,6 +29,8 @@ module Spree
         :preferred_color_header, :preferred_color_border_selected, :preferred_color_text, :preferred_color_text_secondary,
         format: { with: /\A#[0-9a-fA-F]{6}\z/ }, allow_blank: true
       validates :preferred_radius_border, numericality: { only_integer: true }, allow_blank: true
+
+      validate :tokenization_flow
 
       # Remove the server setting from Gateway
       def defined_preferences
@@ -89,6 +92,12 @@ module Spree
 
       def spree_order(options)
         Spree::Order.find_by(number: options[:order_id].split("-").first)
+      end
+
+      def tokenization_flow
+        return unless preferred_tokenization && Spree::Config[:allow_guest_checkout]
+
+        errors.add(:preferred_tokenization, I18n.t('spree.klarna.disable_guest_checkout'))
       end
     end
   end

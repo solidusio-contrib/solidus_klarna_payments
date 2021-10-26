@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 SolidusKlarnaPayments.configure do |config|
+  # A class that extend SolidusKlarnaPayments::BaseService, respond to .call
+  # accepting a Spree::Order and return true if the customer token is saved successfully.
+  # config.store_customer_token_service_class = 'SolidusKlarnaPayments::StoreCustomerTokenService'
+
+  # A class that extend SolidusKlarnaPayments::BaseService, respond to .call,
+  # accepting a Spree::Order and return a string that represent the user customer token.
+  # Return nil if the customer token is not available
+  # config.retrieve_customer_token_service_class = 'SolidusKlarnaPayments::RetrieveCustomerTokenService'
+
   ## Generate the completion route dynamically
   #
   # Expected:
