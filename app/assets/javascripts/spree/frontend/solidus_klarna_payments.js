@@ -24,6 +24,9 @@
         sessionUrl: Spree.urlForDomain(
           Spree.pathFor("solidus_klarna_payments/sessions")
         ),
+        orderAddressesUrl: Spree.urlForDomain(
+          Spree.pathFor("solidus_klarna_payments/sessions/order_addresses")
+        ),
         submitButton: $("form.edit_order :submit"),
       },
       options
@@ -105,9 +108,7 @@
       // First get the current, serialized order
       Spree.ajax({
         method: "GET",
-        url: Spree.urlForDomain(
-          Spree.pathFor("solidus_klarna_payments/sessions/order_addresses")
-        ),
+        url: settings.orderAddressesUrl,
         dataType: "json",
         data: { klarna_payment_method_id: settings.paymentId },
       }).done(function (result) {
