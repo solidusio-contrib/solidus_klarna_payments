@@ -33,7 +33,7 @@ RSpec.describe SolidusKlarnaPayments::CreateSessionOrderPresenter do
         let(:user) { nil }
 
         it 'returns the hash without the intent set' do
-          expect(serialized_order.to_hash).not_to include('intent')
+          expect(serialized_order.to_hash[:intent]).to eq('BUY')
         end
       end
 
@@ -47,10 +47,10 @@ RSpec.describe SolidusKlarnaPayments::CreateSessionOrderPresenter do
     end
 
     context 'when the payment method tokenize is set to false' do
-      let(:user) { nil }
+      let(:user) { create(:user) }
 
       it 'returns the hash without the intent set' do
-        expect(serialized_order.to_hash).not_to include('intent')
+        expect(serialized_order.to_hash[:intent]).to eq('BUY')
       end
     end
   end
