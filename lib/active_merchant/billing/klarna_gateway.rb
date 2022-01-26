@@ -46,17 +46,7 @@ module ActiveMerchant
       def authorize(_amount, payment_source, options = {})
         order = order_from_authorization(options)
 
-        response = if payment_source.payment_method.preferred_tokenization && order.user.present?
-                     ::SolidusKlarnaPayments::PlaceOrderWithCustomerTokenService.call(
-                       order: order,
-                       payment_source: payment_source
-                     )
-                   else
-                     ::SolidusKlarnaPayments::PlaceOrderWithAuthorizationTokenService.call(
-                       order: order,
-                       payment_source: payment_source
-                     )
-                   end
+        response = SolidusKlarnaPayments::PlaceOrderService.call(order: order, payment_source: payment_source)
 
         update_payment_source_from_authorization(payment_source, response, order)
         update_order(response, order)

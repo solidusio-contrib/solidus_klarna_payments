@@ -13,7 +13,7 @@ describe ActiveMerchant::Billing::KlarnaGateway do
     }
   end
 
-  describe '#authorize', :vcr do
+  describe '#authorize' do
     subject(:authorize) { gateway.authorize(1000, payment_source, gateway_options) }
 
     let(:order) { create(:order_with_line_items) }
@@ -60,7 +60,7 @@ describe ActiveMerchant::Billing::KlarnaGateway do
     let(:klarna_client) { instance_double('Klarna::Order') }
 
     before do
-      allow(::SolidusKlarnaPayments::PlaceOrderWithAuthorizationTokenService)
+      allow(::SolidusKlarnaPayments::PlaceOrderService)
         .to receive(:call)
         .and_return(response)
 
@@ -73,7 +73,7 @@ describe ActiveMerchant::Billing::KlarnaGateway do
     context 'when the order is get using the passed gateway options' do
       it 'calls the place order with authorization token service' do
         authorize
-        expect(::SolidusKlarnaPayments::PlaceOrderWithAuthorizationTokenService)
+        expect(::SolidusKlarnaPayments::PlaceOrderService)
           .to have_received(:call)
           .with(order: order, payment_source: payment_source)
       end
@@ -84,7 +84,7 @@ describe ActiveMerchant::Billing::KlarnaGateway do
 
       it 'calls the place order with authorization token service' do
         authorize
-        expect(::SolidusKlarnaPayments::PlaceOrderWithAuthorizationTokenService)
+        expect(::SolidusKlarnaPayments::PlaceOrderService)
           .to have_received(:call)
           .with(order: order, payment_source: payment_source)
       end
@@ -100,23 +100,6 @@ describe ActiveMerchant::Billing::KlarnaGateway do
 
     it 'returns a successful response' do
       expect(authorize).to be_success
-    end
-
-    context 'with the tokenization flow enabled' do
-      before do
-        payment_method.preferred_tokenization = true
-
-        allow(::SolidusKlarnaPayments::PlaceOrderWithCustomerTokenService)
-          .to receive(:call)
-          .and_return(response)
-      end
-
-      it 'calls the place order with customer token service' do
-        authorize
-        expect(::SolidusKlarnaPayments::PlaceOrderWithCustomerTokenService)
-          .to have_received(:call)
-          .with(order: order, payment_source: payment_source)
-      end
     end
 
     context 'with a wrong authorization token' do
