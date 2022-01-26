@@ -19,7 +19,7 @@ module SolidusKlarnaPayments
           order_params
         )
     rescue FetchCustomerTokenError
-      @customer_token_response
+      nil
     end
 
     private
@@ -30,26 +30,20 @@ module SolidusKlarnaPayments
                        .retrieve_customer_token_service_class
                        .call(order: order)
 
-      customer_token = fetch_customer_token if customer_token.blank?
+      customer_token = generate_and_store_customer_token if customer_token.blank?
 
       raise FetchCustomerTokenError if customer_token.blank?
 
       customer_token
     end
 
-    def fetch_customer_token
-      @customer_token_response = Klarna
-                                 .client(:payment)
-                                 .customer_token(
-                                   payment_source.authorization_token,
-                                   customer_token_params
-                                 )
-
-      customer_token = begin
-        @customer_token_response.token_id
-      rescue NoMethodError
-        nil
-      end
+    def generate_and_store_customer_token
+      customer_token = SolidusKlarnaPayments::CreateCustomerTokenService
+                       .call(
+                         authorization_token: payment_source.authorization_token,
+                         order: order,
+                         region: region
+                       )
 
       return customer_token unless customer_token
 
@@ -59,14 +53,6 @@ module SolidusKlarnaPayments
         .call(order: order, customer_token: customer_token)
 
       customer_token
-    end
-
-    def customer_token_params
-      SolidusKlarnaPayments::CustomerTokenSerializer.new(
-        order: order,
-        description: 'Customer token',
-        region: region
-      ).to_hash
     end
 
     def order_params
