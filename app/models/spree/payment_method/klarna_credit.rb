@@ -30,8 +30,6 @@ module Spree
         format: { with: /\A#[0-9a-fA-F]{6}\z/ }, allow_blank: true
       validates :preferred_radius_border, numericality: { only_integer: true }, allow_blank: true
 
-      validate :tokenization_flow
-
       # Remove the server setting from Gateway
       def defined_preferences
         super - [:server]
@@ -92,12 +90,6 @@ module Spree
 
       def spree_order(options)
         Spree::Order.find_by(number: options[:order_id].split("-").first)
-      end
-
-      def tokenization_flow
-        return unless preferred_tokenization && Spree::Config[:allow_guest_checkout]
-
-        errors.add(:preferred_tokenization, I18n.t('spree.klarna.disable_guest_checkout'))
       end
     end
   end
