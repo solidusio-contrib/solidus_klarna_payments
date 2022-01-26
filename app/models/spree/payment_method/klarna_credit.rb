@@ -30,6 +30,8 @@ module Spree
         format: { with: /\A#[0-9a-fA-F]{6}\z/ }, allow_blank: true
       validates :preferred_radius_border, numericality: { only_integer: true }, allow_blank: true
 
+      delegate :create_profile, to: :gateway
+
       # Remove the server setting from Gateway
       def defined_preferences
         super - [:server]
@@ -64,7 +66,7 @@ module Spree
       end
 
       def payment_profiles_supported?
-        false
+        preferred_tokenization
       end
 
       def source(order_id)

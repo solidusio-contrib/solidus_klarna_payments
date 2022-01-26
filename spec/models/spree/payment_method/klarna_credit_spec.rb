@@ -48,4 +48,22 @@ describe Spree::PaymentMethod::KlarnaCredit do
         .with(order, :us)
     end
   end
+
+  describe 'payment_profiles_supported?' do
+    subject(:payment_profiles_supported?) { payment_method.payment_profiles_supported? }
+
+    let(:payment_method) { create(:klarna_credit_payment_method, preferences: { tokenization: tokenization }) }
+
+    context 'when preferred_tokenization is false' do
+      let(:tokenization) { false }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when preferred_tokenization is true' do
+      let(:tokenization) { true }
+
+      it { is_expected.to be_truthy }
+    end
+  end
 end

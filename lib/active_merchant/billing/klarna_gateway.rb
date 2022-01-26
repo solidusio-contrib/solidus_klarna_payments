@@ -258,6 +258,18 @@ module ActiveMerchant
         update_payment_source!(Spree::KlarnaCreditPayment.find_by(order_id: order_id), order_id)
       end
 
+      def create_profile(payment)
+        return if payment.source.customer_token
+
+        customer_token = SolidusKlarnaPayments::CreateCustomerTokenService.call(
+          order: payment.order,
+          authorization_token: payment.source.authorization_token,
+          region: payment.payment_method.preferred_country
+        )
+
+        payment.source.update!(customer_token: customer_token)
+      end
+
       private
 
       def order_from_authorization(options)

@@ -31,12 +31,8 @@ module SolidusKlarnaPayments
       end
     end
 
-    def tokenization_available?
-      klarna_payment_method.preferred_tokenization && order.user.present?
-    end
-
     def intent
-      if tokenization_available?
+      if klarna_payment_method.payment_profiles_supported?
         'TOKENIZE'
       else
         'BUY'

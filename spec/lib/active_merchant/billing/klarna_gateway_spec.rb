@@ -110,4 +110,75 @@ describe ActiveMerchant::Billing::KlarnaGateway do
       end
     end
   end
+
+  describe '#create_profile' do
+    subject(:create_profile) { gateway.create_profile(payment) }
+
+    let(:order) { create(:order_with_line_items) }
+    let(:payment_method) { build(:klarna_credit_payment_method) }
+    let(:payment) { build(:klarna_payment, source: payment_source) }
+
+    let(:payment_source) do
+      create(
+        :klarna_credit_payment,
+        authorization_token: authorization_token,
+        payment_method: payment_method,
+        customer_token: initial_customer_token,
+        order: order
+      )
+    end
+
+    let(:gateway_options) { { order_id: "#{order.number}-somestuff" } }
+    let(:authorization_token) { 'AUTHORIZATION_TOKEN' }
+    let(:response_success) { true }
+    let(:initial_customer_token) { nil }
+    let(:customer_token) { 'CUSTOMER_TOKEN' }
+
+    # rubocop:disable RSpec/VerifiedDoubles
+    # We can't use verified double since the Klarna::Response uses
+    # the method missing to retrieve body data
+    let(:response) do
+      double(
+        'Klarna::Response',
+        error_code: -1,
+        error_messages: 'error_messages',
+        correlation_id: -1,
+        order_id: 'order_id',
+        body: {},
+        fraud_status: 'fraud_status'
+      )
+    end
+
+    before do
+      allow(SolidusKlarnaPayments::CreateCustomerTokenService).to receive(:call).and_return(customer_token)
+    end
+
+    it 'calls the service to create the customer token' do
+      create_profile
+
+      expect(SolidusKlarnaPayments::CreateCustomerTokenService).to have_received(:call).with(
+        order: payment.order,
+        authorization_token: authorization_token,
+        region: payment.payment_method.preferred_country
+      )
+    end
+
+    it 'updates the customer_token on the source' do
+      expect { create_profile }.to change(payment_source.reload, :customer_token).from(nil).to(customer_token)
+    end
+
+    context 'when customer_token is already present on the source' do
+      let(:initial_customer_token) { 'Initial-customer-token' }
+
+      it 'does not call the service to create the customer token' do
+        create_profile
+
+        expect(SolidusKlarnaPayments::CreateCustomerTokenService).not_to have_received(:call)
+      end
+
+      it 'updates the customer_token on the source' do
+        expect { create_profile }.not_to change(payment_source.reload, :customer_token).from(initial_customer_token)
+      end
+    end
+  end
 end
