@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Spree
-  class KlarnaCreditPayment < Spree::Base
+  class KlarnaCreditPayment < PaymentSource
     belongs_to :payment_method
     belongs_to :user, class_name: Spree.user_class.to_s, foreign_key: 'user_id', optional: true
     belongs_to :order, class_name: 'Spree::Order', foreign_key: 'spree_order_id', optional: true
@@ -9,6 +9,10 @@ module Spree
     serialize :response_body, Hash
 
     scope :with_payment_profile, -> { where(false) }
+
+    def reusable?
+      true
+    end
 
     def imported
       false
