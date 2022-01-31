@@ -32,7 +32,7 @@ module SolidusKlarnaPayments
     end
 
     def intent
-      if klarna_payment_method.payment_profiles_supported?
+      if klarna_payment_method.payment_profiles_supported? && order.klarna_tokenizable?
         'TOKENIZE'
       else
         'BUY'

@@ -260,6 +260,7 @@ module ActiveMerchant
 
       def create_profile(payment)
         return if payment.source.customer_token
+        return unless payment.order.klarna_tokenizable?
 
         customer_token = SolidusKlarnaPayments::CreateCustomerTokenService.call(
           order: payment.order,

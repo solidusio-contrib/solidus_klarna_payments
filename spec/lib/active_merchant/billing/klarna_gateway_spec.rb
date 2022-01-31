@@ -180,5 +180,19 @@ describe ActiveMerchant::Billing::KlarnaGateway do
         expect { create_profile }.not_to change(payment_source.reload, :customer_token).from(initial_customer_token)
       end
     end
+
+    context 'when Spree::Order#klarna_tokenizable? is false' do
+      before { allow(payment.order).to receive(:klarna_tokenizable?).and_return(false) }
+
+      it 'does not call the service to create the customer token' do
+        create_profile
+
+        expect(SolidusKlarnaPayments::CreateCustomerTokenService).not_to have_received(:call)
+      end
+
+      it 'updates the customer_token on the source' do
+        expect { create_profile }.not_to change(payment_source.reload, :customer_token).from(initial_customer_token)
+      end
+    end
   end
 end

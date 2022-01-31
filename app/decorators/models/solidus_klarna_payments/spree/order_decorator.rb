@@ -9,6 +9,10 @@ module SolidusKlarnaPayments
         base.after_commit :invalidate_klarna_session
       end
 
+      def klarna_tokenizable?
+        user.present?
+      end
+
       def update_klarna_session(session_id: nil, client_token: nil)
         update!(
           klarna_session_id: session_id,
