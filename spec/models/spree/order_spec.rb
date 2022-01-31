@@ -119,4 +119,16 @@ RSpec.describe Spree::Order do
       expect(klarna_order.can_be_cancelled_from_klarna?).to eq(true)
     end
   end
+
+  describe 'invalidate klarna session if user is changed' do
+    subject(:order) { create(:order, user: nil, klarna_session_expires_at: Time.current + 2.hours) }
+
+    it 'invalidates the klarna session' do
+      expect(order).not_to be_klarna_session_expired
+
+      order.update(user: create(:user))
+
+      expect(order).to be_klarna_session_expired
+    end
+  end
 end
