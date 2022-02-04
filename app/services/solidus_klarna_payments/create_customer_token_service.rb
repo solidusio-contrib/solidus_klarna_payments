@@ -2,9 +2,11 @@
 
 module SolidusKlarnaPayments
   class CreateCustomerTokenService < BaseService
-    def initialize(order:, authorization_token:, region:)
-      @order = order
+    def initialize(email:, address:, authorization_token:, currency:, region:)
+      @email = email
+      @address = address
       @authorization_token = authorization_token
+      @currency = currency
       @region = region
 
       super()
@@ -25,12 +27,14 @@ module SolidusKlarnaPayments
 
     private
 
-    attr_reader :order, :region, :authorization_token
+    attr_reader :email, :address, :currency, :region, :authorization_token
 
     def customer_token_params
       SolidusKlarnaPayments::CustomerTokenSerializer.new(
-        order: order,
+        email: email,
+        address: address,
         description: 'Customer token',
+        currency: currency,
         region: region
       ).to_hash
     end

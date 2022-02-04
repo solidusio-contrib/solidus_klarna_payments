@@ -148,6 +148,7 @@ describe ActiveMerchant::Billing::KlarnaGateway do
         fraud_status: 'fraud_status'
       )
     end
+    # rubocop:enable RSpec/VerifiedDoubles
 
     before do
       allow(SolidusKlarnaPayments::CreateCustomerTokenService).to receive(:call).and_return(customer_token)
@@ -157,8 +158,10 @@ describe ActiveMerchant::Billing::KlarnaGateway do
       create_profile
 
       expect(SolidusKlarnaPayments::CreateCustomerTokenService).to have_received(:call).with(
-        order: payment.order,
+        email: payment.order.email,
+        address: payment.order.billing_address || payment.order.shipping_address,
         authorization_token: authorization_token,
+        currency: payment.currency,
         region: payment.payment_method.preferred_country
       )
     end

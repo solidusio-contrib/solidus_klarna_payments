@@ -262,9 +262,12 @@ module ActiveMerchant
         return if payment.source.customer_token
         return unless payment.order.klarna_tokenizable?
 
+        profile_order = payment.order
         customer_token = SolidusKlarnaPayments::CreateCustomerTokenService.call(
-          order: payment.order,
+          email: profile_order.email,
+          address: profile_order.billing_address || profile_order.shipping_address,
           authorization_token: payment.source.authorization_token,
+          currency: payment.currency,
           region: payment.payment_method.preferred_country
         )
 
