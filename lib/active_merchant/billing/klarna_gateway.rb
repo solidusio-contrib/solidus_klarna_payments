@@ -46,17 +46,7 @@ module ActiveMerchant
       def authorize(_amount, payment_source, options = {})
         order = order_from_authorization(options)
 
-        response = if payment_source.payment_method.preferred_tokenization && order.user.present?
-                     ::SolidusKlarnaPayments::PlaceOrderWithCustomerTokenService.call(
-                       order: order,
-                       payment_source: payment_source
-                     )
-                   else
-                     ::SolidusKlarnaPayments::PlaceOrderWithAuthorizationTokenService.call(
-                       order: order,
-                       payment_source: payment_source
-                     )
-                   end
+        response = SolidusKlarnaPayments::PlaceOrderService.call(order: order, payment_source: payment_source)
 
         update_payment_source_from_authorization(payment_source, response, order)
         update_order(response, order)
@@ -266,6 +256,19 @@ module ActiveMerchant
 
       def get_and_update_source(order_id)
         update_payment_source!(Spree::KlarnaCreditPayment.find_by(order_id: order_id), order_id)
+      end
+
+      def create_profile(payment)
+        return if payment.source.customer_token
+        return unless payment.order.klarna_tokenizable?
+
+        customer_token = SolidusKlarnaPayments::CreateCustomerTokenService.call(
+          order: payment.order,
+          authorization_token: payment.source.authorization_token,
+          region: payment.payment_method.preferred_country
+        )
+
+        payment.source.update!(customer_token: customer_token)
       end
 
       private

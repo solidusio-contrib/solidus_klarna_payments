@@ -49,49 +49,21 @@ describe Spree::PaymentMethod::KlarnaCredit do
     end
   end
 
-  describe 'tokenization_flow validation' do
-    subject(:valid) { payment_method.valid? }
+  describe 'payment_profiles_supported?' do
+    subject(:payment_profiles_supported?) { payment_method.payment_profiles_supported? }
 
-    let(:payment_method) { create(:klarna_credit_payment_method) }
+    let(:payment_method) { create(:klarna_credit_payment_method, preferences: { tokenization: tokenization }) }
 
-    context 'when the tokenization flow is disabled' do
-      before do
-        payment_method.preferred_tokenization = false
-      end
+    context 'when preferred_tokenization is false' do
+      let(:tokenization) { false }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to be_falsey }
     end
 
-    context 'when the tokenization flow is enabled' do
-      before do
-        payment_method.preferred_tokenization = true
-      end
+    context 'when preferred_tokenization is true' do
+      let(:tokenization) { true }
 
-      context 'when guest checkout is enabled' do
-        before do
-          allow(Spree::Config).to receive(:[]).and_call_original
-
-          allow(Spree::Config)
-            .to receive(:[])
-            .with(:allow_guest_checkout)
-            .and_return(true)\
-        end
-
-        it { is_expected.to be_falsey }
-      end
-
-      context 'when the guest checkout is disabled' do
-        before do
-          allow(Spree::Config).to receive(:[]).and_call_original
-
-          allow(Spree::Config)
-            .to receive(:[])
-            .with(:allow_guest_checkout)
-            .and_return(false)
-        end
-
-        it { is_expected.to be_truthy }
-      end
+      it { is_expected.to be_truthy }
     end
   end
 end

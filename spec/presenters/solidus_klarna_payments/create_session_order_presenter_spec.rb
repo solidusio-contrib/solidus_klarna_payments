@@ -32,7 +32,7 @@ RSpec.describe SolidusKlarnaPayments::CreateSessionOrderPresenter do
       context 'when the order is a guest order' do
         let(:user) { nil }
 
-        it 'returns the hash without the intent set' do
+        it 'returns the intent set to BUY' do
           expect(serialized_order.to_hash[:intent]).to eq('BUY')
         end
       end
