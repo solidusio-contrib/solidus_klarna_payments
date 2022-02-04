@@ -6,7 +6,7 @@ module SolidusKlarnaPayments
       KLARNA_SESSION_LIFETIME = 48.hours
 
       def self.prepended(base)
-        base.after_commit :invalidate_klarna_session
+        base.before_save :invalidate_klarna_session
       end
 
       def klarna_tokenizable?
@@ -96,7 +96,7 @@ module SolidusKlarnaPayments
       private
 
       def invalidate_klarna_session
-        touch(:klarna_session_expires_at) if user_id_previously_changed? # rubocop:disable Rails/SkipsModelValidations
+        self.klarna_session_expires_at = Time.current if user_id_changed?
       end
 
       ::Spree::Order.prepend self
