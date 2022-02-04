@@ -41,7 +41,9 @@ module SolidusKlarnaPayments
       customer_token = SolidusKlarnaPayments::CreateCustomerTokenService
                        .call(
                          authorization_token: payment_source.authorization_token,
-                         order: order,
+                         email: order.email,
+                         address: order.billing_address || order.shipping_address,
+                         currency: order.currency,
                          region: region
                        )
 

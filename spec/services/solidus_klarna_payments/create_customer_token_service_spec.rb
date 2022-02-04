@@ -7,8 +7,10 @@ describe SolidusKlarnaPayments::CreateCustomerTokenService do
     subject(:service) do
       described_class
         .call(
-          order: order,
+          email: order.email,
+          address: order.billing_address,
           authorization_token: authorization_token,
+          currency: order.currency,
           region: region
         )
     end
@@ -62,8 +64,10 @@ describe SolidusKlarnaPayments::CreateCustomerTokenService do
 
       expect(SolidusKlarnaPayments::CustomerTokenSerializer)
         .to have_received(:new).with(
-          order: order,
+          email: order.email,
+          address: order.billing_address,
           description: 'Customer token',
+          currency: order.currency,
           region: region
         )
     end
