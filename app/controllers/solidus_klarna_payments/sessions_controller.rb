@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module SolidusKlarnaPayments
-  class SessionsController < ::Spree::StoreController
+  class SessionsController < ::Spree::BaseController
+    include ::Spree::Core::ControllerHelpers::Order
+
     def create
       render json: {
         token: SolidusKlarnaPayments::CreateOrUpdateKlarnaSessionService.call(
