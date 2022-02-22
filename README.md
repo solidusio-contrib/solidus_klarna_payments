@@ -20,9 +20,9 @@ This integration enables [Solidus](https://solidus.io) to provide [Klarna](https
 ### Limitations
 
 - Auto capturing payments requires prior Klarna approval.
-- *Multiple* captures for one authorization are currently *not* supported because of Solidus's process when capturing payments. This might change in future versions of Solidus and this gem respectively. However, it is possible to use the Klarna Merchant Portal to do that.
+- *Multiple* captures for one authorization are currently *not* supported because of Solidus' process when capturing payments. This might change in future versions of Solidus and this gem respectively. However, it is possible to use the Klarna Merchant Portal to do that.
 - A customer is able to choose multiple payment options for an order.  If an order does have multiple payment options, you should capture the most recent payment choice first, which be listed at the bottom of the list of payments.
-- It’s important to cancel Klarna payments if the customer paid with another payment method in the end after receiving a successful Klarna authorization, we can not send `release_remaining_amount` to Klarna in this case and the users credit limit would still be blocked.
+- It’s important to cancel Klarna payments if after receiving a successful Klarna authorization the customer finally decides to use another payment method. We can not send `release_remaining_amount` to Klarna in this case and the user's credit limit would still be blocked.
 
 ### Supported Solidus Versions
 
@@ -56,17 +56,17 @@ After the installation, create a new payment method and select `Spree::PaymentMe
 
 The "country" option is mandatory and refers to the region the account is associated with. In the example above it's `us` for the USA, other values would be `uk` for the United Kingdom and `de` for Germany.
 
-The "tokenization" option is false by default and it is needed to enable the tokenization feature for this payment method. This option will change the flow and allowing the customer to complete the checkout making a subscription. You can found more information [here](https://docs.klarna.com/klarna-payments/api-call-descriptions/place-order-token/)
+The "tokenization" option is false by default and it is needed to enable the tokenization feature for this payment method. This option will change the flow, allowing the customer to complete the checkout through a subscription. You can find more information [here](https://docs.klarna.com/klarna-payments/api-call-descriptions/place-order-token/)
 
-There are two other things to configure. Set the payment method to "active" and only enable it in the frontend. Some payment methods can be used in the backend by the merchant. As this is not appropriate for Klarna Payments, it should be disabled. You can also configure to automatically capture the payments when the customer confirms their order.
+There are two other things to configure. Set the payment method to "active" and only enable it in the frontend. Some payment methods can be used in the backend by the merchant. As this is not reccomended for Klarna Payments, it should be disabled. You can also configure to automatically capture the payments when the customer confirms their order.
 
 ![Configuration](docs/configuration2.png)
 
-*Note*: After you ran `solidus_klarna_payments:install` the initializer in `config/initializers/solidus_klarna_payments.rb` allows some configuration. It's usually not necessary to touch the file unless you're sure what you're doing.
+*Note*: After you run `solidus_klarna_payments:install` the initializer in `config/initializers/solidus_klarna_payments.rb` allows some configuration. It's recommended to avoid modifying the file unless you're sure of what you're doing.
 
 ## Technical information
 
-The integration adds the necessary code to the checkout. It consists of mainly of three parts:
+The integration adds the necessary code to the checkout. It consists primarily of three parts:
 
 - [a template](app/views/spree/checkout/payment/_klarna_credit.html.erb) to display the iframe when Klarna is selected as the payment method
 - a JavaScript library/jQuery plugin to handle sessions and authorisation
@@ -78,7 +78,7 @@ The template can be overwritten by copying [the file](app/views/spree/checkout/p
 
 The JavaScript library is used to initialize a session with Klarna, authorize the requested amount and handing the obtained _authorization token_ to Solidus. This token is later used when authorizing the payment in Solidus.
 
-If the checkout (template) was modified, it can be necessary to adapt the integration as well. The `KlarnaGateway` library was extracted to make that easier. It is initialized as follows:
+If the checkout (template) is modified, it might be necessary to adapt the integration as well. The `KlarnaGateway` library was extracted to make that easier. It is initialized as follows:
 
 ```javascript
 KlarnaGateway.loadSdk(this, document, function() {
