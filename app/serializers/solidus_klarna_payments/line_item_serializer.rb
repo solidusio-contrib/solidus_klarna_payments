@@ -37,7 +37,7 @@ module SolidusKlarnaPayments
 
     def line_item_tax_rate
       # TODO: should we just calculate this?
-      tax_rate = line_item.adjustments.tax.inject(0) { |total, tax| total + tax.source.amount }
+      tax_rate = line_item.adjustments.tax.inject(0) { |total, tax| total + tax.amount }
       (10_000 * tax_rate).to_i
     end
 
