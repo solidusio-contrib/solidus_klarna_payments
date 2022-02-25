@@ -10,6 +10,7 @@ RSpec.describe SolidusKlarnaPayments::Api::SessionsController do
       {
         order_token: order.guest_token,
         klarna_payment_method_id: payment_method.id,
+        order_number: order.number,
         format: :json
       }
     end
@@ -18,8 +19,6 @@ RSpec.describe SolidusKlarnaPayments::Api::SessionsController do
     let(:user) { create(:user) }
 
     before do
-      login_as user
-
       allow(SolidusKlarnaPayments::CreateOrUpdateKlarnaSessionService)
         .to receive(:call)
         .and_return('TOKEN')
