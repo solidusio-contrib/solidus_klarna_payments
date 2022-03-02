@@ -66,7 +66,7 @@ module SolidusKlarnaPayments
 
     def line_items
       order.line_items.map do |line_item|
-        LineItemSerializer.new(line_item, strategy.line_item_strategy).to_hash
+        SolidusKlarnaPayments::LineItemSerializer.new(line_item, strategy.line_item_strategy).to_hash
       end
     end
 
