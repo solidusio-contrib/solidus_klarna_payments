@@ -30,7 +30,7 @@ describe SolidusKlarnaPayments::CreateOrUpdateKlarnaSessionService do
       allow(payment_method).to receive(:gateway).and_return(gateway)
     end
 
-    context 'when the klarna session is expired' do
+    context 'when the klarna token is not present' do
       # rubocop:disable RSpec/VerifiedDoubles
       # We can't use verified double since the Klarna::Response uses
       # the method missing to retrieve body data
@@ -38,8 +38,6 @@ describe SolidusKlarnaPayments::CreateOrUpdateKlarnaSessionService do
       # rubocop:enable RSpec/VerifiedDoubles
 
       before do
-        allow(order).to receive(:klarna_session_expired?).and_return(true)
-
         allow(gateway)
           .to receive(:create_session)
           .and_return(klarna_response)
@@ -52,7 +50,7 @@ describe SolidusKlarnaPayments::CreateOrUpdateKlarnaSessionService do
           allow(klarna_response).to receive(:client_token).and_return('client_token')
 
           allow(order).to receive(:update_klarna_session)
-          allow(order).to receive(:klarna_client_token).and_return('client_token')
+          allow(order).to receive(:klarna_client_token).and_return(nil, 'client_token')
         end
 
         it 'returns the client token' do
@@ -94,7 +92,7 @@ describe SolidusKlarnaPayments::CreateOrUpdateKlarnaSessionService do
       end
     end
 
-    context 'when the klarna session is not expired' do
+    context 'when the klarna token is present' do
       # rubocop:disable RSpec/VerifiedDoubles
       # We can't use verified double since the Klarna::Response uses
       # the method missing to retrieve body data
@@ -140,6 +138,7 @@ describe SolidusKlarnaPayments::CreateOrUpdateKlarnaSessionService do
 
       context 'when the request is not successufully' do
         before do
+          allow(order).to receive(:klarna_client_token).and_return('client_token').once
           allow(klarna_response).to receive(:success?).and_return(false)
           allow(klarna_response).to receive(:inspect).and_return('exception')
         end
