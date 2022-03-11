@@ -29,7 +29,7 @@ module SolidusKlarnaPayments
     def create_session
       klarna_payment_method
         .gateway
-        .create_session(order_params)
+        .create_session(order_params.except(:billing_address))
         .tap do |response|
           raise CreateOrUpdateKlarnaSessionError, response.inspect unless response.success?
 
@@ -45,7 +45,7 @@ module SolidusKlarnaPayments
         .gateway
         .update_session(
           order.klarna_session_id,
-          order_params
+          order_params.except(:billing_address)
         )
         .tap do |response|
           raise CreateOrUpdateKlarnaSessionError, response.inspect unless response.success?
