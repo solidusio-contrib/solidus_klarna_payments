@@ -2,7 +2,10 @@
 
 module SolidusKlarnaPayments
   class CallbacksController < ::Spree::BaseController
+    include ::Spree::DeprecationHelper
+
     skip_before_action :verify_authenticity_token
+    before_action :deprecation_warning
 
     def notification
       payment_source = ::Spree::KlarnaCreditPayment.find_by!(order_id: params[:order_id])
