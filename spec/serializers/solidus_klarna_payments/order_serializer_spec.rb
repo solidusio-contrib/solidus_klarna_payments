@@ -78,6 +78,22 @@ describe SolidusKlarnaPayments::OrderSerializer do
         expect(serialized[:merchant_urls][:confirmation]).to eq("my_confirmation_url")
       end
     end
+
+    it 'has the correct keys' do
+      expect(serialized.keys).to eq(
+        [
+          :purchase_country,
+          :purchase_currency,
+          :locale,
+          :order_amount,
+          :shipping_address,
+          :order_lines,
+          :merchant_reference1,
+          :options,
+          :order_tax_amount
+        ]
+      )
+    end
   end
 
   context "in the UK with included tax" do
@@ -140,6 +156,21 @@ describe SolidusKlarnaPayments::OrderSerializer do
         expect(serialized).not_to include(:billing_address, :shipping_address)
       end
     end
+
+    it 'has the correct keys' do
+      expect(serialized.keys).to eq(
+        [
+          :purchase_country,
+          :purchase_currency,
+          :locale,
+          :order_amount,
+          :shipping_address,
+          :order_lines,
+          :merchant_reference1,
+          :options
+        ]
+      )
+    end
   end
 
   context "in Germany" do
@@ -151,6 +182,21 @@ describe SolidusKlarnaPayments::OrderSerializer do
 
     it "sets the locale" do
       expect(serialized[:locale]).to eq("de-DE")
+    end
+
+    it 'has the correct keys' do
+      expect(serialized.keys).to eq(
+        [
+          :purchase_country,
+          :purchase_currency,
+          :locale,
+          :order_amount,
+          :shipping_address,
+          :order_lines,
+          :merchant_reference1,
+          :options
+        ]
+      )
     end
 
     context "without personal data" do
@@ -171,6 +217,21 @@ describe SolidusKlarnaPayments::OrderSerializer do
     it "sets the locale" do
       expect(serialized[:locale]).to eq("de-AT")
     end
+
+    it 'has the correct keys' do
+      expect(serialized.keys).to eq(
+        [
+          :purchase_country,
+          :purchase_currency,
+          :locale,
+          :order_amount,
+          :shipping_address,
+          :order_lines,
+          :merchant_reference1,
+          :options
+        ]
+      )
+    end
   end
 
   context "in Sweden" do
@@ -179,6 +240,21 @@ describe SolidusKlarnaPayments::OrderSerializer do
 
     it "sets the locale" do
       expect(serialized[:locale]).to eq("sv-SE")
+    end
+
+    it 'has the correct keys' do
+      expect(serialized.keys).to eq(
+        [
+          :purchase_country,
+          :purchase_currency,
+          :locale,
+          :order_amount,
+          :shipping_address,
+          :order_lines,
+          :merchant_reference1,
+          :options
+        ]
+      )
     end
   end
 end
