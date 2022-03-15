@@ -3,6 +3,9 @@
 module SolidusKlarnaPayments
   class SessionsController < ::Spree::BaseController
     include ::Spree::Core::ControllerHelpers::Order
+    include ::Spree::DeprecationHelper
+
+    before_action :deprecation_warning
 
     def create
       render json: {
