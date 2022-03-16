@@ -43,7 +43,6 @@ module SolidusKlarnaPayments
         locale: strategy.locale(region),
         # amount with taxes and adjustments
         order_amount: order.display_total.cents,
-        billing_address: billing_address,
         shipping_address: shipping_address,
         order_lines: order_lines,
         merchant_reference1: order.number,
