@@ -94,7 +94,15 @@ module ActiveMerchant
         end
       end
 
-      def refund(amount, order_id, options = {})
+      def refund(*args)
+        payment = args.last[:originator].try(:payment)
+
+        if payment.payment_method.payment_profiles_supported?
+          amount, _source, order_id, options = args
+        else
+          amount, order_id, options = args
+        end
+
         # Get the refunded line items for better customer communications
         line_items = []
         if options[:originator].present?
