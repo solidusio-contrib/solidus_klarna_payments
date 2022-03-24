@@ -15,6 +15,7 @@
         loadDirectly: false,
         onSubmit: function () {},
         onAbort: function () {},
+        orderId: $(this).data("order-id"),
         paymentChangedElements: $(
           'input[name="order[payments_attributes][][payment_method_id]"]'
         ),
@@ -35,7 +36,11 @@
       Spree.ajax({
         method: "POST",
         url: settings.sessionUrl,
-        data: { klarna_payment_method_id: settings.paymentId },
+        data: {
+          order_id: settings.orderId,
+          order_token: Spree.current_order_token,
+          klarna_payment_method_id: settings.paymentId
+        },
         success: function (response) {
           if (!response.token) {
             window.console &&
@@ -109,7 +114,11 @@
           Spree.pathFor("solidus_klarna_payments/api/sessions/order_addresses")
         ),
         dataType: "json",
-        data: { klarna_payment_method_id: settings.paymentId },
+        data: {
+          order_id: settings.orderId,
+          order_token: Spree.current_order_token,
+          klarna_payment_method_id: settings.paymentId
+        },
       }).done(function (result) {
         Klarna.Payments.authorize(result, function (res) {
           if (res.approved === true) {

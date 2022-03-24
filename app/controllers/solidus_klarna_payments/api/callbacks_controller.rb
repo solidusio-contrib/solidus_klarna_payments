@@ -3,7 +3,7 @@
 module SolidusKlarnaPayments
   module Api
     class CallbacksController < ::Spree::Api::BaseController
-      include ::Spree::Core::ControllerHelpers::Order
+      skip_before_action :authenticate_user
 
       def notification
         payment_source = ::Spree::KlarnaCreditPayment.find_by!(
