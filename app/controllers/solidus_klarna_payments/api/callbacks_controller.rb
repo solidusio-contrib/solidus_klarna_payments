@@ -2,9 +2,14 @@
 
 module SolidusKlarnaPayments
   module Api
-    class CallbacksController < BaseController
+    class CallbacksController < ::Spree::Api::BaseController
+      include ::Spree::Core::ControllerHelpers::Order
+
       def notification
-        payment_source = ::Spree::KlarnaCreditPayment.find_by!(order_id: params[:order_id])
+        payment_source = ::Spree::KlarnaCreditPayment.find_by!(
+          spree_order_id: @order.id,
+          order_id: params[:klarna_order_id]
+        )
 
         case params[:event_type]
         when 'FRAUD_RISK_ACCEPTED'

@@ -9,10 +9,18 @@ RSpec.describe SolidusKlarnaPayments::Api::CallbacksController do
     let!(:payment) { create(:klarna_payment, source: payment_source, order: order, payment_method: payment_source.payment_method) }
 
     let(:order) { create(:order_with_line_items, state: 'complete') }
-    let(:payment_source) { create(:klarna_credit_payment, order_id: order_id, spree_order_id: order.id, fraud_status: 'PENDING') }
+    let(:payment_source) { create(:klarna_credit_payment, order_id: klarna_order_id, spree_order_id: order.id, fraud_status: 'PENDING') }
 
-    let(:order_id) { 'MY_ORDER_ID' }
-    let(:params) { { order_id: payment_source.order_id, event_type: event_type } }
+    let(:klarna_order_id) { 'MY_ORDER_ID' }
+    let(:params) do
+      {
+        order_token: order.guest_token,
+        order_number: order.number,
+        klarna_order_id: klarna_order_id,
+        event_type: event_type,
+        format: :json
+      }
+    end
 
     context 'with FRAUD_RISK_ACCEPTED' do
       let(:event_type) { 'FRAUD_RISK_ACCEPTED' }
