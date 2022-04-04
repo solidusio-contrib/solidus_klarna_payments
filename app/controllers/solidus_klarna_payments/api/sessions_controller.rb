@@ -3,8 +3,6 @@
 module SolidusKlarnaPayments
   module Api
     class SessionsController < ::Spree::Api::BaseController
-      include ::Spree::Core::ControllerHelpers::Order
-
       def create
         render json: {
           token: SolidusKlarnaPayments::CreateOrUpdateKlarnaSessionService.call(
