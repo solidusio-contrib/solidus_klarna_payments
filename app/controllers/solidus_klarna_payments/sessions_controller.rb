@@ -5,6 +5,7 @@ module SolidusKlarnaPayments
     include ::Spree::Core::ControllerHelpers::Order
     include ::Spree::DeprecationHelper
 
+    skip_before_action :verify_authenticity_token
     before_action :deprecation_warning
 
     def create
