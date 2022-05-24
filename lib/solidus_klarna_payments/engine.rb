@@ -17,7 +17,9 @@ module SolidusKlarnaPayments
     end
 
     initializer 'spree.solidus_klarna_payments.payment_methods', after: 'spree.register.payment_methods' do |app|
-      app.config.spree.payment_methods << Spree::PaymentMethod::KlarnaCredit
+      app.reloader.to_prepare do
+        app.config.spree.payment_methods << ::Spree::PaymentMethod::KlarnaCredit
+      end
     end
 
     config.to_prepare do
