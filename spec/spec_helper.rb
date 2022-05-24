@@ -29,7 +29,12 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = false
   if defined?(ActiveStorage::Current)
     config.before(:all) do
-      ActiveStorage::Current.host = 'http://www.example.com'
+      host = 'http://www.example.com'
+      if Rails.gem_version >= Gem::Version.new(7)
+        ActiveStorage::Current.url_options = { host: host }
+      else
+        ActiveStorage::Current.host = host
+      end
     end
   end
 end
