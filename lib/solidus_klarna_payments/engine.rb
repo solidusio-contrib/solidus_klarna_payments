@@ -17,11 +17,21 @@ module SolidusKlarnaPayments
     end
 
     initializer 'spree.solidus_klarna_payments.payment_methods', after: 'spree.register.payment_methods' do |app|
-      app.config.spree.payment_methods << Spree::PaymentMethod::KlarnaCredit
+      app.reloader.to_prepare do
+        app.config.spree.payment_methods << ::Spree::PaymentMethod::KlarnaCredit
+      end
     end
 
     config.to_prepare do
       ::Spree::PermittedAttributes.source_attributes << :authorization_token
+    end
+
+    initializer 'solidus_klarna_payments.pub_sub' do |app|
+      unless SolidusSupport::LegacyEventCompat.using_legacy?
+        app.reloader.to_prepare do
+          SolidusKlarnaPayments::KlarnaSubscriber.omnes_subscriber.subscribe_to(::Spree::Bus)
+        end
+      end
     end
   end
 end

@@ -7,16 +7,25 @@ orbs:
   # or goes EOL.
   solidusio_extensions: solidusio/extensions@volatile
 
+commands:
+  libvips:
+    steps:
+      - run:
+          name: Install libvips
+          command: "sudo apt-get update && sudo apt-get install -y libvips"
+
 jobs:
   run-specs-with-postgres:
     executor: solidusio_extensions/postgres
     steps:
+      - libvips
       - solidusio_extensions/run-tests
       - store_artifacts:
           path: /tmp/capybara-screenshots
   run-specs-with-mysql:
     executor: solidusio_extensions/mysql
     steps:
+      - libvips
       - solidusio_extensions/run-tests
       - store_artifacts:
           path: /tmp/capybara-screenshots
