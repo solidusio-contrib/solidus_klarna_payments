@@ -64,6 +64,20 @@ There are two other things to configure. Set the payment method to "active" and 
 
 *Note*: After you run `solidus_klarna_payments:install` the initializer in `config/initializers/solidus_klarna_payments.rb` allows some configuration. It's recommended to avoid modifying the file unless you're sure of what you're doing.
 
+## Zones and Endpoints
+
+Per default this integration will always try to connect to the URL Endpoint for North America (Test or Production).
+This will not work with klarna merchant accounts from other zones (you will get an 401 unauthorized).
+For more Information about the Zone Endpoint URLs see
+https://docs.klarna.com/api/api-urls/
+
+To configure the Zone for the endpoint you can just change the zone in an initializer to `europe`, `oceania` or `us` like so:
+```ruby
+Klarna.configure do |config|
+  config.zone = :europe
+end
+```
+
 ## Technical information
 
 The integration adds the necessary code to the checkout. It consists primarily of three parts:
