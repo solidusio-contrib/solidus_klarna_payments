@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
   spec.metadata['source_code_uri'] = 'https://github.com/solidusio-contrib/solidus_klarna_payments'
   spec.metadata['changelog_uri'] = 'https://github.com/solidusio-contrib/solidus_klarna_payments/blob/master/CHANGELOG.md'
 
-  spec.required_ruby_version = Gem::Requirement.new('>= 2.5')
+  spec.required_ruby_version = Gem::Requirement.new('>= 2.5', '< 4')
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
@@ -31,11 +31,11 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activemerchant'
   spec.add_dependency 'deface'
   spec.add_dependency 'klarna_proxy'
-  spec.add_dependency 'solidus_core', ['>= 2.0.0', '< 4']
+  spec.add_dependency 'solidus_core', ['>= 2.0.0', '< 5']
   spec.add_dependency 'solidus_support', '~> 0.9'
 
-  spec.add_development_dependency 'solidus_dev_support'
+  spec.add_development_dependency 'pry-rails'
+  spec.add_development_dependency 'solidus_dev_support', '~> 2.7'
   spec.add_development_dependency 'vcr'
   spec.add_development_dependency 'webmock'
-  spec.add_development_dependency 'pry-rails'
 end

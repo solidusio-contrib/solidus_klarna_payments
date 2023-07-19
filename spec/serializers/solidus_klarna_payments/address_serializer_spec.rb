@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper.rb"
+require "spec_helper"
 
 describe SolidusKlarnaPayments::AddressSerializer do
   subject(:serialized) { serializer.to_hash }

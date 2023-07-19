@@ -37,11 +37,13 @@ module SolidusKlarnaPayments
 
     def given_name(address)
       return address.first_name unless SolidusSupport.combined_first_and_last_name_in_address?
+
       address.name.split("\s", 2)[0]
     end
 
     def family_name(address)
       return address.last_name unless SolidusSupport.combined_first_and_last_name_in_address?
+
       address.name.split("\s", 2)[1]
     end
   end

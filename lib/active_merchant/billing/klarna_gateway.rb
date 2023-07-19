@@ -332,14 +332,12 @@ module ActiveMerchant
       end
 
       def update_payment_source!(payment_source, klarna_order_id, attributes = {})
-        update_payment_source(payment_source, klarna_order_id, attributes).tap do |order|
-          order.save!
-          order
-        end
+        update_payment_source(payment_source, klarna_order_id, attributes).tap(&:save!)
       end
 
       def readable_error(response)
-        I18n.t(response.error_code.to_s.downcase, scope: 'klarna.gateway_errors', default: 'Klarna Gateway: Please check your payment method.')
+        I18n.t(response.error_code.to_s.downcase, scope: 'klarna.gateway_errors',
+          default: 'Klarna Gateway: Please check your payment method.')
       end
     end
   end

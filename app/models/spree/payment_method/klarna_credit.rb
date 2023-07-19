@@ -24,7 +24,8 @@ module Spree
       preference :radius_border, :string
 
       validates :preferred_country, format: { with: /\A[a-z]{2}\z/ }
-      validates :preferred_payment_method, inclusion: { in: %w(invoice pix base_account deferred_interest fixed_amount) }, allow_blank: true
+      validates :preferred_payment_method,
+        inclusion: { in: %w(invoice pix base_account deferred_interest fixed_amount) }, allow_blank: true
       validates :preferred_color_details, :preferred_color_button, :preferred_color_button_text, :preferred_color_checkbox, :preferred_color_checkbox_checkmark,
         :preferred_color_header, :preferred_color_border_selected, :preferred_color_text, :preferred_color_text_secondary,
         format: { with: /\A#[0-9a-fA-F]{6}\z/ }, allow_blank: true

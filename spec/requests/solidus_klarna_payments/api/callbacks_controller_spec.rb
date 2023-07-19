@@ -6,10 +6,14 @@ RSpec.describe SolidusKlarnaPayments::Api::CallbacksController do
   describe '#notification' do
     subject(:request) { post '/solidus_klarna_payments/api/callbacks/notification', params: params }
 
-    let!(:payment) { create(:klarna_payment, source: payment_source, order: order, payment_method: payment_source.payment_method) }
+    let!(:payment) {
+      create(:klarna_payment, source: payment_source, order: order, payment_method: payment_source.payment_method)
+    }
 
     let(:order) { create(:order_with_line_items, state: 'complete') }
-    let(:payment_source) { create(:klarna_credit_payment, order_id: klarna_order_id, spree_order_id: order.id, fraud_status: 'PENDING') }
+    let(:payment_source) {
+      create(:klarna_credit_payment, order_id: klarna_order_id, spree_order_id: order.id, fraud_status: 'PENDING')
+    }
 
     let(:klarna_order_id) { 'MY_ORDER_ID' }
     let(:params) do

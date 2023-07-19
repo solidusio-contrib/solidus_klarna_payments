@@ -99,23 +99,23 @@ module SolidusKlarnaPayments
       @strategy ||= case region
                     when :us then SolidusKlarnaPayments::AmountCalculators::Us::OrderCalculator.new
                     else SolidusKlarnaPayments::AmountCalculators::Uk::OrderCalculator.new(skip_personal_data)
-        end
+                    end
     end
 
     def merchant_urls
-      if store.present?
-        {
-          # terms: "http://host/terms",
-          # checkout: "http://host/orders/#{@order.number}",
-          # push: "http://host/klarna/push",
-          # validation: "string",
-          # shipping_option_update: "string",
-          # address_update: "string",
-          # country_change: "string",
-          confirmation: confirmation_url,
-          notification: solidus_klarna_payments_url_helpers.notification_url(host: store_url)
-        }
-      end
+      return if store.blank?
+
+      {
+        # terms: "http://host/terms",
+        # checkout: "http://host/orders/#{@order.number}",
+        # push: "http://host/klarna/push",
+        # validation: "string",
+        # shipping_option_update: "string",
+        # address_update: "string",
+        # country_change: "string",
+        confirmation: confirmation_url,
+        notification: solidus_klarna_payments_url_helpers.notification_url(host: store_url)
+      }
     end
 
     def confirmation_url

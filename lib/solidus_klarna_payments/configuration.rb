@@ -15,4 +15,16 @@ module SolidusKlarnaPayments
       @retrieve_customer_token_service_class.constantize
     end
   end
+
+  class << self
+    def configuration
+      @configuration ||= Configuration.new
+    end
+
+    alias config configuration
+
+    def configure
+      yield configuration
+    end
+  end
 end

@@ -13,9 +13,9 @@ module SolidusKlarnaPayments
         private
 
         def find_klarna_order
-          if @payment.is_valid_klarna?
-            @klarna_order = @payment.klarna_order
-          end
+          return unless @payment.is_valid_klarna?
+
+          @klarna_order = @payment.klarna_order
         end
 
         ::Spree::Admin::PaymentsController.prepend self

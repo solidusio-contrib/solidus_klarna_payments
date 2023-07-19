@@ -3,7 +3,7 @@
 module Spree
   class KlarnaCreditPayment < PaymentSource
     belongs_to :payment_method
-    belongs_to :user, class_name: Spree.user_class.to_s, foreign_key: 'user_id', optional: true
+    belongs_to :user, class_name: Spree.user_class.to_s, optional: true
     belongs_to :order, class_name: 'Spree::Order', foreign_key: 'spree_order_id', optional: true
 
     serialize :response_body, Hash
