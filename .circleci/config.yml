@@ -10,6 +10,13 @@ orbs:
   # or goes EOL.
   solidusio_extensions: solidusio/extensions@volatile
 
+commands:
+  libvips:
+    steps:
+      - run:
+          name: Install libvips
+          command: "sudo apt-get update && sudo apt-get install -y libvips"
+
 jobs:
   run-specs:
     parameters:
@@ -26,6 +33,7 @@ jobs:
       name: solidusio_extensions/<< parameters.db >>
       ruby_version: << parameters.ruby >>
     steps:
+      - libvips
       - checkout
       - browser-tools/install-chrome
       - solidusio_extensions/run-tests-solidus-<< parameters.solidus >>
