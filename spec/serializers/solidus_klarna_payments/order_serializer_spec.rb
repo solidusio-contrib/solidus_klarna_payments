@@ -17,7 +17,7 @@ describe SolidusKlarnaPayments::OrderSerializer do
       order.line_items.first.variant.stock_items.first.adjust_count_on_hand 2
       order.line_items.first.update(quantity: 4)
       order.reload.create_proposed_shipments
-      Spree::OrderUpdater.new(order).update
+      order.recalculate
     end.reload
   end
 
