@@ -1,13 +1,5 @@
-inherit_from: .rubocop_todo.yml
-
 require:
   - solidus_dev_support/rubocop
 
 AllCops:
-  NewCops: enable
-  Exclude:
-    - sandbox/**/*
-    - spec/dummy/**/*
-
-RSpec/MessageSpies:
-  EnforcedStyle: have_received
+  NewCops: disable
