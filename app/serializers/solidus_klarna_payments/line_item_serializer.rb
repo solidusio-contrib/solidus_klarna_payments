@@ -62,13 +62,13 @@ module SolidusKlarnaPayments
       return unless image.present? && host
 
       begin
-        if image.attachment.url.match?(%r{^http})
+        if image.attachment.url.match?(/^http/)
           uri = image.attachment.url
         else
           scheme = "http://" unless host.to_s.match?(%r{^https?://})
           uri = URI.parse("#{scheme}#{host.sub(%r{/$}, '')}#{image.attachment.url}")
         end
-      rescue URI::InvalidURIError => e
+      rescue URI::InvalidURIError
         return nil
       end
       uri.to_s
@@ -78,7 +78,7 @@ module SolidusKlarnaPayments
       case region.downcase.to_sym
       when :us then AmountCalculators::Us::LineItemCalculator.new
       else AmountCalculators::Uk::LineItemCalculator.new
-        end
+      end
     end
 
     def image_host

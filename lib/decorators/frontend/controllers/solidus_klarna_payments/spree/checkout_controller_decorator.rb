@@ -9,9 +9,9 @@ module SolidusKlarnaPayments
 
       def klarna_completion_route
         source = @order.payments.klarna_credit.map(&:source).last
-        if source&.accepted? && source&.redirect_url?
-          source.redirect_url
-        end
+        return unless source&.accepted? && source&.redirect_url?
+
+        source.redirect_url
       end
 
       ::Spree::CheckoutController.prepend self

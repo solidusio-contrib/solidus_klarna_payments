@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper.rb'
+require 'spec_helper'
 
 describe SolidusKlarnaPayments::LineItemSerializer do
   context "in the UK" do
@@ -134,7 +134,7 @@ describe SolidusKlarnaPayments::LineItemSerializer do
           line_item = create_line_item_with_image
 
           serialized_hash = build_serializer_for(line_item).to_hash
-          expect(serialized_hash[:image_url]).to match(/^http:\/\/www.example.com\/.+\/(blank.+|thinking-cat.+)/)
+          expect(serialized_hash[:image_url]).to match(%r{^http://www.example.com/.+/(blank.+|thinking-cat.+)})
         end
       end
 

@@ -15,7 +15,8 @@ module SolidusKlarnaPayments
       end
 
       def add_javascripts
-        append_file 'vendor/assets/javascripts/spree/frontend/all.js', "//= require spree/frontend/solidus_klarna_payments\n"
+        append_file 'vendor/assets/javascripts/spree/frontend/all.js',
+          "//= require spree/frontend/solidus_klarna_payments\n"
       end
 
       def add_stylesheets

@@ -8,7 +8,9 @@ describe SolidusKlarnaPayments::PlaceOrderWithAuthorizationTokenService do
 
     let(:order) { create(:order_with_line_items) }
     let(:payment_method) { build(:klarna_credit_payment_method) }
-    let(:payment_source) { build(:klarna_credit_payment, authorization_token: authorization_token, payment_method: payment_method) }
+    let(:payment_source) {
+      build(:klarna_credit_payment, authorization_token: authorization_token, payment_method: payment_method)
+    }
 
     let(:authorization_token) { 'AUTHORIZATION_TOKEN' }
     let(:klarna_client) { instance_double('Klarna::Payment') }

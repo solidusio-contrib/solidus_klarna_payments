@@ -135,7 +135,7 @@ describe SolidusKlarnaPayments::OrderSerializer do
 
       it "has the correct amounts" do
         expect(shipping_line[:quantity]).to eq(1)
-        shipment = order.reload.shipments.first
+        order.reload.shipments.first
         expect(shipping_line[:tax_rate]).to eq(0)
       end
     end
