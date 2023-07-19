@@ -26,17 +26,6 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.use_transactional_fixtures = false
 
-  if defined?(ActiveStorage::Current)
-    config.before(:all) do
-      host = 'http://www.example.com'
-      if Rails.gem_version >= Gem::Version.new(7)
-        ActiveStorage::Current.url_options = { host: host }
-      else
-        ActiveStorage::Current.host = host
-      end
-    end
-  end
-
   if Spree.solidus_gem_version < Gem::Version.new('2.11')
     config.extend Spree::TestingSupport::AuthorizationHelpers::Request, type: :system
   end
