@@ -11,6 +11,10 @@ module SolidusKlarnaPayments
 
     engine_name 'solidus_klarna_payments'
 
+    initializer 'solidus_klarna_payments.zeitwerk_ignore_deface_overrides', before: :eager_load! do |app|
+      app.autoloaders.main.ignore(root.join('app/overrides'))
+    end
+
     # use rspec for tests
     config.generators do |g|
       g.test_framework :rspec
