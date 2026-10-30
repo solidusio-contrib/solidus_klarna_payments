@@ -100,7 +100,7 @@ describe SolidusKlarnaPayments::OrderSerializer do
     let(:region) { :uk }
     let!(:country) { create(:country) }
     let!(:tax_rate) { create(:tax_rate, zone: zone, included_in_price: true) }
-    let!(:uk) { Spree::Country.find_by(name: "United Kingdom") || create(:country, name: "United Kingdom") }
+    let!(:uk) { Spree::Country.find_by(iso: "GB") || create(:country, iso: "GB") }
     let(:uk_zone) { Spree::Zone.find_by(name: 'GlobalZone') || create(:global_zone) }
     let!(:tax_rate) { create(:tax_rate, zone: uk_zone, included_in_price: true) }
 
