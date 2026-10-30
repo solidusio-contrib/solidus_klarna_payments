@@ -5,7 +5,6 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 branch = ENV.fetch('SOLIDUS_BRANCH', 'main')
 gem 'solidus', github: 'solidusio/solidus', branch: branch
-gem 'solidus_backend', github: 'solidusio/solidus', branch: branch
 
 # The solidus_frontend gem has been pulled out since v3.2
 if branch >= 'v3.2'
@@ -19,13 +18,26 @@ end
 # Provides basic authentication functionality for testing parts of your engine
 gem 'solidus_auth_devise'
 
+rails_version = ENV.fetch('RAILS_VERSION', '7.0')
+gem 'rails', "~> #{rails_version}"
+gem 'json', '< 3', require: false
+
 case ENV.fetch('DB', nil)
 when 'mysql'
   gem 'mysql2'
 when 'postgresql'
   gem 'pg'
 else
-  gem 'sqlite3'
+  gem 'sqlite3', rails_version < '7.2' ? '~> 1.4' : '~> 2.0'
+end
+
+if rails_version == '7.0'
+  gem 'concurrent-ruby', '< 1.3.5'
+end
+
+if RUBY_VERSION >= '3.4'
+  # Solidus Promotions uses CSV but does not have it as dependency yet.
+  gem 'csv'
 end
 
 # While we still support Ruby < 3 we need to workaround a limitation in
