@@ -6,12 +6,12 @@ module SolidusKlarnaPayments
     attr_writer :store_customer_token_service_class, :retrieve_customer_token_service_class
 
     def store_customer_token_service_class
-      @store_customer_token_service_class ||= 'SolidusKlarnaPayments::StoreCustomerTokenService'
+      @store_customer_token_service_class ||= "SolidusKlarnaPayments::StoreCustomerTokenService"
       @store_customer_token_service_class.constantize
     end
 
     def retrieve_customer_token_service_class
-      @retrieve_customer_token_service_class ||= 'SolidusKlarnaPayments::RetrieveCustomerTokenService'
+      @retrieve_customer_token_service_class ||= "SolidusKlarnaPayments::RetrieveCustomerTokenService"
       @retrieve_customer_token_service_class.constantize
     end
   end
@@ -21,7 +21,7 @@ module SolidusKlarnaPayments
       @configuration ||= Configuration.new
     end
 
-    alias config configuration
+    alias_method :config, :configuration
 
     def configure
       yield configuration

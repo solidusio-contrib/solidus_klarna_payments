@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 RSpec.describe Spree::Order do
   subject(:order) { create(:order) }
 
   describe "#update_klarna_session(id)" do
-    it 'sets the id and the expiry date in the future' do
+    it "sets the id and the expiry date in the future" do
       order.update_klarna_session(session_id: "abcdf", client_token: "abcdef")
 
       expect(order.klarna_session_id).to eq("abcdf")
@@ -16,7 +16,7 @@ RSpec.describe Spree::Order do
   end
 
   describe "#klarna_session_expired?" do
-    it 'check is session is expired' do
+    it "check is session is expired" do
       expect(order.klarna_session_expired?).to be true
       order.update_klarna_session(session_id: "abcdf", client_token: "abcdef")
       expect(order.klarna_session_expired?).to be false
@@ -31,7 +31,7 @@ RSpec.describe Spree::Order do
   end
 
   describe "#update_klarna_session_time" do
-    it 'extends the session time' do
+    it "extends the session time" do
       order.update_klarna_session(session_id: "abcdf", client_token: "abcdef")
       old_session = order.klarna_session_expires_at = DateTime.now - 2.minutes
       order.update_klarna_session_time
@@ -68,7 +68,7 @@ RSpec.describe Spree::Order do
 
       payment && order.reload
 
-      payment.source.update(status: 'AUTHORIZED')
+      payment.source.update(status: "AUTHORIZED")
       expect(order.authorized_klarna_payments.count).to eq(1)
     end
 
@@ -78,13 +78,13 @@ RSpec.describe Spree::Order do
 
       payment && order.reload
 
-      payment.source.update(status: 'CAPTURED')
+      payment.source.update(status: "CAPTURED")
       expect(order.captured_klarna_payments.count).to eq(1)
 
-      payment.source.update(status: 'PART_CAPTURED')
+      payment.source.update(status: "PART_CAPTURED")
       expect(order.captured_klarna_payments.count).to eq(1)
 
-      payment.source.update(status: 'AUTHORIZED')
+      payment.source.update(status: "AUTHORIZED")
       expect(order.captured_klarna_payments.count).to eq(0)
     end
   end
@@ -93,37 +93,37 @@ RSpec.describe Spree::Order do
     it "returns klarna payements with CAPTURED status" do
       expect(klarna_order.captured_klarna_payments.count).to eq(0)
 
-      payment.source.update(status: 'CAPTURED')
+      payment.source.update(status: "CAPTURED")
       expect(klarna_order.captured_klarna_payments.count).to eq(1)
 
-      payment.source.update(status: 'PART_CAPTURED')
+      payment.source.update(status: "PART_CAPTURED")
       expect(klarna_order.captured_klarna_payments.count).to eq(1)
 
-      payment.source.update(status: 'AUTHORIZED')
+      payment.source.update(status: "AUTHORIZED")
       expect(klarna_order.captured_klarna_payments.count).to eq(0)
     end
   end
 
   describe "#can_be_cancelled_from_klarna?", :klarna_api do
     it "check if there is non cancelled payments" do
-      payment.source.update(status: 'CAPTURED')
+      payment.source.update(status: "CAPTURED")
       expect(klarna_order.can_be_cancelled_from_klarna?).to eq(false)
 
-      payment.source.update(status: 'PART_CAPTURED')
+      payment.source.update(status: "PART_CAPTURED")
       expect(klarna_order.can_be_cancelled_from_klarna?).to eq(false)
 
-      payment.source.update(status: 'AUTHORIZED')
+      payment.source.update(status: "AUTHORIZED")
       expect(klarna_order.can_be_cancelled_from_klarna?).to eq(false)
 
-      payment.source.update(status: 'CANCELLED')
+      payment.source.update(status: "CANCELLED")
       expect(klarna_order.can_be_cancelled_from_klarna?).to eq(true)
     end
   end
 
-  describe 'invalidate klarna session if user is changed' do
+  describe "invalidate klarna session if user is changed" do
     subject(:order) { create(:order, user: nil, klarna_session_expires_at: Time.current + 2.hours) }
 
-    it 'invalidates the klarna session' do
+    it "invalidates the klarna session" do
       expect(order).not_to be_klarna_session_expired
 
       order.update(user: create(:user))

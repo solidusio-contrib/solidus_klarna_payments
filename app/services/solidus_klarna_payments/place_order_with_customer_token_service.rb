@@ -26,9 +26,9 @@ module SolidusKlarnaPayments
 
     def customer_token
       customer_token = SolidusKlarnaPayments
-                       .configuration
-                       .retrieve_customer_token_service_class
-                       .call(order: order)
+        .configuration
+        .retrieve_customer_token_service_class
+        .call(order: order)
 
       customer_token = generate_and_store_customer_token if customer_token.blank?
 
@@ -39,13 +39,13 @@ module SolidusKlarnaPayments
 
     def generate_and_store_customer_token
       customer_token = SolidusKlarnaPayments::CreateCustomerTokenService
-                       .call(
-                         authorization_token: payment_source.authorization_token,
-                         email: order.email,
-                         address: order.billing_address || order.shipping_address,
-                         currency: order.currency,
-                         region: region
-                       )
+        .call(
+          authorization_token: payment_source.authorization_token,
+          email: order.email,
+          address: order.billing_address || order.shipping_address,
+          currency: order.currency,
+          region: region
+        )
 
       return customer_token unless customer_token
 

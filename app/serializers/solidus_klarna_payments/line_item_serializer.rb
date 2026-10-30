@@ -7,9 +7,9 @@ module SolidusKlarnaPayments
     def initialize(line_item, strategy)
       @line_item = line_item
       @strategy = case strategy
-                  when Symbol, String then strategy_for_region(strategy)
-                  else strategy
-                  end
+      when Symbol, String then strategy_for_region(strategy)
+      else strategy
+      end
     end
 
     # TODO: clarify what amounts exactly should be used
@@ -66,7 +66,7 @@ module SolidusKlarnaPayments
           uri = image.attachment.url
         else
           scheme = "http://" unless host.to_s.match?(%r{^https?://})
-          uri = URI.parse("#{scheme}#{host.sub(%r{/$}, '')}#{image.attachment.url}")
+          uri = URI.parse("#{scheme}#{host.sub(%r{/$}, "")}#{image.attachment.url}")
         end
       rescue URI::InvalidURIError
         return nil

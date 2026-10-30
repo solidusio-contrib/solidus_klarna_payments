@@ -19,7 +19,7 @@ module SolidusKlarnaPayments
 
     def call
       response = Klarna.client(:payment).create_session({})
-      response.http_response.code != '401'
+      response.http_response.code != "401"
     end
 
     private
@@ -30,9 +30,9 @@ module SolidusKlarnaPayments
 
     def configure_klarna
       Klarna.configure do |config|
-        config.environment = test_mode == '0' ? 'production' : 'test'
+        config.environment = (test_mode == "0") ? "production" : "test"
         config.country = country
-        config.api_key =  api_key
+        config.api_key = api_key
         config.api_secret = api_secret
         config.user_agent = "Klarna Solidus Gateway/#{::SolidusKlarnaPayments::VERSION} Solidus/#{::Spree.solidus_version} Rails/#{::Rails.version}"
       end

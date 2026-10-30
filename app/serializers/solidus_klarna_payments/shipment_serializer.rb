@@ -12,7 +12,7 @@ module SolidusKlarnaPayments
     def to_hash
       strategy.adjust_with(shipment) do
         {
-          type: 'shipping_fee',
+          type: "shipping_fee",
           reference: shipment.number,
           name: shipment.shipping_method.name,
           quantity: 1,

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'activemerchant'
-require 'klarna'
+require "activemerchant"
+require "klarna"
 
 module ActiveMerchant
   module Billing
@@ -15,12 +15,12 @@ module ActiveMerchant
 
         Klarna.configure do |config|
           if @options[:api_secret].blank? || @options[:api_key].blank?
-            raise ::SolidusKlarnaPayments::InvalidConfiguration, 'Missing mandatory API credentials'
+            raise ::SolidusKlarnaPayments::InvalidConfiguration, "Missing mandatory API credentials"
           end
 
-          config.environment = @options[:test_mode] ? 'test' : 'production'
+          config.environment = @options[:test_mode] ? "test" : "production"
           config.country = @options[:country]
-          config.api_key =  @options[:api_key]
+          config.api_key = @options[:api_key]
           config.api_secret = @options[:api_secret]
           config.user_agent = "Klarna Solidus Gateway/#{::SolidusKlarnaPayments::VERSION} Solidus/#{::Spree.solidus_version} Rails/#{::Rails.version}"
         end
@@ -73,7 +73,7 @@ module ActiveMerchant
         response = Klarna.client.capture(order_id, captured_amount: amount, shipping_info: options[:shipping_info])
 
         if response.success?
-          capture_id = response['Capture-ID']
+          capture_id = response["Capture-ID"]
           payment_source = Spree::KlarnaCreditPayment.find_by(order_id: order_id)
           update_payment_source!(payment_source, order_id, capture_id: capture_id)
 
@@ -119,12 +119,12 @@ module ActiveMerchant
             true,
             "Refunded order with Klarna id: #{order_id}",
             response.body || {},
-            authorization: response['Refund-ID']
+            authorization: response["Refund-ID"]
           )
         else
           ActiveMerchant::Billing::Response.new(
             false,
-            'Klarna Gateway: There was an error refunding this refund.',
+            "Klarna Gateway: There was an error refunding this refund.",
             response.body || {},
             error_code: response.error_code
           )
@@ -150,7 +150,7 @@ module ActiveMerchant
         else
           ActiveMerchant::Billing::Response.new(
             false,
-            'Klarna Gateway: There was an error processing this acknowledge.',
+            "Klarna Gateway: There was an error processing this acknowledge.",
             response.body || {},
             error_code: response.error_code
           )
@@ -170,7 +170,7 @@ module ActiveMerchant
         else
           ActiveMerchant::Billing::Response.new(
             false,
-            'Klarna Gateway: There was an error processing this period extension.',
+            "Klarna Gateway: There was an error processing this period extension.",
             response.body || {},
             error_code: response.error_code
           )
@@ -191,7 +191,7 @@ module ActiveMerchant
         else
           ActiveMerchant::Billing::Response.new(
             false,
-            'Klarna Gateway: There was an error processing this release.',
+            "Klarna Gateway: There was an error processing this release.",
             response.body || {},
             error_code: response.error_code
           )
@@ -212,7 +212,7 @@ module ActiveMerchant
         else
           ActiveMerchant::Billing::Response.new(
             false,
-            'Klarna Gateway: There was an error cancelling this payment.',
+            "Klarna Gateway: There was an error cancelling this payment.",
             response.body || {},
             error_code: response.error_code
           )
@@ -229,7 +229,7 @@ module ActiveMerchant
           ActiveMerchant::Billing::Response.new(
             true,
             "Updated shipment info for order: #{order_id}, capture: #{capture_id}",
-            response.body || {},
+            response.body || {}
           )
         else
           ActiveMerchant::Billing::Response.new(
@@ -250,7 +250,7 @@ module ActiveMerchant
           ActiveMerchant::Billing::Response.new(
             true,
             "Updated customer details for order: #{order_id}",
-            response.body || {},
+            response.body || {}
           )
         else
           ActiveMerchant::Billing::Response.new(
@@ -287,7 +287,7 @@ module ActiveMerchant
       def order_from_authorization(options)
         return options[:originator].order if options[:originator].respond_to?(:order)
 
-        Spree::Order.find_by!(number: options[:order_id]&.split('-')&.first)
+        Spree::Order.find_by!(number: options[:order_id]&.split("-")&.first)
       end
 
       def update_order(response, order)
@@ -336,8 +336,8 @@ module ActiveMerchant
       end
 
       def readable_error(response)
-        I18n.t(response.error_code.to_s.downcase, scope: 'klarna.gateway_errors',
-          default: 'Klarna Gateway: Please check your payment method.')
+        I18n.t(response.error_code.to_s.downcase, scope: "klarna.gateway_errors",
+          default: "Klarna Gateway: Please check your payment method.")
       end
     end
   end

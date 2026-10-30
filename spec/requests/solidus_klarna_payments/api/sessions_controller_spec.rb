@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 RSpec.describe SolidusKlarnaPayments::Api::SessionsController do
-  describe '#create' do
-    subject(:make_request) { post '/solidus_klarna_payments/api/sessions', params: order_params }
+  describe "#create" do
+    subject(:make_request) { post "/solidus_klarna_payments/api/sessions", params: order_params }
 
     let(:order_params) do
       {
@@ -14,17 +14,17 @@ RSpec.describe SolidusKlarnaPayments::Api::SessionsController do
         format: :json
       }
     end
-    let!(:order) { create(:order_with_line_items, state: 'payment', user: user) }
+    let!(:order) { create(:order_with_line_items, state: "payment", user: user) }
     let(:payment_method) { create(:klarna_credit_payment_method) }
     let(:user) { create(:user) }
 
     before do
       allow(SolidusKlarnaPayments::CreateOrUpdateKlarnaSessionService)
         .to receive(:call)
-        .and_return('TOKEN')
+        .and_return("TOKEN")
     end
 
-    it 'calls the create or update klarna session service' do
+    it "calls the create or update klarna session service" do
       make_request
 
       expect(SolidusKlarnaPayments::CreateOrUpdateKlarnaSessionService)
@@ -36,10 +36,10 @@ RSpec.describe SolidusKlarnaPayments::Api::SessionsController do
         )
     end
 
-    it 'returns the session token' do
+    it "returns the session token" do
       make_request
 
-      expect(JSON.parse(response.body)['token']).to eq('TOKEN')
+      expect(JSON.parse(response.body)["token"]).to eq("TOKEN")
     end
   end
 end

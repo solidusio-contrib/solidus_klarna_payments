@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 describe SolidusKlarnaPayments::OrderSerializer do
   subject(:serializer) { described_class.new(order, region) }
@@ -9,7 +9,7 @@ describe SolidusKlarnaPayments::OrderSerializer do
   let(:serialized) { serializer.to_hash }
   let(:region) { :us }
   let!(:country) { Spree::Country.find_by(name: "USA") || create(:country, name: "USA") }
-  let(:zone) { Spree::Zone.find_by(name: 'GlobalZone') || create(:global_zone) }
+  let(:zone) { Spree::Zone.find_by(name: "GlobalZone") || create(:global_zone) }
   let!(:tax_rate) { create(:tax_rate, zone: zone) }
 
   let(:overbooked_order) do
@@ -24,7 +24,7 @@ describe SolidusKlarnaPayments::OrderSerializer do
   context "in the US" do
     let(:region) { :us }
     let!(:us) { Spree::Country.find_by(name: "USA") || create(:country, name: "USA") }
-    let(:us_zone) { Spree::Zone.find_by(name: 'GlobalZone') || create(:global_zone) }
+    let(:us_zone) { Spree::Zone.find_by(name: "GlobalZone") || create(:global_zone) }
     let!(:tax_rate) { create(:tax_rate, zone: us_zone) }
 
     it "sets the amount" do
@@ -79,7 +79,7 @@ describe SolidusKlarnaPayments::OrderSerializer do
       end
     end
 
-    it 'has the correct keys' do
+    it "has the correct keys" do
       expect(serialized.keys).to eq(
         [
           :purchase_country,
@@ -101,7 +101,7 @@ describe SolidusKlarnaPayments::OrderSerializer do
     let!(:country) { create(:country) }
     let!(:tax_rate) { create(:tax_rate, zone: zone, included_in_price: true) }
     let!(:uk) { Spree::Country.find_by(iso: "GB") || create(:country, iso: "GB") }
-    let(:uk_zone) { Spree::Zone.find_by(name: 'GlobalZone') || create(:global_zone) }
+    let(:uk_zone) { Spree::Zone.find_by(name: "GlobalZone") || create(:global_zone) }
     let!(:tax_rate) { create(:tax_rate, zone: uk_zone, included_in_price: true) }
 
     it "sets the amount" do
@@ -157,7 +157,7 @@ describe SolidusKlarnaPayments::OrderSerializer do
       end
     end
 
-    it 'has the correct keys' do
+    it "has the correct keys" do
       expect(serialized.keys).to eq(
         [
           :purchase_country,
@@ -177,14 +177,14 @@ describe SolidusKlarnaPayments::OrderSerializer do
     let(:region) { :de }
     let!(:tax_rate) { create(:tax_rate, zone: zone, included_in_price: true) }
     let!(:germany) { Spree::Country.find_by(name: "Deutschland") || create(:country, name: "Deutschland", iso: "de") }
-    let(:de_zone) { Spree::Zone.find_by(name: 'GlobalZone') || create(:global_zone) }
+    let(:de_zone) { Spree::Zone.find_by(name: "GlobalZone") || create(:global_zone) }
     let!(:tax_rate) { create(:tax_rate, zone: de_zone, included_in_price: true) }
 
     it "sets the locale" do
       expect(serialized[:locale]).to eq("de-DE")
     end
 
-    it 'has the correct keys' do
+    it "has the correct keys" do
       expect(serialized.keys).to eq(
         [
           :purchase_country,
@@ -218,7 +218,7 @@ describe SolidusKlarnaPayments::OrderSerializer do
       expect(serialized[:locale]).to eq("de-AT")
     end
 
-    it 'has the correct keys' do
+    it "has the correct keys" do
       expect(serialized.keys).to eq(
         [
           :purchase_country,
@@ -242,7 +242,7 @@ describe SolidusKlarnaPayments::OrderSerializer do
       expect(serialized[:locale]).to eq("sv-SE")
     end
 
-    it 'has the correct keys' do
+    it "has the correct keys" do
       expect(serialized.keys).to eq(
         [
           :purchase_country,

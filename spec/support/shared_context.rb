@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'with Klarna API helper', :klarna_api do
+RSpec.shared_context "with Klarna API helper", :klarna_api do
   let!(:a_successful_response) do
     ->(double) {
       allow(double).to receive(:success?).and_return(true)
-      allow(double).to receive(:[]).and_return('A-HEADER')
+      allow(double).to receive(:[]).and_return("A-HEADER")
       allow(double).to receive(:error?).and_return(false)
       double
     }
@@ -26,77 +26,77 @@ RSpec.shared_context 'with Klarna API helper', :klarna_api do
 
   let(:klarna_authorize_response) {
     a_successful_response.call instance_double(
-      'ApiResponse',
+      "ApiResponse",
       body: {},
       headers: {},
       order_id: 1234,
-      fraud_status: 'ACCEPTED',
-      redirect_url: 'http://someplace.com'
+      fraud_status: "ACCEPTED",
+      redirect_url: "http://someplace.com"
     )
   }
 
   let(:klarna_order_response) {
     a_successful_response.call instance_double(
-      'ApiResponse',
+      "ApiResponse",
       body: {
         order_id: 1234,
-        fraud_status: 'ACCEPTED',
-        status: 'AUTHORIZED'
+        fraud_status: "ACCEPTED",
+        status: "AUTHORIZED"
       },
       headers: {},
       order_id: 1234,
-      fraud_status: 'ACCEPTED',
-      status: 'AUTHORIZED',
+      fraud_status: "ACCEPTED",
+      status: "AUTHORIZED",
       expires_at: (DateTime.now + 6.days).to_s
     )
   }
 
   let(:klarna_negative_response) {
     a_error_response.call instance_double(
-      'ApiResponse',
+      "ApiResponse",
       body: {},
       headers: {},
-      error_code: 'SOME_ERROR',
-      error_messages: 'some error',
+      error_code: "SOME_ERROR",
+      error_messages: "some error",
       correlation_id: 1234
     )
   }
 
   let(:klarna_captured_response) {
     a_successful_response.call instance_double(
-      'ApiResponse',
+      "ApiResponse",
       body: {},
       headers: {},
       order_id: 1234,
-      fraud_status: 'ACCEPTED',
-      status: 'CAPTURED',
+      fraud_status: "ACCEPTED",
+      status: "CAPTURED",
       expires_at: (DateTime.now + 6.days).to_s
     )
   }
 
   let(:klarna_cancelled_response) {
     a_successful_response.call instance_double(
-      'ApiResponse',
+      "ApiResponse",
       body: {},
       headers: {},
       order_id: 1234,
-      fraud_status: 'ACCEPTED',
-      status: 'CANCELLED',
+      fraud_status: "ACCEPTED",
+      status: "CANCELLED",
       expires_at: (DateTime.now + 6.days).to_s
     )
   }
 
   let(:klarna_empty_success_response) {
     a_successful_response.call instance_double(
-      'ApiResponse',
+      "ApiResponse",
       body: {},
       headers: {}
     )
   }
 
-  let(:options) { { order_id: "#{payment.order.number}-123" } }
+  let(:options) { {order_id: "#{payment.order.number}-123"} }
 
-  let(:api_client) { instance_double('KlarnaApi') }
+  let(:api_client) { instance_double("KlarnaApi") }
 
   let(:order) { create(:order) }
 

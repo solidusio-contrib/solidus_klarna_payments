@@ -13,11 +13,11 @@ module SolidusKlarnaPayments
     def to_hash
       {
         locale: locale,
-        intended_use: 'SUBSCRIPTION',
+        intended_use: "SUBSCRIPTION",
         description: description,
         purchase_country: purchase_country,
         purchase_currency: currency,
-        billing_address: address,
+        billing_address: address
       }
     end
 
@@ -25,15 +25,15 @@ module SolidusKlarnaPayments
 
     def locale
       case region
-      when :us then 'en-US'
-      when :de then 'de-DE'
-      when :se then 'sv-SE'
-      when :at then 'de-AT'
-      when :nl then 'nl-NL'
-      when :dk then 'da-DK'
-      when :no then 'nb-NO'
-      when :fi then 'fi-FI'
-      else 'en-GB'
+      when :us then "en-US"
+      when :de then "de-DE"
+      when :se then "sv-SE"
+      when :at then "de-AT"
+      when :nl then "nl-NL"
+      when :dk then "da-DK"
+      when :no then "nb-NO"
+      when :fi then "fi-FI"
+      else "en-GB"
       end
     end
 

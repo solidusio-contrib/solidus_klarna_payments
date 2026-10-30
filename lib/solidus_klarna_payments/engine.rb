@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'solidus_core'
-require 'solidus_support'
+require "solidus_core"
+require "solidus_support"
 
 module SolidusKlarnaPayments
   class Engine < Rails::Engine
@@ -9,10 +9,10 @@ module SolidusKlarnaPayments
 
     isolate_namespace ::Spree
 
-    engine_name 'solidus_klarna_payments'
+    engine_name "solidus_klarna_payments"
 
-    initializer 'solidus_klarna_payments.zeitwerk_ignore_deface_overrides', before: :eager_load! do |app|
-      app.autoloaders.main.ignore(root.join('app/overrides'))
+    initializer "solidus_klarna_payments.zeitwerk_ignore_deface_overrides", before: :eager_load! do |app|
+      app.autoloaders.main.ignore(root.join("app/overrides"))
     end
 
     # use rspec for tests
@@ -20,7 +20,7 @@ module SolidusKlarnaPayments
       g.test_framework :rspec
     end
 
-    initializer 'spree.solidus_klarna_payments.payment_methods', after: 'spree.register.payment_methods' do |app|
+    initializer "spree.solidus_klarna_payments.payment_methods", after: "spree.register.payment_methods" do |app|
       app.reloader.to_prepare do
         app.config.spree.payment_methods << ::Spree::PaymentMethod::KlarnaCredit
       end
