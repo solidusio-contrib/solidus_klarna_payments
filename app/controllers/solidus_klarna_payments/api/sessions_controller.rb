@@ -17,7 +17,7 @@ module SolidusKlarnaPayments
         render json: {
           status: !@order.klarna_session_expired?,
           token: @order.klarna_client_token,
-          data: klarna_order.to_hash,
+          data: klarna_order.to_hash
         }
       end
 
@@ -28,7 +28,7 @@ module SolidusKlarnaPayments
         }
 
         addresses.update(addresses) do |_k, v|
-          { email: @order.email }.merge(v)
+          {email: @order.email}.merge(v)
         end
 
         render json: klarna_order.serialized_order.addresses
@@ -47,11 +47,11 @@ module SolidusKlarnaPayments
 
       def klarna_payment_method
         @klarna_payment_method ||= ::Spree::PaymentMethod.find_by(id: klarna_payment_method_id,
-          type: 'Spree::PaymentMethod::KlarnaCredit')
+          type: "Spree::PaymentMethod::KlarnaCredit")
       end
 
       def klarna_payment_method_id
-        params[:klarna_payment_method_id] || @order.payments.where(source_type: 'Spree::KlarnaCreditPayment').last.payment_method_id
+        params[:klarna_payment_method_id] || @order.payments.where(source_type: "Spree::KlarnaCreditPayment").last.payment_method_id
       end
     end
   end

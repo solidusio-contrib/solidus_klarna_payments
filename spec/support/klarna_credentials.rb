@@ -4,8 +4,8 @@ module TestHelpers
   module CredentialsHelper
     def klarna_credentials
       {
-        key: ENV['SOLIDUS_KLARNA_PAYMENTS_API_KEY'],
-        secret: ENV['SOLIDUS_KLARNA_PAYMENTS_API_SECRET'],
+        key: ENV["SOLIDUS_KLARNA_PAYMENTS_API_KEY"],
+        secret: ENV["SOLIDUS_KLARNA_PAYMENTS_API_SECRET"]
       }
     end
   end

@@ -6,8 +6,8 @@ FactoryBot.define do
   end
 
   factory :klarna_credit_payment_method, class: Spree::PaymentMethod::KlarnaCredit do
-    name { 'Klarna' }
-    description { 'Klarna' }
+    name { "Klarna" }
+    description { "Klarna" }
 
     preferences do
       {
@@ -25,11 +25,11 @@ FactoryBot.define do
     association(:order)
     sequence(:order_id) { |n| "1234-123-#{n}" }
     sequence(:authorization_token) { |n| "asldfjasfdlasfaslkdfjaslkdfjhasifudp98q3h4irufhaosidufalsdf#{n}" }
-    redirect_url { 'http://localhost:3000/someurl' }
+    redirect_url { "http://localhost:3000/someurl" }
 
     factory :error_klarna_credit_payment do
-      error_code { 'NOT_VALID' }
-      error_messages { 'Errored message' }
+      error_code { "NOT_VALID" }
+      error_messages { "Errored message" }
       sequence(:correlation_id) { |n| "2345-2345-#{n}" }
     end
   end

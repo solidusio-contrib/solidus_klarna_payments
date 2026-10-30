@@ -25,7 +25,7 @@ module SolidusKlarnaPayments
         end
 
         def klarna_payment_method?
-          payment_method_params[:type] == 'Spree::PaymentMethod::KlarnaCredit'
+          payment_method_params[:type] == "Spree::PaymentMethod::KlarnaCredit"
         end
 
         def validate_api_credentials
@@ -37,12 +37,12 @@ module SolidusKlarnaPayments
           )
 
           if result
-            flash[:notice] = I18n.t('spree.klarna.valid_api_credentials')
+            flash[:notice] = I18n.t("spree.klarna.valid_api_credentials")
           else
-            flash[:error] = I18n.t('spree.klarna.invalid_api_credentials')
+            flash[:error] = I18n.t("spree.klarna.invalid_api_credentials")
           end
         rescue ::SolidusKlarnaPayments::ValidateKlarnaCredentialsService::MissingCredentialsError
-          flash[:error] = I18n.t('spree.klarna.can_not_test_api_connection')
+          flash[:error] = I18n.t("spree.klarna.can_not_test_api_connection")
         end
 
         ::Spree::Admin::PaymentMethodsController.prepend self

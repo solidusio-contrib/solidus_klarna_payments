@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 describe SolidusKlarnaPayments::LineItemSerializer do
   context "in the UK" do
@@ -70,7 +70,7 @@ describe SolidusKlarnaPayments::LineItemSerializer do
       end
 
       context "with a Proc configured" do
-        let(:product_url) { proc{ |line_item| "http://example.com/product/#{line_item.variant.id}" } }
+        let(:product_url) { proc { |line_item| "http://example.com/product/#{line_item.variant.id}" } }
 
         it "returns the result as a string" do
           line_item = create_line_item
@@ -128,9 +128,9 @@ describe SolidusKlarnaPayments::LineItemSerializer do
       end
 
       context "with a Proc configured" do
-        let(:image_host) { proc{ |_line_item| "http://www.example.com" } }
+        let(:image_host) { proc { |_line_item| "http://www.example.com" } }
 
-        it 'calls the proc to get the host' do
+        it "calls the proc to get the host" do
           line_item = create_line_item_with_image
 
           serialized_hash = build_serializer_for(line_item).to_hash
@@ -150,7 +150,7 @@ describe SolidusKlarnaPayments::LineItemSerializer do
     private
 
     def create_tax_rate
-      gb_country = create(:country, iso: 'GB')
+      gb_country = create(:country, iso: "GB")
       gb_zone = create(:zone, countries: [gb_country])
 
       create(:tax_rate, zone: gb_zone)
@@ -162,7 +162,7 @@ describe SolidusKlarnaPayments::LineItemSerializer do
   def create_line_item
     create(:order_with_line_items,
       line_items_count: 1,
-      ship_address: create(:ship_address, country_iso_code: 'GB'),).line_items.first
+      ship_address: create(:ship_address, country_iso_code: "GB")).line_items.first
   end
 
   def build_serializer_for(line_item)

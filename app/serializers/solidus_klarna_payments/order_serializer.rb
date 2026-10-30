@@ -29,7 +29,7 @@ module SolidusKlarnaPayments
         {
           shipping_company: shipment.shipping_method.name,
           tracking_number: shipment.tracking,
-          tracking_uri: shipment.tracking_url,
+          tracking_uri: shipment.tracking_url
         }
       end
     end
@@ -97,9 +97,9 @@ module SolidusKlarnaPayments
 
     def strategy
       @strategy ||= case region
-                    when :us then SolidusKlarnaPayments::AmountCalculators::Us::OrderCalculator.new
-                    else SolidusKlarnaPayments::AmountCalculators::Uk::OrderCalculator.new(skip_personal_data)
-                    end
+      when :us then SolidusKlarnaPayments::AmountCalculators::Us::OrderCalculator.new
+      else SolidusKlarnaPayments::AmountCalculators::Uk::OrderCalculator.new(skip_personal_data)
+      end
     end
 
     def merchant_urls

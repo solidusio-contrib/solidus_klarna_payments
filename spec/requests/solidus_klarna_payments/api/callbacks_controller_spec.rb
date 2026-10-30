@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 RSpec.describe SolidusKlarnaPayments::Api::CallbacksController do
-  describe '#notification' do
-    subject(:request) { post '/solidus_klarna_payments/api/callbacks/notification', params: params }
+  describe "#notification" do
+    subject(:request) { post "/solidus_klarna_payments/api/callbacks/notification", params: params }
 
     let!(:payment) {
       create(:klarna_payment, source: payment_source, order: order, payment_method: payment_source.payment_method)
     }
 
-    let(:order) { create(:order_with_line_items, state: 'complete') }
+    let(:order) { create(:order_with_line_items, state: "complete") }
     let(:payment_source) {
-      create(:klarna_credit_payment, order_id: klarna_order_id, spree_order_id: order.id, fraud_status: 'PENDING')
+      create(:klarna_credit_payment, order_id: klarna_order_id, spree_order_id: order.id, fraud_status: "PENDING")
     }
 
-    let(:klarna_order_id) { 'MY_ORDER_ID' }
+    let(:klarna_order_id) { "MY_ORDER_ID" }
     let(:params) do
       {
         order_token: order.guest_token,
@@ -26,54 +26,54 @@ RSpec.describe SolidusKlarnaPayments::Api::CallbacksController do
       }
     end
 
-    context 'with FRAUD_RISK_ACCEPTED' do
-      let(:event_type) { 'FRAUD_RISK_ACCEPTED' }
+    context "with FRAUD_RISK_ACCEPTED" do
+      let(:event_type) { "FRAUD_RISK_ACCEPTED" }
 
-      it 'accepts the payment' do
+      it "accepts the payment" do
         expect {
           request
         }.to change { payment_source.reload.accepted? }.from(false).to(true)
 
-        expect(response.body).to eq('ok')
+        expect(response.body).to eq("ok")
       end
 
-      it 'logs the call' do
+      it "logs the call" do
         expect {
           request
         }.to change { payment.log_entries.count }.by(1)
       end
     end
 
-    context 'with FRAUD_RISK_REJECTED' do
-      let(:event_type) { 'FRAUD_RISK_REJECTED' }
+    context "with FRAUD_RISK_REJECTED" do
+      let(:event_type) { "FRAUD_RISK_REJECTED" }
 
-      it 'rejects the payment' do
+      it "rejects the payment" do
         expect {
           request
         }.to change { payment_source.reload.rejected? }.from(false).to(true)
 
-        expect(response.body).to eq('ok')
+        expect(response.body).to eq("ok")
       end
 
-      it 'logs the call' do
+      it "logs the call" do
         expect {
           request
         }.to change { payment.log_entries.count }.by(1)
       end
     end
 
-    context 'with FRAUD_RISK_UNKNOWN' do
-      let(:event_type) { 'FRAUD_RISK_UNKNOWN' }
+    context "with FRAUD_RISK_UNKNOWN" do
+      let(:event_type) { "FRAUD_RISK_UNKNOWN" }
 
-      it 'does not update the payment' do
+      it "does not update the payment" do
         expect {
           request
         }.not_to(change { payment_source.reload.fraud_status })
 
-        expect(response.body).to eq('ok')
+        expect(response.body).to eq("ok")
       end
 
-      it 'still logs the call' do
+      it "still logs the call" do
         expect {
           request
         }.to change { payment.log_entries.count }.by(1)

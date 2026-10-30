@@ -14,11 +14,11 @@ module SolidusKlarnaPayments
 
     def call
       @customer_token_response = Klarna
-                                 .client(:payment)
-                                 .customer_token(
-                                   authorization_token,
-                                   customer_token_params
-                                 )
+        .client(:payment)
+        .customer_token(
+          authorization_token,
+          customer_token_params
+        )
 
       @customer_token_response.token_id
     rescue NoMethodError
@@ -33,7 +33,7 @@ module SolidusKlarnaPayments
       SolidusKlarnaPayments::CustomerTokenSerializer.new(
         email: email,
         address: address,
-        description: 'Customer token',
+        description: "Customer token",
         currency: currency,
         region: region
       ).to_hash

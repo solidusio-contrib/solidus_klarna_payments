@@ -8,7 +8,7 @@ module SolidusKlarnaPayments
 
     def to_hash
       {
-        type: 'discount',
+        type: "discount",
         quantity: 1,
         name: name,
         reference: reference,
@@ -28,7 +28,7 @@ module SolidusKlarnaPayments
     def reference
       order.all_adjustments.promotion.map do |promotion|
         promotion&.promotion_code&.value
-      end.join(' ')
+      end.join(" ")
     end
 
     attr_reader :order

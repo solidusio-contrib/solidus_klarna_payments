@@ -27,15 +27,15 @@ module SolidusKlarnaPayments
 
     def options
       klarna_payment_method.options.select do |key, value|
-        key.to_s.start_with?('color_', 'radius_') && value.present?
+        key.to_s.start_with?("color_", "radius_") && value.present?
       end
     end
 
     def intent
       if klarna_payment_method.payment_profiles_supported? && order.klarna_tokenizable?
-        'TOKENIZE'
+        "TOKENIZE"
       else
-        'BUY'
+        "BUY"
       end
     end
 
